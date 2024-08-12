@@ -1,0 +1,394 @@
+/* Header.js */
+.containerHeaderLittle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding: 10px;
+}
+
+.itemHeader {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  margin: 0 30px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+}
+
+.icon {
+  margin-right: 8px;
+  font-size: 24px;
+  color: #333;
+}
+
+/* Register.js */
+/* ================================= */
+.container {
+  display: flex;
+  justify-content: center;
+  height: 95%;
+  padding: 20px;
+  background-color: #f8f8f8;
+}
+
+.form {
+  width: 100%;
+  max-width: 1000px;
+  padding: 50px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  margin-top: 20px;
+}
+
+.titleRegister {
+  text-align: center;
+  font-size: 40px;
+  font-weight: bold;
+  margin-bottom: 80px;
+}
+
+.form-row {
+  display: flex;
+  gap: 100px;
+  padding-right: 25px;
+  margin-bottom: 15px;
+}
+
+.form-column {
+  flex: 1;
+}
+
+.itemForm {
+  font-weight: bold;
+  margin-bottom: 30px;
+}
+.titleLabel {
+  margin-bottom: 5px;
+  font-weight: bold;
+  font-size: 18px;
+  .requiredStar {
+    color: red;
+    margin-left: 0.2rem;
+    font-size: 1.3rem;
+  }
+}
+
+.inputItem {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 7px;
+  margin-top: 10px;
+  font-size: 17px;
+}
+.inputItem:focus {
+  border-color: #ccc;
+  outline: none;
+  box-shadow: none;
+}
+
+.btnSubmit {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 50px;
+}
+
+.titleSubmit {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.passwordWrapper {
+  position: relative;
+  padding-right: 30px;
+}
+
+.passwordWrapper .inputItem {
+  width: 100%;
+  padding-right: 40px;
+}
+
+.passwordWrapper .togglePassword {
+  position: absolute;
+  right: -10px;
+  top: 64%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: black;
+  font-size: 20px;
+}
+
+/* Login.js */
+/* ============================================= */
+.title {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 40px;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+.titleSignIn {
+  margin-left: 10px;
+  cursor: pointer;
+  color: blue;
+}
+
+.titleLogin {
+  text-align: center;
+  font-size: 40px;
+  font-weight: bold;
+  margin-bottom: 80px;
+}
+
+.login {
+  margin-left: 10px;
+  cursor: pointer;
+  color: blue;
+}
+
+.itemFormLogin {
+  width: 100%;
+  max-width: 500px;
+  margin-left: 250px;
+  font-weight: bold;
+  margin-bottom: 30px;
+  flex-direction: column;
+  align-items: center;
+}
+
+.forgotPassword {
+  text-align: center;
+  font-size: 20px;
+  font-weight: bold;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  cursor: pointer;
+  color: blue;
+}
+
+/* ForgotPassword */
+/* ================================================ */
+.titleForgotPassword {
+  text-align: center;
+  font-size: 40px;
+  font-weight: bold;
+  margin-bottom: 80px;
+}
+
+.itemFormForgotPassword {
+  width: 100%;
+  max-width: 500px;
+  margin-left: 250px;
+  font-weight: bold;
+  margin-bottom: 30px;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ChangePassword */
+
+.titleChangePassword {
+  text-align: center;
+  font-size: 40px;
+  font-weight: bold;
+  margin-bottom: 80px;
+}
+
+.itemFormChangePassword {
+  width: 100%;
+  max-width: 500px;
+  margin-left: 250px;
+  font-weight: bold;
+  margin-bottom: 30px;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Create documents */
+/* ========================================= */
+
+.formCreateDocuments {
+  display: flex;
+  flex-direction: column;
+  width: 80%;
+  max-width: 100%;
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.titleCreateDocuments {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  text-align: center;
+  font-weight: bold;
+}
+.formRow {
+  display: flex;
+  gap: 100px;
+  padding-right: 25px;
+  margin-bottom: 15px;
+}
+.formColum {
+  flex: 1;
+}
+
+.titleCoverImage,
+.titleFileName {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  font-weight: bold;
+}
+
+.requiredStar {
+  color: red;
+  margin-left: 0.2rem;
+}
+
+.imgCover {
+  width: 90%;
+  height: 675px;
+  border: 2px dashed #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  margin-top: 7%;
+}
+
+.fileInput {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.uploadText {
+  font-size: 1.5rem;
+  color: #aaa;
+}
+
+.buttonSend {
+  background-color: green;
+  color: #fff;
+  border: none;
+  margin-top: 5%;
+  margin-bottom: 5%;
+  font-size: 16px;
+  border-radius: 7px;
+  cursor: pointer;
+  width: 30%;
+  height: 50px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.buttonSend:hover {
+  background-color: green;
+  transform: scale(1.05);
+}
+
+.buttonSend:focus {
+  outline: none;
+}
+
+.buttonSend:active {
+  background-color: green;
+  transform: scale(0.98);
+}
+
+.itemFormUpload {
+  margin-top: 10px;
+}
+
+.pdfUploadContainer {
+  width: 100%;
+  height: 163px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 7px;
+  margin-top: 10px;
+  font-size: 17px;
+  text-align: center;
+  overflow-y: auto;
+}
+
+.pdfUploadText {
+  color: white;
+}
+
+.pdfFileList {
+  margin-top: 10px;
+}
+
+.pdfFileItem {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background: white;
+  cursor: pointer;
+  margin-top: 8px;
+  position: relative;
+  background-color: #e4e1e1;
+}
+
+.pdfFileItem .removeButton {
+  background-color: #ff4d4f;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 8px;
+  /* cursor: pointer; */
+  font-size: 14px;
+  position: absolute;
+  right: 2%;
+  top: 18%;
+  z-index: 1;
+}
+
+.pdfFileItem .removeButton:hover {
+  background-color: #e60000;
+}
+
+.addPdfButton {
+  background-color: green;
+  color: #fff;
+  border: none;
+  margin-top: 2%;
+  font-size: 16px;
+  border-radius: 7px;
+  cursor: pointer;
+  width: 25%;
+  height: 40px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.listItem {
+  background-color: #aaa;
+  border-radius: 10px;
+}
+
+.noFilesText {
+  margin-bottom: 10px;
+  justify-content: center;
+}
+.btnAcp {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+.titleAcp {
+  font-size: 20px;
+  font-weight: bold;
+}
