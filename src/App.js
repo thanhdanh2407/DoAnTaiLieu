@@ -8,6 +8,8 @@ import Login from "./layouts/Login";
 import ForgotPassword from "./layouts/ForgotPassword";
 import ChangePassword from "./layouts/ChangePassword";
 import CreateDocuments from "./layouts/CreateDocuments";
+import UpdateDocuments from "./layouts/UpdateDocuments";
+import UpdateUser from "./layouts/UpdateUser";
 function App() {
   return (
     <Router>
@@ -21,6 +23,8 @@ function App() {
           <Route path="/forgotpassword" element={<ForgotPassword />} />
           <Route path="/changepassword" element={<ChangePassword />} />
           <Route path="/createdocuments" element={<CreateDocuments />} />
+          <Route path="/updatedocument" element={<UpdateDocuments />} />
+          <Route path="/updateuser" element={<UpdateUser />} />
         </Routes>
       </div>
     </Router>
