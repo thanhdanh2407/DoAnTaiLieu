@@ -15,16 +15,22 @@ function Navigation() {
         className="imgLogo"
         onClick={() => navigate("/home")}
       />
-      <div className="containerItem">Tài liệu</div>
+      <div className="containerItem" onClick={() => navigate("/home")}>
+        Tài liệu
+      </div>
       <div
         className="containerItem"
         onClick={() => navigate("/createdocuments")}
       >
         Tạo tài liệu
       </div>
-      <div className="containerItem">Giới thiệu</div>
-      <div className="containerItem">Người dùng</div>
-      <div className="containerItem">
+      <div className="containerItem" onClick={() => navigate("/about")}>
+        Giới thiệu
+      </div>
+      <div className="containerItem" onClick={() => navigate("/user")}>
+        Người dùng
+      </div>
+      <div className="inputContainer">
         <input type="text" placeholder="Tìm kiếm..." className="inputSearch" />
         <FaSearch className="searchIcon" />
       </div>

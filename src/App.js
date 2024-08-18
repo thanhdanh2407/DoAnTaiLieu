@@ -10,6 +10,8 @@ import ChangePassword from "./layouts/ChangePassword";
 import CreateDocuments from "./layouts/CreateDocuments";
 import UpdateDocuments from "./layouts/UpdateDocuments";
 import UpdateUser from "./layouts/UpdateUser";
+import User from "./layouts/User";
+import About from "./layouts/About";
 function App() {
   return (
     <Router>
@@ -25,6 +27,8 @@ function App() {
           <Route path="/createdocuments" element={<CreateDocuments />} />
           <Route path="/updatedocument" element={<UpdateDocuments />} />
           <Route path="/updateuser" element={<UpdateUser />} />
+          <Route path="/user" element={<User />} />
+          <Route path="/about" element={<About />} />
         </Routes>
       </div>
     </Router>

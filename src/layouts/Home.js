@@ -1,14 +1,14 @@
 import React from "react";
+import Submenu from "../components/Submenu";
+import "./css/index.css";
+import Banner from "../components/Banner";
 
 function Home() {
   return (
-    <div className="container">
-      {/* <div className="containerNavigation">
-        <Navigation />
-      </div> */}
-      {/* <div className="containerHeader">
-        <Header />
-      </div> */}
+    <div className="containerHome">
+      <Submenu />
+      <div className="titleHome">Tài Liệu Nổi Bật</div>
+      <Banner />
     </div>
   );
 }

@@ -12,7 +12,7 @@ function UpdateUser() {
     if (file) {
       const reader = new FileReader();
       reader.onload = () => {
-        setAvatar(reader.result); // Update the avatar state with the new image
+        setAvatar(reader.result);
       };
       reader.readAsDataURL(file);
     }

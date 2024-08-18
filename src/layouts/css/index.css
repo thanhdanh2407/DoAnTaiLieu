@@ -86,6 +86,8 @@
   border-radius: 7px;
   margin-top: 10px;
   font-size: 17px;
+  display: flex;
+  align-items: center;
 }
 .inputItem:focus {
   border-color: #ccc;
@@ -107,22 +109,23 @@
 
 .passwordWrapper {
   position: relative;
-  padding-right: 30px;
+  display: flex;
+  align-items: center;
 }
 
 .passwordWrapper .inputItem {
   width: 100%;
   padding-right: 40px;
+  padding-left: 10px;
 }
 
 .passwordWrapper .togglePassword {
   position: absolute;
-  right: -10px;
-  top: 64%;
-  transform: translateY(-50%);
+  top: 21px;
+  right: 10px;
+  font-size: 20px;
   cursor: pointer;
   color: black;
-  font-size: 20px;
 }
 
 /* Login.js */
@@ -479,4 +482,251 @@
   display: flex;
   justify-content: center;
   margin-top: 6%;
+}
+
+/* User */
+/* =================================== */
+
+.containerUser {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  height: 95%;
+  padding: 20px;
+  background-color: #f8f8f8;
+}
+
+.formUser {
+  width: 100%;
+  max-width: 500px;
+  padding: 50px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  margin-top: 20px;
+}
+
+.titleRole {
+  display: flex;
+  justify-content: center;
+  font-weight: bold;
+  border: 1px solid greenyellow;
+  padding: 4px;
+  border-radius: 7px;
+  background-color: greenyellow;
+}
+
+.titleNameUser {
+  display: flex;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.titleMSSVGV,
+.titleEmailUser,
+.titleAddreesUser {
+  font-weight: bold;
+  margin-top: 6%;
+}
+
+.rowUser {
+  margin-top: 20px;
+}
+
+.columUser {
+  display: flex;
+  justify-content: space-between;
+  gap: 30px;
+}
+
+.btnChangeUpdate,
+.btnChangePass {
+  flex: 1;
+}
+
+.btnChangeUpdate Button {
+  width: 100%;
+  background-color: green;
+}
+.btnChangePass Button {
+  width: 100%;
+}
+
+.titleDocument {
+  font-weight: bold;
+  font-size: 30px;
+  margin-top: 5%;
+}
+
+.containerList {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin-top: 5%;
+}
+
+.itemDocument {
+  border: 1px solid #ddd;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  width: 280px;
+  height: 505px;
+}
+
+.listInfo {
+  border-radius: 10px;
+  background-color: #e9f1fd;
+  padding: 20px;
+}
+
+.listItemInfo {
+  display: flex;
+  align-items: center;
+  margin-top: 5px;
+  font-weight: bold;
+  padding: 6px;
+}
+
+.listItemInfoAcp {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 5px;
+  font-weight: bold;
+  padding: 6px;
+  border: 1px solid #ade390;
+  border-radius: 10px;
+  background-color: white;
+}
+
+.titleInfo {
+  display: flex;
+  justify-content: center;
+  margin: 10px 0px 20px;
+  font-size: 20px;
+  font-weight: bold;
+}
+.listItemInfoAcp svg {
+  margin-right: 8px;
+}
+
+.listItemInfo svg {
+  margin-right: 8px;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.pagination li {
+  list-style-type: none;
+  margin: 0 5px;
+}
+
+.pagination li a {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  cursor: pointer;
+  color: #333;
+  border-radius: 10px;
+}
+
+.pagination li.active a {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
+.height {
+  height: 1100px;
+}
+
+.star-rating {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+  justify-content: center;
+}
+
+.star {
+  font-size: 20px;
+  color: #ddd;
+  margin-right: 7px;
+  cursor: pointer;
+  justify-content: space-between;
+}
+
+.star.filled {
+  color: #ffcc00;
+}
+
+.imgDocument {
+  height: 200px;
+  width: 280px;
+}
+
+.listItemFeature {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.iconEye {
+  font-size: 17px;
+  cursor: pointer;
+  margin: 0 20px;
+  color: #cc5de8;
+}
+.iconEdit {
+  font-size: 17px;
+  cursor: pointer;
+  margin: 0 20px;
+  color: #61a8f3;
+}
+.iconTrash {
+  font-size: 17px;
+  cursor: pointer;
+  margin: 0 20px;
+  color: red;
+}
+.iconDown {
+  font-size: 17px;
+  cursor: pointer;
+  margin: 0 20px;
+  color: rgb(190, 241, 112);
+}
+
+/* Home.js */
+/* ======================================= */
+.containerHome {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  background-color: white;
+}
+
+.titleHome {
+  margin-top: 3%;
+  font-size: 25px;
+  color: red;
+  font-weight: bold;
+}
+
+.banner-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.contentStyle {
+  height: 200px;
+  color: #fff;
+  line-height: 400px;
+  text-align: "center";
+  background: #364d79;
 }
