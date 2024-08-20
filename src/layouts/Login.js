@@ -1,20 +1,24 @@
 import React, { useState } from "react";
-import "./css/index.css";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
-import Button from "../components/Button";
-function Login() {
-  const navigate = useNavigate();
-  const [showPassword, setShowPassword] = useState(false);
+import { useDispatch, useSelector } from "react-redux";
+import { login } from "../Redux/actions/authActions"; // Import action login
 
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
+function Login() {
+  const dispatch = useDispatch();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const { loading, error } = useSelector((state) => state.auth);
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    dispatch(login(email, password));
   };
 
   return (
     <div className="container">
-      <div className="form">
+      <form className="form" onSubmit={handleLogin}>
         <div className="titleLogin">Đăng Nhập</div>
+        {error && <p className="error">{error}</p>}
         <div className="itemFormLogin">
           <label className="titleLabel" htmlFor="name">
             Email<span className="requiredStar">*</span>
@@ -24,6 +28,8 @@ function Login() {
             id="email"
             placeholder="Nhập email"
             className="inputItem"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
         </div>
         <div className="itemFormLogin">
@@ -32,34 +38,21 @@ function Login() {
           </label>
           <div className="passwordWrapper">
             <input
-              type={showPassword ? "text" : "password"}
+              type="password"
               id="password"
               placeholder="Nhập mật khẩu"
               className="inputItem"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
-            <span className="togglePassword" onClick={togglePasswordVisibility}>
-              {showPassword ? <FaEye /> : <FaEyeSlash />}
-            </span>
           </div>
         </div>
         <div className="btnSubmit">
-          <Button type="submit">
-            <span className="titleSubmit">Đăng nhập</span>
-          </Button>
+          <button type="submit" disabled={loading}>
+            {loading ? "Đang xử lý..." : "Đăng nhập"}
+          </button>
         </div>
-        <div
-          className="forgotPassword"
-          onClick={() => navigate("/forgotpassword")}
-        >
-          Quên mật khẩu ?
-        </div>
-        <div className="title">
-          Chưa có tài khoản ?
-          <div className="login" onClick={() => navigate("/register")}>
-            Đăng ký
-          </div>
-        </div>
-      </div>
+      </form>
     </div>
   );
 }
