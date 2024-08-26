@@ -1,11 +1,22 @@
 import React from "react";
 import logo from "../../assets/logo2.png";
 import { FaSearch } from "react-icons/fa";
-import "../Navigation/index.css";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../../Redux/actions/authActions";
+import "../Navigation/index.css";
+import { IoLogOutOutline } from "react-icons/io5";
+import { FaUserAlt } from "react-icons/fa"; // Import default user icon
 
 function Navigation() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { isAuthenticated, user } = useSelector((state) => state.auth);
+
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate("/home");
+  };
 
   return (
     <div className="containerNav">
@@ -34,12 +45,29 @@ function Navigation() {
         <input type="text" placeholder="Tìm kiếm..." className="inputSearch" />
         <FaSearch className="searchIcon" />
       </div>
-      <div className="containerItem" onClick={() => navigate("/login")}>
-        Đăng nhập
-      </div>
-      <div className="containerItem" onClick={() => navigate("/register")}>
-        Đăng ký
-      </div>
+      {isAuthenticated ? (
+        <div className="userSection">
+          {user?.avatar ? (
+            <img src={user.avatar} alt="User Avatar" className="userAvatar" />
+          ) : (
+            <FaUserAlt className="defaultIcon" />
+          )}
+          <span className="userName">{user ? user.fullname : "User"}</span>
+          <div className="logoutContainer" onClick={handleLogout}>
+            <IoLogOutOutline className="logoutIcon" />
+            <span className="logoutText">Đăng xuất</span>
+          </div>
+        </div>
+      ) : (
+        <>
+          <div className="containerItem" onClick={() => navigate("/login")}>
+            Đăng nhập
+          </div>
+          <div className="containerItem" onClick={() => navigate("/register")}>
+            Đăng ký
+          </div>
+        </>
+      )}
     </div>
   );
 }

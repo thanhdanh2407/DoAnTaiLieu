@@ -1,13 +1,15 @@
 import React from "react";
 import "./button.css";
 
-function Button({ children, ...props }) {
+function Button({ children, disabled, ...props }) {
   return (
-    <>
-      <button className="button" {...props}>
-        {children}
-      </button>
-    </>
+    <button
+      className={`button ${disabled ? "button-disabled" : ""}`}
+      disabled={disabled}
+      {...props}
+    >
+      {children}
+    </button>
   );
 }
 

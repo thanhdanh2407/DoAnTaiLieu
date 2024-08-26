@@ -52,3 +52,44 @@
   margin-left: -30px;
   margin-right: 10px;
 }
+
+.userSection {
+  display: flex;
+  align-items: center;
+}
+
+.userAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+.defaultIcon {
+  font-size: 40px;
+  margin-right: 8px;
+}
+
+.userName {
+  margin-right: 8px;
+  color: white;
+  font-weight: bold;
+}
+
+.logoutContainer {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.logoutText {
+  margin-left: 4px;
+  color: white;
+  font-weight: bold;
+}
+
+.logoutIcon {
+  margin-right: 4px;
+  color: red;
+  font-size: 30px;
+}

@@ -1,26 +1,67 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import "./css/index.css";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
-import { login } from "../Redux/actions/authActions"; // Import action login
+import { useNavigate } from "react-router-dom";
+import { login } from "../Redux/actions/authActions";
+import Button from "../components/Button";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function Login() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [loginAttempted, setLoginAttempted] = useState(false);
 
-  const { loading, error } = useSelector((state) => state.auth);
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const { loading, error, isAuthenticated } = useSelector(
+    (state) => state.auth
+  );
+
+  useEffect(() => {
+    if (loginAttempted) {
+      if (isAuthenticated) {
+        toast.success("Đăng nhập thành công!", {
+          position: "top-center",
+          autoClose: 1000,
+          closeOnClick: true,
+          className: "custom-toast",
+          progressClassName: "custom-progress",
+        });
+        setTimeout(() => {
+          navigate("/");
+        }, 1000);
+      } else if (error) {
+        toast.error("Nhập sai Email hoặc Password", {
+          position: "top-center",
+          autoClose: 3000,
+          closeOnClick: true,
+          className: "custom-toast",
+          progressClassName: "custom-progress",
+        });
+      }
+    }
+  }, [isAuthenticated, error, loginAttempted, navigate]);
 
   const handleLogin = (e) => {
     e.preventDefault();
+    setLoginAttempted(true);
     dispatch(login(email, password));
   };
 
   return (
     <div className="container">
+      <ToastContainer />
       <form className="form" onSubmit={handleLogin}>
         <div className="titleLogin">Đăng Nhập</div>
-        {error && <p className="error">{error}</p>}
         <div className="itemFormLogin">
-          <label className="titleLabel" htmlFor="name">
+          <label className="titleLabel" htmlFor="email">
             Email<span className="requiredStar">*</span>
           </label>
           <input
@@ -38,19 +79,34 @@ function Login() {
           </label>
           <div className="passwordWrapper">
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               id="password"
               placeholder="Nhập mật khẩu"
               className="inputItem"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
+            <span className="togglePassword" onClick={togglePasswordVisibility}>
+              {showPassword ? <FaEye /> : <FaEyeSlash />}
+            </span>
           </div>
         </div>
         <div className="btnSubmit">
-          <button type="submit" disabled={loading}>
-            {loading ? "Đang xử lý..." : "Đăng nhập"}
-          </button>
+          <Button type="submit" disabled={loading}>
+            <span className="titleSubmit">Đăng nhập</span>
+          </Button>
+        </div>
+        <div
+          className="forgotPassword"
+          onClick={() => navigate("/forgotpassword")}
+        >
+          Quên mật khẩu ?
+        </div>
+        <div className="title">
+          Chưa có tài khoản ?
+          <div className="login" onClick={() => navigate("/register")}>
+            Đăng ký
+          </div>
         </div>
       </form>
     </div>

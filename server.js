@@ -10,7 +10,6 @@ const API_SERVICE_URL = "http://localhost:8080";
 
 app.use(express.static(path.join(__dirname, "build")));
 
-// Chuyển tiếp các yêu cầu tới /api
 app.use("/api", (req, res) => {
   apiProxy.web(req, res, { target: API_SERVICE_URL });
 });
