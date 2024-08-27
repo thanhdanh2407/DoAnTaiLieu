@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../Redux/actions/authActions";
 import "../Navigation/index.css";
 import { IoLogOutOutline } from "react-icons/io5";
-import { FaUserAlt } from "react-icons/fa"; // Import default user icon
+import defaultAvatar from "../../assets/iconAva.png";
 
 function Navigation() {
   const navigate = useNavigate();
@@ -47,12 +47,15 @@ function Navigation() {
       </div>
       {isAuthenticated ? (
         <div className="userSection">
-          {user?.avatar ? (
-            <img src={user.avatar} alt="User Avatar" className="userAvatar" />
-          ) : (
-            <FaUserAlt className="defaultIcon" />
-          )}
-          <span className="userName">{user ? user.fullname : "User"}</span>
+          <img
+            src={user?.avatar || defaultAvatar}
+            alt="avatar"
+            className="avatarNav"
+            onError={(e) => {
+              e.target.src = defaultAvatar; // Fallback if user avatar fails to load
+            }}
+          />
+          <span className="userName">{user.fullname || "User"}</span>
           <div className="logoutContainer" onClick={handleLogout}>
             <IoLogOutOutline className="logoutIcon" />
             <span className="logoutText">Đăng xuất</span>
