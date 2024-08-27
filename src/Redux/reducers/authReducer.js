@@ -48,7 +48,24 @@ const authReducer = (state = initialState, action) => {
 
     case "REGISTER_FAILURE":
       return { ...state, loading: false, error: action.payload };
-
+    case "UPDATE_USER_REQUEST":
+      return {
+        ...state,
+        loading: true,
+        error: null,
+      };
+    case "UPDATE_USER_SUCCESS":
+      return {
+        ...state,
+        loading: false,
+        user: { ...state.user, ...action.payload }, // Update the user data
+      };
+    case "UPDATE_USER_FAILURE":
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
     default:
       return state;
   }

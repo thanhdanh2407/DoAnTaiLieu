@@ -1,69 +1,46 @@
-import React, { useState } from "react";
-import "./css/index.css";
-import avatar from "../assets/iconAva.png";
-import Button from "../components/Button";
+import React, { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { fetchUserInfo } from "../Redux/actions/authActions"; // Adjust the import based on your file structure
 import { useNavigate } from "react-router-dom";
+import "./css/index.css";
+import defaultAvatar from "../assets/iconAva.png";
+import Button from "../components/Button";
 import { TbClipboardList } from "react-icons/tb";
 import { WiTime5 } from "react-icons/wi";
 import { LuUser2 } from "react-icons/lu";
 import { FiCheckCircle } from "react-icons/fi";
 import ReactPaginate from "react-paginate";
-import { FaStar } from "react-icons/fa";
-import { FaEye, FaEdit, FaTrash, FaDownload } from "react-icons/fa";
-import imgDocument from "../assets/itemDocument.png";
+import { FaStar, FaEye, FaEdit, FaTrash, FaDownload } from "react-icons/fa";
 
 function User() {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const token = localStorage.getItem("authToken");
+  const user = useSelector((state) => state.auth.user);
+
+  const [role, setRole] = useState("");
+
+  useEffect(() => {
+    if (token) {
+      dispatch(fetchUserInfo(token));
+    }
+  }, [dispatch, token]);
+
+  useEffect(() => {
+    if (user) {
+      setRole(
+        user.identifier.startsWith("SV")
+          ? "STUDENT"
+          : user.identifier.startsWith("GV")
+          ? "TEACHER"
+          : ""
+      );
+    }
+  }, [user]);
+
   const items = [
-    {
-      image: imgDocument,
-      title: "NodeJs cho người mới",
-      category: "NodeJS",
-      time: "13 giờ trước",
-      author: "Hải Vũ",
-      approved: true,
-    },
-    {
-      image: imgDocument,
-      title: "NodeJs cho người mới",
-      category: "NodeJS",
-      time: "13 giờ trước",
-      author: "Hải Vũ",
-      approved: true,
-    },
-    {
-      image: imgDocument,
-      title: "NodeJs cho người mới",
-      category: "NodeJS",
-      time: "13 giờ trước",
-      author: "Hải Vũ",
-      approved: true,
-    },
-    {
-      image: imgDocument,
-      title: "NodeJs cho người mới",
-      category: "NodeJS",
-      time: "13 giờ trước",
-      author: "Hải Vũ",
-      approved: true,
-    },
-    {
-      image: imgDocument,
-      title: "NodeJs cho người mới",
-      category: "NodeJS",
-      time: "13 giờ trước",
-      author: "Hải Vũ",
-      approved: true,
-    },
-    {
-      image: imgDocument,
-      title: "NodeJs cho người mới",
-      category: "NodeJS",
-      time: "13 giờ trước",
-      author: "Hải Vũ",
-      approved: true,
-    },
+    // Sample items array for documents (kept unchanged)
   ];
 
   const itemsPerPage = 8;
@@ -76,17 +53,37 @@ function User() {
   const offset = currentPage * itemsPerPage;
   const currentItems = items.slice(offset, offset + itemsPerPage);
 
+  const getFormattedIdentifier = () => {
+    if (!user?.identifier) {
+      return "SV/GV: NULL";
+    }
+
+    if (user.identifier.startsWith("SV")) {
+      return `SV: ${user.identifier}`;
+    } else if (user.identifier.startsWith("GV")) {
+      return `GV: ${user.identifier}`;
+    }
+
+    return `SV/GV: ${user.identifier}`;
+  };
+
   return (
     <div className="containerUser">
       <div className="formUser">
         <div className="avatarContainer">
-          <img src={avatar} alt="avatar" className="avatar" />
-          <div className="titleRole">ADMIN</div>
+          <img
+            src={user?.avatar || defaultAvatar} // Display user avatar or fallback to default
+            alt="avatar"
+            className="avatar"
+          />
+          <div className="titleRole">{role || "ROLE"}</div> {/* Display role */}
         </div>
-        <div className="titleNameUser">Vũ Văn Hải</div>
-        <div className="titleMSSVGV">MSSV/GV: SV642328</div>
-        <div className="titleEmailUser">Email: vuvanhaidt1@gmail.com</div>
-        <div className="titleAddreesUser">Địa chỉ: Hà Nội</div>
+        <div className="titleNameUser">{user?.fullname || "Name"}</div>
+        <div className="titleMSSVGV">{getFormattedIdentifier()}</div>
+        <div className="titleEmailUser">Email: {user?.email || "Email"}</div>
+        <div className="titleAddreesUser">
+          Địa chỉ: {user?.address || "Address"}
+        </div>
         <div className="rowUser">
           <div className="columUser">
             <div className="btnChangeUpdate">

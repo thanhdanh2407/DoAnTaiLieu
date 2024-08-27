@@ -33,9 +33,29 @@ export const login = (email, password) => async (dispatch) => {
   }
 };
 
-export const fetchUserInfo = (token) => async (dispatch) => {
+// export const fetchUserInfo = (token, userId) => async (dispatch) => {
+//   try {
+//     const response = await fetch("http://localhost:8080/api/user/me", {
+//       headers: {
+//         Authorization: `Bearer ${token}`,
+//       },
+//     });
+
+//     if (!response.ok) {
+//       throw new Error("Failed to fetch user information");
+//     }
+
+//     const userData = await response.json();
+//     dispatch(loginSuccess(userData));
+//     localStorage.setItem("user", JSON.stringify(userData));
+//   } catch (error) {
+//     dispatch(loginFailure(error.message));
+//   }
+// };
+
+export const fetchUserInfo = (token, userId) => async (dispatch) => {
   try {
-    const response = await fetch("http://localhost:8080/api/user/me", {
+    const response = await fetch(`http://localhost:8080/api/user/me`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -166,3 +186,46 @@ export const changePassword =
       );
     }
   };
+
+export const updateUser = (userId, userData) => async (dispatch) => {
+  dispatch({ type: "UPDATE_USER_REQUEST" });
+
+  try {
+    const response = await fetch(`http://localhost:8080/api/user/update`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+      },
+      body: JSON.stringify(userData),
+    });
+
+    // Read response body as text first
+    const responseText = await response.text();
+
+    // Try to parse the response text as JSON
+    let responseBody;
+    try {
+      responseBody = JSON.parse(responseText);
+    } catch (e) {
+      responseBody = { message: responseText };
+    }
+
+    if (response.ok) {
+      dispatch({
+        type: "UPDATE_USER_SUCCESS",
+        payload: responseBody,
+      });
+    } else {
+      throw new Error(responseBody.message || "Something went wrong");
+    }
+
+    return responseBody;
+  } catch (error) {
+    dispatch({
+      type: "UPDATE_USER_FAILURE",
+      payload: error.message,
+    });
+    throw error;
+  }
+};
