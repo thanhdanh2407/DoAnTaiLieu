@@ -245,6 +245,8 @@ export const updateUser = (userId, userData) => async (dispatch) => {
 
   try {
     const formData = new FormData();
+
+    // Append user data to the FormData object
     for (const key in userData) {
       formData.append(key, userData[key]);
     }
@@ -252,12 +254,22 @@ export const updateUser = (userId, userData) => async (dispatch) => {
     const response = await fetch(`http://localhost:8080/api/user/update`, {
       method: "PUT",
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("authToken")}`, // Do NOT set 'Content-Type' here
+        Authorization: `Bearer ${localStorage.getItem("authToken")}`,
       },
       body: formData,
     });
 
-    const responseBody = await response.json();
+    // Handle the response based on its content type
+    const contentType = response.headers.get("content-type");
+    let responseBody;
+
+    if (contentType && contentType.includes("application/json")) {
+      // Parse JSON response
+      responseBody = await response.json();
+    } else {
+      // Parse plain text response
+      responseBody = await response.text();
+    }
 
     if (response.ok) {
       dispatch({
@@ -265,7 +277,9 @@ export const updateUser = (userId, userData) => async (dispatch) => {
         payload: responseBody,
       });
     } else {
-      throw new Error(responseBody.message || "Something went wrong");
+      throw new Error(
+        responseBody.message || responseBody || "Something went wrong"
+      );
     }
 
     return responseBody;
