@@ -126,6 +126,7 @@ export const forgotPassword = (email) => async (dispatch) => {
 export const changePassword =
   (oldPassword, newPassword, reNewPassword) => async (dispatch) => {
     const token = localStorage.getItem("authToken");
+
     if (!token) {
       throw new Error("No authentication token found.");
     }
@@ -134,12 +135,12 @@ export const changePassword =
       const response = await fetch(
         "http://localhost:8080/api/auth/change-password",
         {
-          method: "POST", // Updated to PUT method
+          method: "PUT",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`, // Token passed as a header
+            Authorization: token,
           },
-          body: JSON.stringify({ oldPassword, newPassword, reNewPassword }), // Request body
+          body: JSON.stringify({ oldPassword, newPassword, reNewPassword }),
         }
       );
 
@@ -153,21 +154,13 @@ export const changePassword =
       }
 
       if (!response.ok) {
-        console.error("Error Response Body:", responseBody); // Log response body
-        throw new Error(responseBody.message || "Failed to change password");
+        console.error("Error Response Body:", responseBody);
+        throw new Error(responseBody || "Failed to change password");
       }
 
-      // Clear current token and user data
-      localStorage.removeItem("authToken");
-      localStorage.removeItem("user");
-
-      // Optionally dispatch an action to update state if needed
-      dispatch({ type: "LOGOUT_USER" });
-
-      // Notify the user and redirect to the login page
       return responseBody;
     } catch (error) {
-      console.error("Change Password Error:", error); // Log detailed error
+      console.error("Change Password Error:", error);
       throw new Error(
         error.message || "An error occurred while changing the password"
       );

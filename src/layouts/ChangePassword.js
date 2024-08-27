@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import "./css/index.css";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import Button from "../components/Button";
@@ -9,6 +10,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 function ChangePassword() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [reNewPassword, setReNewPassword] = useState("");
@@ -32,6 +34,18 @@ function ChangePassword() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!oldPassword || !newPassword || !reNewPassword) {
+      setError("Mật khẩu mới không khớp.");
+      toast.error("Mật khẩu mới không khớp.", {
+        position: "top-center",
+        autoClose: 3000,
+        closeOnClick: true,
+        className: "custom-toast",
+        progressClassName: "custom-progress",
+      });
+      return;
+    }
+
     if (newPassword !== reNewPassword) {
       setError("Mật khẩu mới không khớp.");
       toast.error("Mật khẩu mới không khớp.", {
@@ -45,7 +59,7 @@ function ChangePassword() {
     }
 
     try {
-      await changePassword(oldPassword, newPassword, reNewPassword);
+      await dispatch(changePassword(oldPassword, newPassword, reNewPassword));
       toast.success("Mật khẩu đã được thay đổi thành công.", {
         position: "top-center",
         autoClose: 1000,
