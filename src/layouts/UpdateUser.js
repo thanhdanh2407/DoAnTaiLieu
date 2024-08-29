@@ -98,7 +98,8 @@ function UpdateUser() {
               value={identifier}
               onChange={(e) => setIdentifier(e.target.value)}
               placeholder="Nhập MSSV/GV"
-              className="inputItemUser"
+              className="inputItemUser readOnlyField"
+              readOnly
             />
           </div>
           <div className="itemUser">
@@ -109,7 +110,8 @@ function UpdateUser() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Nhập Email"
-              className="inputItemUser"
+              className="inputItemUser readOnlyField"
+              readOnly
             />
           </div>
           <div className="itemUser">

@@ -33,11 +33,16 @@ export const login = (email, password) => async (dispatch) => {
   }
 };
 
-// export const fetchUserInfo = (token, userId) => async (dispatch) => {
+// export const fetchUserInfo = (userId) => async (dispatch) => {
 //   try {
-//     const response = await fetch("http://localhost:8080/api/user/me", {
+//     const token = localStorage.getItem("authToken");
+//     if (!token) throw new Error("No authentication token found.");
+
+//     const response = await fetch(`http://localhost:8080/api/user/me`, {
+//       method: "GET",
 //       headers: {
 //         Authorization: `Bearer ${token}`,
+//         "Content-Type": "application/json",
 //       },
 //     });
 
@@ -46,14 +51,20 @@ export const login = (email, password) => async (dispatch) => {
 //     }
 
 //     const userData = await response.json();
-//     dispatch(loginSuccess(userData));
+//     dispatch({
+//       type: "LOGIN_SUCCESS",
+//       payload: userData,
+//     });
 //     localStorage.setItem("user", JSON.stringify(userData));
 //   } catch (error) {
-//     dispatch(loginFailure(error.message));
+//     dispatch({
+//       type: "LOGIN_FAILURE",
+//       payload: error.message,
+//     });
 //   }
 // };
-// authActions.js
-export const fetchUserInfo = (userId) => async (dispatch) => {
+
+export const fetchUserInfo = () => async (dispatch) => {
   try {
     const token = localStorage.getItem("authToken");
     if (!token) throw new Error("No authentication token found.");
@@ -198,48 +209,6 @@ export const changePassword =
     }
   };
 
-// export const updateUser = (userId, userData) => async (dispatch) => {
-//   dispatch({ type: "UPDATE_USER_REQUEST" });
-
-//   try {
-//     const response = await fetch(`http://localhost:8080/api/user/update`, {
-//       method: "PUT",
-//       headers: {
-//         "Content-Type": "application/json",
-//         Authorization: `Bearer ${localStorage.getItem("authToken")}`,
-//       },
-//       body: JSON.stringify(userData),
-//     });
-
-//     // Read response body as text first
-//     const responseText = await response.text();
-
-//     // Try to parse the response text as JSON
-//     let responseBody;
-//     try {
-//       responseBody = JSON.parse(responseText);
-//     } catch (e) {
-//       responseBody = { message: responseText };
-//     }
-
-//     if (response.ok) {
-//       dispatch({
-//         type: "UPDATE_USER_SUCCESS",
-//         payload: responseBody,
-//       });
-//     } else {
-//       throw new Error(responseBody.message || "Something went wrong");
-//     }
-
-//     return responseBody;
-//   } catch (error) {
-//     dispatch({
-//       type: "UPDATE_USER_FAILURE",
-//       payload: error.message,
-//     });
-//     throw error;
-//   }
-// };
 export const updateUser = (userId, userData) => async (dispatch) => {
   dispatch({ type: "UPDATE_USER_REQUEST" });
 
@@ -248,13 +217,16 @@ export const updateUser = (userId, userData) => async (dispatch) => {
 
     // Append user data to the FormData object
     for (const key in userData) {
-      formData.append(key, userData[key]);
+      if (userData[key] !== undefined && userData[key] !== null) {
+        formData.append(key, userData[key]);
+      }
     }
 
     const response = await fetch(`http://localhost:8080/api/user/update`, {
       method: "PUT",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+        // No need to set Content-Type header with FormData
       },
       body: formData,
     });

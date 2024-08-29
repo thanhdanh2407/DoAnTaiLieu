@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchUserInfo } from "../Redux/actions/authActions"; // Adjust the import based on your file structure
+import { fetchUserInfo } from "../Redux/actions/authActions";
 import { useNavigate } from "react-router-dom";
 import "./css/index.css";
 import defaultAvatar from "../assets/iconAva.png";
@@ -15,15 +15,13 @@ import { FaStar, FaEye, FaEdit, FaTrash, FaDownload } from "react-icons/fa";
 function User() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
   const token = localStorage.getItem("authToken");
   const user = useSelector((state) => state.auth.user);
-
   const [role, setRole] = useState("");
 
   useEffect(() => {
     if (token) {
-      dispatch(fetchUserInfo(token));
+      dispatch(fetchUserInfo());
     }
   }, [dispatch, token]);
 
@@ -39,10 +37,7 @@ function User() {
     }
   }, [user]);
 
-  const items = [
-    // Sample items array for documents (kept unchanged)
-  ];
-
+  const items = []; // Replace with actual items
   const itemsPerPage = 8;
   const [currentPage, setCurrentPage] = useState(0);
 
@@ -54,29 +49,26 @@ function User() {
   const currentItems = items.slice(offset, offset + itemsPerPage);
 
   const getFormattedIdentifier = () => {
-    if (!user?.identifier) {
-      return "SV/GV: NULL";
-    }
-
-    if (user.identifier.startsWith("SV")) {
-      return `SV: ${user.identifier}`;
-    } else if (user.identifier.startsWith("GV")) {
-      return `GV: ${user.identifier}`;
-    }
-
-    return `SV/GV: ${user.identifier}`;
+    if (!user?.identifier) return "SV/GV: NULL";
+    return user.identifier.startsWith("SV")
+      ? `SV: ${user.identifier}`
+      : user.identifier.startsWith("GV")
+      ? `GV: ${user.identifier}`
+      : `SV/GV: ${user.identifier}`;
   };
+
+  console.log("Image URL:", user?.avatar || defaultAvatar);
 
   return (
     <div className="containerUser">
       <div className="formUser">
         <div className="avatarContainer">
           <img
-            src={user?.avatar || defaultAvatar} // Display user avatar or fallback to default
+            src={user?.avatar || defaultAvatar}
             alt="avatar"
             className="avatar"
           />
-          <div className="titleRole">{role || "ROLE"}</div> {/* Display role */}
+          <div className="titleRole">{role || "ROLE"}</div>
         </div>
         <div className="titleNameUser">{user?.fullname || "Name"}</div>
         <div className="titleMSSVGV">{getFormattedIdentifier()}</div>

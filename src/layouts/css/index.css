@@ -500,13 +500,14 @@
   flex: 1;
   margin-left: 3%;
   max-width: 500px;
-  box-shadow: -4px 4px 1px #c0c0c0;
+  box-shadow: 4px 4px 1px #c0c0c0;
   width: 100%;
   padding: 10px;
   border: 1px solid #ddd;
   border-radius: 7px;
   margin-top: 1%;
   font-size: 17px;
+  cursor: pointer;
 }
 
 .inputItemUser:focus {
@@ -525,6 +526,12 @@
   display: flex;
   justify-content: center;
   margin-top: 6%;
+}
+
+.readOnlyField {
+  background-color: #f0f0f0;
+  cursor: not-allowed;
+  cursor: pointer;
 }
 
 /* User */
