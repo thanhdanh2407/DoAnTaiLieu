@@ -11,6 +11,7 @@ import { LuUser2 } from "react-icons/lu";
 import { FiCheckCircle } from "react-icons/fi";
 import ReactPaginate from "react-paginate";
 import { FaStar, FaEye, FaEdit, FaTrash, FaDownload } from "react-icons/fa";
+import imgDocument from "../assets/itemDocument.png";
 
 function User() {
   const dispatch = useDispatch();
@@ -37,7 +38,56 @@ function User() {
     }
   }, [user]);
 
-  const items = []; // Replace with actual items
+  const items = [
+    {
+      image: imgDocument,
+      title: "NodeJs cho người mới",
+      category: "NodeJS",
+      time: "13 giờ trước",
+      author: "Hải Vũ",
+      approved: true,
+    },
+    {
+      image: imgDocument,
+      title: "NodeJs cho người mới",
+      category: "NodeJS",
+      time: "13 giờ trước",
+      author: "Hải Vũ",
+      approved: true,
+    },
+    {
+      image: imgDocument,
+      title: "NodeJs cho người mới",
+      category: "NodeJS",
+      time: "13 giờ trước",
+      author: "Hải Vũ",
+      approved: true,
+    },
+    {
+      image: imgDocument,
+      title: "NodeJs cho người mới",
+      category: "NodeJS",
+      time: "13 giờ trước",
+      author: "Hải Vũ",
+      approved: true,
+    },
+    {
+      image: imgDocument,
+      title: "NodeJs cho người mới",
+      category: "NodeJS",
+      time: "13 giờ trước",
+      author: "Hải Vũ",
+      approved: true,
+    },
+    {
+      image: imgDocument,
+      title: "NodeJs cho người mới",
+      category: "NodeJS",
+      time: "13 giờ trước",
+      author: "Hải Vũ",
+      approved: true,
+    },
+  ]; // Replace with actual items
   const itemsPerPage = 8;
   const [currentPage, setCurrentPage] = useState(0);
 
@@ -59,15 +109,12 @@ function User() {
 
   console.log("Image URL:", user?.avatar || defaultAvatar);
 
+  const avatarUrl = user?.avatar || defaultAvatar;
   return (
     <div className="containerUser">
       <div className="formUser">
         <div className="avatarContainer">
-          <img
-            src={user?.avatar || defaultAvatar}
-            alt="avatar"
-            className="avatar"
-          />
+          <img src={avatarUrl} alt="avatar" className="avatar" />
           <div className="titleRole">{role || "ROLE"}</div>
         </div>
         <div className="titleNameUser">{user?.fullname || "Name"}</div>

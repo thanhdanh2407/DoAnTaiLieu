@@ -762,7 +762,13 @@
 
 .titleHome {
   margin-top: 3%;
-  font-size: 25px;
+  font-size: 40px;
+  color: red;
+  font-weight: bold;
+}
+.titleHomeNew {
+  margin-top: 3%;
+  font-size: 40px;
   color: red;
   font-weight: bold;
 }
@@ -779,4 +785,136 @@
   line-height: 400px;
   text-align: "center";
   background: #364d79;
+}
+
+.containerImg {
+  margin-top: 2%;
+}
+
+.filterContainer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+  margin-right: 53%;
+}
+
+.filter {
+  background-color: #f9f9f9;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.filter .titleCategory {
+  margin-right: 10px;
+}
+
+.filter .selectItem {
+  padding: 5px;
+}
+.selectItem {
+  width: 150px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 7px;
+  margin-top: 10px;
+  font-size: 15px;
+}
+
+.selectItem:focus {
+  outline: none;
+}
+
+.selectItem:focus-visible {
+  outline: none;
+}
+
+.itemButton {
+  width: 100px;
+}
+
+.buttonSort {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 8px;
+  width: 160px;
+  height: 35px;
+  border: 1px solid #ccc;
+  margin-right: 7px;
+}
+.titleSort {
+  font-size: 20px;
+  font-weight: bold;
+  margin-right: 75.5%;
+}
+.titleButtonIcon {
+  margin-left: 8px;
+}
+
+/* Footer.js */
+/* ===================== */
+/* src/components/Footer.css */
+.containerFooter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+  background-color: #4876ff;
+}
+.titleFooter {
+  font-size: 18px;
+  font-weight: bold;
+  color: white;
+}
+.itemHome {
+  border: 1px solid #ddd;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  padding: 10px;
+  width: 280px;
+  height: 520px;
+}
+.imgHomeNew {
+  width: 252px;
+}
+.listInfoHome {
+  border-radius: 10px;
+  background-color: #e9f1fd;
+  padding: 20px;
+  height: 55%;
+}
+
+.listItemInfoAcpHome {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: #52c41a;
+  margin-bottom: 5px;
+  margin-top: 10%;
+  font-weight: bold;
+  padding: 6px;
+  border: 1px solid #ade390;
+  border-radius: 10px;
+  background-color: white;
+}
+.listItemInfoHome {
+  display: flex;
+  align-items: center;
+  /* justify-content: center; */
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 5px;
+  margin-top: 5px;
+  font-weight: bold;
+  padding: 6px;
+  white-space: normal;
+  word-wrap: break-word;
+  height: 40px;
+}
+
+.listItemInfoHome svg {
+  margin-right: 5px;
+  color: #007bff;
 }

@@ -63,7 +63,6 @@ export const login = (email, password) => async (dispatch) => {
 //     });
 //   }
 // };
-
 export const fetchUserInfo = () => async (dispatch) => {
   try {
     const token = localStorage.getItem("authToken");
@@ -82,6 +81,7 @@ export const fetchUserInfo = () => async (dispatch) => {
     }
 
     const userData = await response.json();
+    console.log("Fetched User Data:", userData); // Debug the API response
     dispatch({
       type: "LOGIN_SUCCESS",
       payload: userData,

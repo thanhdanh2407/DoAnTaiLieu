@@ -52,7 +52,7 @@ function Navigation() {
             alt="avatar"
             className="avatarNav"
             onError={(e) => {
-              e.target.src = defaultAvatar; // Fallback if user avatar fails to load
+              e.target.src = defaultAvatar;
             }}
           />
           <span className="userName">{user.fullname || "User"}</span>

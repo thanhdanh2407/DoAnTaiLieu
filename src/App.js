@@ -12,12 +12,14 @@ import UpdateDocuments from "./layouts/UpdateDocuments";
 import UpdateUser from "./layouts/UpdateUser";
 import User from "./layouts/User";
 import About from "./layouts/About";
+import Footer from "./layouts/Footer";
 function App() {
   return (
     <Router>
       <div className="App">
         <Navigation />
         <Header />
+
         <Routes>
           <Route path="*" element={<Home />} />
           <Route path="/register" element={<Register />} />
@@ -29,7 +31,9 @@ function App() {
           <Route path="/updateuser" element={<UpdateUser />} />
           <Route path="/user" element={<User />} />
           <Route path="/about" element={<About />} />
+          <Route path="/about" element={<Footer />} />
         </Routes>
+        <Footer />
       </div>
     </Router>
   );
