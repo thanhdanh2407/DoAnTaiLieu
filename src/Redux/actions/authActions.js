@@ -1,3 +1,10 @@
+// authActions.js
+import {
+  fetchDocumentRequest,
+  fetchDocumentSuccess,
+  fetchDocumentFailure,
+} from "./actions";
+
 export const loginSuccess = (user) => ({
   type: "LOGIN_SUCCESS",
   payload: user,
@@ -33,36 +40,6 @@ export const login = (email, password) => async (dispatch) => {
   }
 };
 
-// export const fetchUserInfo = (userId) => async (dispatch) => {
-//   try {
-//     const token = localStorage.getItem("authToken");
-//     if (!token) throw new Error("No authentication token found.");
-
-//     const response = await fetch(`http://localhost:8080/api/user/me`, {
-//       method: "GET",
-//       headers: {
-//         Authorization: `Bearer ${token}`,
-//         "Content-Type": "application/json",
-//       },
-//     });
-
-//     if (!response.ok) {
-//       throw new Error("Failed to fetch user information");
-//     }
-
-//     const userData = await response.json();
-//     dispatch({
-//       type: "LOGIN_SUCCESS",
-//       payload: userData,
-//     });
-//     localStorage.setItem("user", JSON.stringify(userData));
-//   } catch (error) {
-//     dispatch({
-//       type: "LOGIN_FAILURE",
-//       payload: error.message,
-//     });
-//   }
-// };
 export const fetchUserInfo = () => async (dispatch) => {
   try {
     const token = localStorage.getItem("authToken");
@@ -263,3 +240,18 @@ export const updateUser = (userId, userData) => async (dispatch) => {
     throw error;
   }
 };
+
+// export const fetchDocument = (id) => async (dispatch) => {
+//   dispatch(fetchDocumentRequest());
+
+//   try {
+//     const response = await fetch(`http://localhost:8080/api/documents/${id}`); // Update this URL as needed
+//     if (!response.ok) {
+//       throw new Error("Network response was not ok");
+//     }
+//     const data = await response.json();
+//     dispatch(fetchDocumentSuccess(data));
+//   } catch (error) {
+//     dispatch(fetchDocumentFailure(error.message));
+//   }
+// };

@@ -1,3 +1,8 @@
+import {
+  FETCH_DOCUMENT_REQUEST,
+  FETCH_DOCUMENT_SUCCESS,
+  FETCH_DOCUMENT_FAILURE,
+} from "../actions/actionTypes";
 const initialState = {
   isAuthenticated: !!localStorage.getItem("authToken"),
   user: JSON.parse(localStorage.getItem("user")) || null,
@@ -66,6 +71,12 @@ const authReducer = (state = initialState, action) => {
         loading: false,
         error: action.payload,
       };
+    case FETCH_DOCUMENT_REQUEST:
+      return { ...state, loading: true };
+    case FETCH_DOCUMENT_SUCCESS:
+      return { ...state, loading: false, document: action.payload };
+    case FETCH_DOCUMENT_FAILURE:
+      return { ...state, loading: false, error: action.payload };
     default:
       return state;
   }

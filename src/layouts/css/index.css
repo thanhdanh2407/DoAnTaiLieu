@@ -715,7 +715,7 @@
 
 .imgDocument {
   height: 200px;
-  width: 280px;
+  width: 278px;
 }
 
 .listItemFeature {
@@ -874,6 +874,7 @@
   padding: 10px;
   width: 280px;
   height: 520px;
+  cursor: pointer;
 }
 .imgHomeNew {
   width: 252px;
@@ -917,4 +918,35 @@
 .listItemInfoHome svg {
   margin-right: 5px;
   color: #007bff;
+}
+
+/* About.js */
+/* ========================================= */
+.containerAbout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  background-color: white;
+}
+
+.imgAbout {
+  border-radius: 50%;
+  margin-bottom: 1%;
+  width: 300px;
+}
+
+.titleNameAbout,
+.itemMssvAbout,
+.itemClassABout {
+  font-size: 20px;
+  font-weight: bold;
+  margin-top: 1%;
+}
+
+.itemText {
+  margin-top: 3%;
+  font-size: 20px;
+  font-family: "Times New Roman", Times, serif;
+  font-weight: bold;
 }
