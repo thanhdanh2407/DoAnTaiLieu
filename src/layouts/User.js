@@ -29,10 +29,10 @@ function User() {
   useEffect(() => {
     if (user) {
       setRole(
-        user.identifier.startsWith("SV")
-          ? "STUDENT"
-          : user.identifier.startsWith("GV")
-          ? "TEACHER"
+        user.identifier?.startsWith("SV")
+          ? "Sinh Viên"
+          : user.identifier?.startsWith("GV")
+          ? "Giảng Viên"
           : ""
       );
     }
@@ -47,47 +47,9 @@ function User() {
       author: "Hải Vũ",
       approved: true,
     },
-    {
-      image: imgDocument,
-      title: "NodeJs cho người mới",
-      category: "NodeJS",
-      time: "13 giờ trước",
-      author: "Hải Vũ",
-      approved: true,
-    },
-    {
-      image: imgDocument,
-      title: "NodeJs cho người mới",
-      category: "NodeJS",
-      time: "13 giờ trước",
-      author: "Hải Vũ",
-      approved: true,
-    },
-    {
-      image: imgDocument,
-      title: "NodeJs cho người mới",
-      category: "NodeJS",
-      time: "13 giờ trước",
-      author: "Hải Vũ",
-      approved: true,
-    },
-    {
-      image: imgDocument,
-      title: "NodeJs cho người mới",
-      category: "NodeJS",
-      time: "13 giờ trước",
-      author: "Hải Vũ",
-      approved: true,
-    },
-    {
-      image: imgDocument,
-      title: "NodeJs cho người mới",
-      category: "NodeJS",
-      time: "13 giờ trước",
-      author: "Hải Vũ",
-      approved: true,
-    },
-  ]; // Replace with actual items
+    // Add more items as necessary
+  ];
+
   const itemsPerPage = 8;
   const [currentPage, setCurrentPage] = useState(0);
 
@@ -99,17 +61,16 @@ function User() {
   const currentItems = items.slice(offset, offset + itemsPerPage);
 
   const getFormattedIdentifier = () => {
-    if (!user?.identifier) return "SV/GV: NULL";
+    if (!user?.identifier) return null;
     return user.identifier.startsWith("SV")
-      ? `SV: ${user.identifier}`
+      ? `Mã số SV: ${user.identifier}`
       : user.identifier.startsWith("GV")
-      ? `GV: ${user.identifier}`
-      : `SV/GV: ${user.identifier}`;
+      ? `Mã số: ${user.identifier}`
+      : null;
   };
 
-  console.log("Image URL:", user?.avatar || defaultAvatar);
-
   const avatarUrl = user?.avatar || defaultAvatar;
+
   return (
     <div className="containerUser">
       <div className="formUser">
@@ -118,7 +79,11 @@ function User() {
           <div className="titleRole">{role || "ROLE"}</div>
         </div>
         <div className="titleNameUser">{user?.fullname || "Name"}</div>
-        <div className="titleMSSVGV">{getFormattedIdentifier()}</div>
+
+        {getFormattedIdentifier() && (
+          <div className="titleMSSVGV">{getFormattedIdentifier()}</div>
+        )}
+
         <div className="titleEmailUser">Email: {user?.email || "Email"}</div>
         <div className="titleAddreesUser">
           Địa chỉ: {user?.address || "Address"}
