@@ -33,7 +33,7 @@ function User() {
           ? "Sinh Viên"
           : user.identifier?.startsWith("GV")
           ? "Giảng Viên"
-          : ""
+          : "Người Dùng" // Nếu không có identifier, đặt vai trò là "Người Dùng"
       );
     }
   }, [user]);
@@ -76,7 +76,8 @@ function User() {
       <div className="formUser">
         <div className="avatarContainer">
           <img src={avatarUrl} alt="avatar" className="avatar" />
-          <div className="titleRole">{role || "ROLE"}</div>
+          <div className="titleRole">{role || "Người Dùng"}</div>{" "}
+          {/* Mặc định là "Người Dùng" */}
         </div>
         <div className="titleNameUser">{user?.fullname || "Name"}</div>
 

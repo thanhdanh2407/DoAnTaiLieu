@@ -3,11 +3,13 @@ import { HiOutlineUserCircle } from "react-icons/hi2";
 import { LiaHourglassEndSolid } from "react-icons/lia";
 import { IoMdCheckmarkCircleOutline } from "react-icons/io";
 import "./css/index.css";
+import { useNavigate } from "react-router-dom";
 
 function Header() {
+  const navigate = useNavigate();
   return (
     <div className="containerHeaderLittle">
-      <div className="itemHeader">
+      <div className="itemHeader" onClick={() => navigate("/user")}>
         <HiOutlineUserCircle className="icon" />
         Hồ sơ của bạn
       </div>

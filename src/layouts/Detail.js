@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Document, Page } from "react-pdf";
+import samplePdf from "../assets/PhieuTT_HoangPhuThanhDanh.pdf";
 
 function Detail() {
   const { id } = useParams();
   const [document, setDocument] = useState(null);
-  const [numPages, setNumPages] = useState(null);
-  const [pageNumber, setPageNumber] = useState(1);
 
   useEffect(() => {
     const fetchDocument = async () => {
@@ -27,10 +26,6 @@ function Detail() {
     fetchDocument();
   }, [id]);
 
-  const onDocumentLoadSuccess = ({ numPages }) => {
-    setNumPages(numPages);
-  };
-
   if (!document) return <p>Loading...</p>;
 
   return (
@@ -42,33 +37,12 @@ function Detail() {
       <p>Author: {document.author}</p>
       <p>Approved: {document.approved ? "Yes" : "No"}</p>
       <p>Views: {document.views}</p>
-
-      {/* Render PDF */}
-      <div>
-        <Document
-          file={document.pdfUrl} // URL của file PDF
-          onLoadSuccess={onDocumentLoadSuccess}
-        >
-          <Page pageNumber={pageNumber} />
-        </Document>
-        <div>
-          <button
-            disabled={pageNumber <= 1}
-            onClick={() => setPageNumber(pageNumber - 1)}
-          >
-            Previous
-          </button>
-          <button
-            disabled={pageNumber >= numPages}
-            onClick={() => setPageNumber(pageNumber + 1)}
-          >
-            Next
-          </button>
-          <p>
-            Page {pageNumber} of {numPages}
-          </p>
-        </div>
-      </div>
+      <iframe
+        src={samplePdf}
+        width="100%"
+        height="600px"
+        title="PDF Document"
+      />
     </div>
   );
 }

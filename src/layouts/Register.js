@@ -17,7 +17,7 @@ function Register() {
   const [repassword, setRepassword] = useState("");
   const [identifier, setIdentifier] = useState("");
   const [address, setAddress] = useState("");
-  const [role, setRole] = useState("STUDENT");
+  const [role, setRole] = useState("USER"); // Mặc định là USER
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [registering, setRegistering] = useState(false);
@@ -30,10 +30,39 @@ function Register() {
     setShowConfirmPassword(!showConfirmPassword);
   };
 
-  const { loading, error } = useSelector((state) => state.auth);
+  const { loading } = useSelector((state) => state.auth);
 
   const handleRegister = async (e) => {
     e.preventDefault();
+
+    // Validate email
+    const emailPattern = /^[\w-\.]+@gmail\.com$/;
+    if (!emailPattern.test(email)) {
+      toast.error("Email phải kết thúc bằng @gmail.com", {
+        position: "top-center",
+        autoClose: 3000,
+        closeOnClick: true,
+        className: "custom-toast",
+        progressClassName: "custom-progress",
+      });
+      return;
+    }
+
+    // Validate password
+    const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{6,}$/;
+    if (!passwordPattern.test(password)) {
+      toast.error(
+        "Mật khẩu phải có ít nhất 6 ký tự, bao gồm viết hoa, viết thường và ký tự đặc biệt",
+        {
+          position: "top-center",
+          autoClose: 3000,
+          closeOnClick: true,
+          className: "custom-toast",
+          progressClassName: "custom-progress",
+        }
+      );
+      return;
+    }
 
     if (password !== repassword) {
       toast.error("Mật khẩu không khớp", {
@@ -49,11 +78,15 @@ function Register() {
     const formData = new FormData();
     formData.append("email", email);
     formData.append("password", password);
-    formData.append("identifier", identifier);
     formData.append("fullname", fullname);
     formData.append("address", address);
     formData.append("role", role);
     formData.append("repassword", repassword);
+
+    // Append identifier only if role is STUDENT or TEACHER
+    if (role === "STUDENT" || role === "TEACHER") {
+      formData.append("identifier", identifier);
+    }
 
     setRegistering(true);
 
@@ -170,21 +203,6 @@ function Register() {
         <div className="form-row">
           <div className="form-column">
             <div className="itemForm">
-              <label className="titleLabel" htmlFor="identifier">
-                Mã số SV/GV<span className="requiredStar">*</span>
-              </label>
-              <input
-                type="text"
-                id="identifier"
-                placeholder="Nhập mã số SV/GV"
-                className="inputItem"
-                value={identifier}
-                onChange={(e) => setIdentifier(e.target.value)}
-              />
-            </div>
-          </div>
-          <div className="form-column">
-            <div className="itemForm">
               <label className="titleLabel" htmlFor="address">
                 Địa chỉ<span className="requiredStar">*</span>
               </label>
@@ -199,7 +217,7 @@ function Register() {
             </div>
           </div>
         </div>
-        <div className="itemRole">
+        <div className="itemForm">
           <label className="titleLabel" htmlFor="role">
             Vai trò<span className="requiredStar">*</span>
           </label>
@@ -209,20 +227,35 @@ function Register() {
             value={role}
             onChange={(e) => setRole(e.target.value)}
           >
+            <option value="USER">Người dùng</option>
             <option value="STUDENT">Học sinh</option>
             <option value="TEACHER">Giáo viên</option>
           </select>
         </div>
+
+        {(role === "STUDENT" || role === "TEACHER") && (
+          <div className="form-row">
+            <div className="form-column">
+              <div className="itemForm">
+                <label className="titleLabel" htmlFor="identifier">
+                  Mã số SV/GV<span className="requiredStar">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="identifier"
+                  placeholder="Nhập mã số SV/GV"
+                  className="inputItem"
+                  value={identifier}
+                  onChange={(e) => setIdentifier(e.target.value)}
+                />
+              </div>
+            </div>
+          </div>
+        )}
         <div className="btnSubmit">
-          <Button type="submit" disabled={loading || registering}>
+          <Button type="submit" disabled={loading}>
             <span className="titleSubmit">Đăng ký</span>
           </Button>
-        </div>
-        <div className="title">
-          Bạn đã có tài khoản chưa?
-          <div className="login" onClick={() => navigate("/login")}>
-            Đăng nhập
-          </div>
         </div>
       </form>
     </div>

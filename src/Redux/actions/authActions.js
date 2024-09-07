@@ -241,17 +241,17 @@ export const updateUser = (userId, userData) => async (dispatch) => {
   }
 };
 
-// export const fetchDocument = (id) => async (dispatch) => {
-//   dispatch(fetchDocumentRequest());
+export const fetchDocument = (id) => async (dispatch) => {
+  dispatch(fetchDocumentRequest());
 
-//   try {
-//     const response = await fetch(`http://localhost:8080/api/documents/${id}`); // Update this URL as needed
-//     if (!response.ok) {
-//       throw new Error("Network response was not ok");
-//     }
-//     const data = await response.json();
-//     dispatch(fetchDocumentSuccess(data));
-//   } catch (error) {
-//     dispatch(fetchDocumentFailure(error.message));
-//   }
-// };
+  try {
+    const response = await fetch(`http://localhost:8080/api/documents/${id}`); // Update this URL as needed
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+    const data = await response.json();
+    dispatch(fetchDocumentSuccess(data));
+  } catch (error) {
+    dispatch(fetchDocumentFailure(error.message));
+  }
+};
