@@ -38,7 +38,7 @@ function Detail() {
       <p>Approved: {document.approved ? "Yes" : "No"}</p>
       <p>Views: {document.views}</p>
       <iframe
-        src={samplePdf}
+        src={document.pdfFiles}
         width="100%"
         height="600px"
         title="PDF Document"

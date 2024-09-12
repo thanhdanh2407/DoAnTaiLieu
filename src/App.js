@@ -14,6 +14,7 @@ import User from "./layouts/User";
 import About from "./layouts/About";
 import Footer from "./layouts/Footer";
 import Detail from "./layouts/Detail";
+import ListUser from "./layouts/ListUser";
 function App() {
   return (
     <Router>
@@ -32,7 +33,8 @@ function App() {
           <Route path="/updateuser" element={<UpdateUser />} />
           <Route path="/user" element={<User />} />
           <Route path="/about" element={<About />} />
-          <Route path="/detail/:id" element={<Detail />} />
+          <Route path="/documents/:id" element={<Detail />} />
+          <Route path="/listuser" element={<ListUser />} />
         </Routes>
         <Footer />
       </div>

@@ -38,7 +38,7 @@ function Navigation() {
       <div className="containerItem" onClick={() => navigate("/about")}>
         Giới thiệu
       </div>
-      <div className="containerItem" onClick={() => navigate("/user")}>
+      <div className="containerItem" onClick={() => navigate("/listuser")}>
         Người dùng
       </div>
       <div className="inputContainer">

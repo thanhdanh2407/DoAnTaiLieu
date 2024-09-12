@@ -181,7 +181,7 @@ function Home() {
   }, []);
 
   const handleItemClick = (id) => {
-    navigate(`/detail/${id}`);
+    navigate(`/documents/${id}`);
   };
 
   return (

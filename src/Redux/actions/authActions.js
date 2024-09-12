@@ -255,3 +255,28 @@ export const fetchDocument = (id) => async (dispatch) => {
     dispatch(fetchDocumentFailure(error.message));
   }
 };
+
+// actions/authActions.js
+
+export const FETCH_USER_DOCUMENTS_SUCCESS = "FETCH_USER_DOCUMENTS_SUCCESS";
+export const FETCH_USER_DOCUMENTS_FAILURE = "FETCH_USER_DOCUMENTS_FAILURE";
+
+export const fetchUserDocuments = () => async (dispatch) => {
+  try {
+    const response = await fetch("http://localhost:8080/api/documents", {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+      },
+    });
+    const data = await response.json();
+    dispatch({
+      type: FETCH_USER_DOCUMENTS_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: FETCH_USER_DOCUMENTS_FAILURE,
+      payload: error,
+    });
+  }
+};

@@ -19,6 +19,8 @@ function User() {
   const token = localStorage.getItem("authToken");
   const user = useSelector((state) => state.auth.user);
   const [role, setRole] = useState("");
+  const [documents, setDocuments] = useState([]);
+  const [currentPage, setCurrentPage] = useState(0);
 
   useEffect(() => {
     if (token) {
@@ -33,32 +35,37 @@ function User() {
           ? "Sinh Viên"
           : user.identifier?.startsWith("GV")
           ? "Giảng Viên"
-          : "Người Dùng" // Nếu không có identifier, đặt vai trò là "Người Dùng"
+          : "Người Dùng"
       );
     }
   }, [user]);
 
-  const items = [
-    {
-      image: imgDocument,
-      title: "NodeJs cho người mới",
-      category: "NodeJS",
-      time: "13 giờ trước",
-      author: "Hải Vũ",
-      approved: true,
-    },
-    // Add more items as necessary
-  ];
+  useEffect(() => {
+    if (token) {
+      fetch("http://localhost:8080/api/documents", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          // Filter documents by the user
+          const userDocuments = data.filter((doc) => doc.authorId === user?.id);
+          setDocuments(userDocuments);
+        })
+        .catch((error) => {
+          console.error("Error fetching documents:", error);
+        });
+    }
+  }, [token, user]);
 
   const itemsPerPage = 8;
-  const [currentPage, setCurrentPage] = useState(0);
+  const offset = currentPage * itemsPerPage;
+  const currentItems = documents.slice(offset, offset + itemsPerPage);
 
   const handlePageClick = (data) => {
     setCurrentPage(data.selected);
   };
-
-  const offset = currentPage * itemsPerPage;
-  const currentItems = items.slice(offset, offset + itemsPerPage);
 
   const getFormattedIdentifier = () => {
     if (!user?.identifier) return null;
@@ -71,13 +78,16 @@ function User() {
 
   const avatarUrl = user?.avatar || defaultAvatar;
 
+  const handleViewClick = (docId) => {
+    navigate(`/documents/${docId}`); // Navigate to the detail page
+  };
+
   return (
     <div className="containerUser">
       <div className="formUser">
         <div className="avatarContainer">
           <img src={avatarUrl} alt="avatar" className="avatar" />
-          <div className="titleRole">{role || "Người Dùng"}</div>{" "}
-          {/* Mặc định là "Người Dùng" */}
+          <div className="titleRole">{role || "Người Dùng"}</div>
         </div>
         <div className="titleNameUser">{user?.fullname || "Name"}</div>
 
@@ -120,7 +130,11 @@ function User() {
         <div className="containerList">
           {currentItems.map((item, index) => (
             <div key={index} className="itemDocument">
-              <img src={item.image} alt={item.title} className="imgDocument" />
+              <img
+                src={item.image || imgDocument}
+                alt={item.title}
+                className="imgDocument"
+              />
               <div className="listInfo">
                 <div className="titleInfo">{item.title}</div>
                 <div className="listItemInfo">
@@ -149,9 +163,11 @@ function User() {
                 </div>
               </div>
               <div className="listItemFeature">
-                <FaEye className="iconEye" title="Xem">
-                  <span className="eye">20</span>
-                </FaEye>
+                <FaEye
+                  className="iconEye"
+                  title="Xem"
+                  onClick={() => handleViewClick(item.id)} // Handle view click
+                />
                 <FaEdit className="iconEdit" title="Chỉnh sửa" />
                 <FaTrash className="iconTrash" title="Xóa" />
                 <FaDownload className="iconDown" title="Tải về" />
@@ -164,7 +180,7 @@ function User() {
         previousLabel={"←"}
         nextLabel={" →"}
         breakLabel={"..."}
-        pageCount={Math.ceil(items.length / itemsPerPage)}
+        pageCount={Math.ceil(documents.length / itemsPerPage)}
         marginPagesDisplayed={2}
         pageRangeDisplayed={5}
         onPageChange={handlePageClick}
