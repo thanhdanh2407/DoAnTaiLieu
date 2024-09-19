@@ -42,16 +42,19 @@ function User() {
 
   useEffect(() => {
     if (token) {
-      fetch("http://localhost:8080/api/documents", {
+      fetch("http://localhost:8080/api/documents/my", {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `${token}`,
         },
       })
         .then((response) => response.json())
         .then((data) => {
-          // Filter documents by the user
-          const userDocuments = data.filter((doc) => doc.authorId === user?.id);
-          setDocuments(userDocuments);
+          if (Array.isArray(data)) {
+            setDocuments(data);
+          } else {
+            console.error("Unexpected data format:", data);
+            setDocuments([]);
+          }
         })
         .catch((error) => {
           console.error("Error fetching documents:", error);
@@ -61,7 +64,9 @@ function User() {
 
   const itemsPerPage = 8;
   const offset = currentPage * itemsPerPage;
-  const currentItems = documents.slice(offset, offset + itemsPerPage);
+  const currentItems = Array.isArray(documents)
+    ? documents.slice(offset, offset + itemsPerPage)
+    : [];
 
   const handlePageClick = (data) => {
     setCurrentPage(data.selected);
@@ -79,7 +84,32 @@ function User() {
   const avatarUrl = user?.avatar || defaultAvatar;
 
   const handleViewClick = (docId) => {
-    navigate(`/documents/${docId}`); // Navigate to the detail page
+    navigate(`/documents/${docId}`);
+  };
+
+  const handleEditClick = (docId) => {
+    navigate(`/updatedocument/${docId}`);
+  };
+
+  const handleDeleteClick = (docId) => {
+    if (window.confirm("Bạn có chắc chắn muốn xóa tài liệu này?")) {
+      fetch(`http://localhost:8080/api/documents/${docId}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `${token}`,
+        },
+      })
+        .then((response) => {
+          if (response.ok) {
+            setDocuments(documents.filter((doc) => doc.id !== docId));
+          } else {
+            throw new Error("Error deleting document");
+          }
+        })
+        .catch((error) => {
+          console.error("Error deleting document:", error);
+        });
+    }
   };
 
   return (
@@ -139,11 +169,11 @@ function User() {
                 <div className="titleInfo">{item.title}</div>
                 <div className="listItemInfo">
                   <TbClipboardList />
-                  Thể loại: {item.category}
+                  Thể loại: {item.categoryName}
                 </div>
                 <div className="listItemInfo">
                   <WiTime5 />
-                  Thời gian: {item.time}
+                  Thời gian: {item.relativeUpdatedAt}
                 </div>
                 <div className="listItemInfo">
                   <LuUser2 />
@@ -166,10 +196,19 @@ function User() {
                 <FaEye
                   className="iconEye"
                   title="Xem"
-                  onClick={() => handleViewClick(item.id)} // Handle view click
+                  onClick={() => handleViewClick(item.id)}
                 />
-                <FaEdit className="iconEdit" title="Chỉnh sửa" />
-                <FaTrash className="iconTrash" title="Xóa" />
+                <label className="view">{item.view}</label>
+                <FaEdit
+                  className="iconEdit"
+                  title="Chỉnh sửa"
+                  onClick={() => handleEditClick(item.id)}
+                />
+                <FaTrash
+                  className="iconTrash"
+                  title="Xóa"
+                  onClick={() => handleDeleteClick(item.id)}
+                />
                 <FaDownload className="iconDown" title="Tải về" />
               </div>
             </div>

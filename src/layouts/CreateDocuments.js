@@ -1,22 +1,29 @@
-import React, { useRef, useState, useEffect } from "react";
-import "./css/index.css";
+import React, { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import Button from "../components/Button";
-import Dropdown from "../components/Dropdown";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-function CreateDocuments() {
-  const [image, setImage] = useState(null);
-  const [imageFile, setImageFile] = useState(null); // Store the file object
-  const fileInputRef = useRef(null);
-  const pdfInputRef = useRef(null);
-  const [category, setCategory] = useState("");
-  const [pdfFileNames, setPdfFileNames] = useState([]);
-  const [pdfFiles, setPdfFiles] = useState([]); // Store file objects
-  const [categoryOptions, setCategoryOptions] = useState([]);
-  const [documentName, setDocumentName] = useState("");
-  const [publicationYear, setPublicationYear] = useState("");
-  const [publisher, setPublisher] = useState("");
-  const [author, setAuthor] = useState("");
+const CreateDocument = () => {
+  const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [author, setAuthor] = useState("");
+  const [publisher, setPublisher] = useState("");
+  const [publishingYear, setPublishingYear] = useState("");
+  const [image, setImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState("");
+  const [pdfFiles, setPdfFiles] = useState([]);
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [categories, setCategories] = useState([]);
+
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
+
+  const pdfInputRef = useRef(null);
+
+  const [pdfFileNames, setPdfFileNames] = useState([]);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -28,40 +35,84 @@ function CreateDocuments() {
           throw new Error("Failed to fetch categories");
         }
         const data = await response.json();
-        // Assuming data is an array of objects with 'name' property
-        const categoryNames = data.map((category) => category.name);
-        setCategoryOptions(categoryNames);
-      } catch (error) {
-        console.error("Error fetching categories:", error);
+        setCategories(data);
+      } catch (err) {
+        setError("Failed to fetch categories");
+        console.error(err);
       }
     };
 
     fetchCategories();
   }, []);
 
-  const handleImageUpload = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      setImage(URL.createObjectURL(file));
-      setImageFile(file); // Save the file object
-    }
-  };
-
   const handlePdfUpload = (files) => {
-    if (files) {
-      const newFiles = Array.from(files);
-      const newFileNames = newFiles.map((file) => file.name);
-      setPdfFileNames((prevFileNames) => [...prevFileNames, ...newFileNames]);
-      setPdfFiles((prevFiles) => [...prevFiles, ...newFiles]); // Save the file objects
+    const fileArray = Array.from(files);
+    setPdfFiles(fileArray);
+    setPdfFileNames(fileArray.map((file) => file.name));
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    setImage(file);
+
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
     }
   };
 
-  const handleButtonClick = () => {
-    fileInputRef.current.click();
-  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  const handlePdfButtonClick = () => {
-    pdfInputRef.current.click();
+    if (!selectedCategories.length) {
+      toast.error("Vui lòng chọn thể loại.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("description", description);
+    formData.append("author", author);
+    formData.append("publisher", publisher);
+    formData.append("publishingYear", publishingYear);
+    if (image) formData.append("image", image);
+    pdfFiles.forEach((file) => formData.append("pdfFiles", file));
+    selectedCategories.forEach((id) => formData.append("categoryIds", id));
+
+    try {
+      const token = localStorage.getItem("authToken");
+      if (!token) {
+        throw new Error("No token found");
+      }
+
+      const response = await fetch("http://localhost:8080/api/documents", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(
+          `Failed to create document: ${response.statusText} - ${errorText}`
+        );
+      }
+
+      const result = await response.json();
+      toast.success("Tạo tài liệu thành công!");
+      console.log(result);
+      setTimeout(() => {
+        navigate("/user");
+      }, 1000);
+    } catch (err) {
+      setError(`Failed to create document: ${err.message}`);
+      console.error(err);
+    }
   };
 
   const handleRemovePdf = (fileName) => {
@@ -70,54 +121,7 @@ function CreateDocuments() {
     );
     setPdfFiles((prevFiles) =>
       prevFiles.filter((file) => file.name !== fileName)
-    ); // Remove the file object
-  };
-
-  const handleCategoryChange = (value) => {
-    setCategory(value);
-  };
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    const formData = new FormData();
-
-    if (imageFile) {
-      formData.append("image", imageFile);
-    }
-
-    pdfFiles.forEach((file) => {
-      formData.append("pdfFiles", file);
-    });
-
-    formData.append("title", documentName);
-    formData.append("description", description);
-    formData.append("userId", "11"); // Example userId, adjust as needed
-    formData.append("author", author);
-    formData.append("publisher", publisher);
-    formData.append("publishingYear", publicationYear);
-    formData.append("categoryName", category);
-
-    try {
-      const response = await fetch("http://localhost:8080/api/documents", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json(); // Read error response
-        throw new Error(
-          `Failed to create document: ${
-            errorData.message || response.statusText
-          }`
-        );
-      }
-
-      // Handle successful creation
-      console.log("Document created successfully");
-      // You might want to reset form state here or redirect the user
-    } catch (error) {
-      console.error("Error creating document:", error);
-    }
+    );
   };
 
   return (
@@ -137,23 +141,28 @@ function CreateDocuments() {
                 </div>
                 <div
                   className="imgCover"
-                  style={{ backgroundImage: `url(${image})` }}
+                  style={{ backgroundImage: `url(${imagePreview})` }}
                 >
                   <input
                     type="file"
                     accept="image/*"
-                    onChange={handleImageUpload}
                     className="fileInput"
-                    ref={fileInputRef}
-                    style={{ display: "none" }}
+                    onChange={handleImageChange}
                   />
-                  {!image && <div className="uploadText">Tải lên</div>}
+                  {/* {imagePreview && (
+                    <div className="uploadText">
+                      <img
+                        src={imagePreview}
+                        alt="Selected preview"
+                        style={{
+                          width: "340px",
+                          height: "auto",
+                        }}
+                      />
+                    </div>
+                  )} */}
+                  {!image && <div className="uploadText">Tải ảnh lên</div>}
                 </div>
-              </div>
-              <div className="btnSend">
-                <Button className="buttonSend" onClick={handleButtonClick}>
-                  <span className="titleSubmit">Tải ảnh lên</span>
-                </Button>
               </div>
             </div>
             <div className="formColum">
@@ -163,71 +172,92 @@ function CreateDocuments() {
                   <input
                     type="text"
                     id="documentName"
+                    className="inputItem"
                     placeholder="Nhập tên tài liệu"
-                    className="inputItem"
-                    value={documentName}
-                    onChange={(e) => setDocumentName(e.target.value)}
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    required
                   />
                 </div>
-                <div className="itemFormUpload">
-                  <label className="titleLabel" htmlFor="publicationYear">
-                    Năm xuất bản<span className="requiredStar">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    id="publicationYear"
-                    placeholder="Nhập năm xuất bản"
-                    className="inputItem"
-                    value={publicationYear}
-                    onChange={(e) => setPublicationYear(e.target.value)}
-                  />
-                </div>
-                <div className="itemFormUpload">
-                  <Dropdown
-                    label="Thể loại"
-                    options={categoryOptions}
-                    onChange={handleCategoryChange}
-                    value={category}
-                  />
-                </div>
-                <div className="itemFormUpload">
-                  <label className="titleLabel" htmlFor="pdfUpload">
-                    Tải tệp PDF<span className="requiredStar">*</span>
-                  </label>
-                  <div className="pdfUploadContainer">
-                    <div className="pdfFileList">
-                      {pdfFileNames.length === 0 ? (
-                        <div className="noFilesText">Hãy chọn file</div>
-                      ) : (
-                        pdfFileNames.map((fileName, index) => (
-                          <div key={index} className="pdfFileItem">
-                            <span>{fileName}</span>
-                            <button
-                              className="removeButton"
-                              onClick={() => handleRemovePdf(fileName)}
-                            >
-                              Xóa
-                            </button>
-                          </div>
-                        ))
-                      )}
-                    </div>
-                    <input
-                      type="file"
-                      id="pdfInput"
-                      accept=".pdf"
-                      onChange={(e) => handlePdfUpload(e.target.files)}
-                      ref={pdfInputRef}
-                      style={{ display: "none" }}
-                      multiple
-                    />
+              </div>
+              <div className="itemFormUpload">
+                <label className="titleLabel" htmlFor="publicationYear">
+                  Năm xuất bản<span className="requiredStar">*</span>
+                </label>
+                <input
+                  type="number"
+                  id="publicationYear"
+                  placeholder="Nhập năm xuất bản"
+                  className="inputItem"
+                  value={publishingYear}
+                  onChange={(e) => setPublishingYear(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="itemFormUpload">
+                <label className="titleLabel" htmlFor="categories">
+                  Thể loại<span className="requiredStar">*</span>
+                </label>
+                <select
+                  id="categories"
+                  className="inputItem"
+                  value={selectedCategories}
+                  onChange={(e) =>
+                    setSelectedCategories(
+                      Array.from(
+                        e.target.selectedOptions,
+                        (option) => option.value
+                      )
+                    )
+                  }
+                  // multiple
+                >
+                  <option value="">Chọn thể loại</option>
+                  {categories.map((category) => (
+                    <option key={category.id} value={category.id}>
+                      {category.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="itemFormUpload">
+                <label className="titleLabel" htmlFor="pdfInput">
+                  Tải tệp PDF<span className="requiredStar">*</span>
+                </label>
+                <div className="pdfUploadContainer">
+                  <div className="pdfFileList">
+                    {pdfFileNames.length === 0 ? (
+                      <div className="noFilesText">Hãy chọn file</div>
+                    ) : (
+                      pdfFileNames.map((fileName, index) => (
+                        <div key={index} className="pdfFileItem">
+                          <span>{fileName}</span>
+                          <button
+                            className="removeButton"
+                            onClick={() => handleRemovePdf(fileName)}
+                          >
+                            Xóa
+                          </button>
+                        </div>
+                      ))
+                    )}
                   </div>
-                  <Button
-                    className="addPdfButton"
-                    onClick={handlePdfButtonClick}
+                  <input
+                    type="file"
+                    id="pdfInput"
+                    accept=".pdf"
+                    onChange={(e) => handlePdfUpload(e.target.files)}
+                    ref={pdfInputRef}
+                    style={{ display: "none" }}
+                    multiple
+                  />
+                  <button
+                    type="button"
+                    onClick={() => pdfInputRef.current.click()}
+                    className="uploadButton"
                   >
-                    Thêm tệp PDF
-                  </Button>
+                    Chọn tệp PDF
+                  </button>
                 </div>
               </div>
               <div className="itemFormUpload">
@@ -241,6 +271,7 @@ function CreateDocuments() {
                   className="inputItem"
                   value={publisher}
                   onChange={(e) => setPublisher(e.target.value)}
+                  required
                 />
               </div>
               <div className="itemFormUpload">
@@ -254,6 +285,7 @@ function CreateDocuments() {
                   className="inputItem"
                   value={author}
                   onChange={(e) => setAuthor(e.target.value)}
+                  required
                 />
               </div>
               <div className="itemFormUpload">
@@ -277,9 +309,16 @@ function CreateDocuments() {
             </Button>
           </div>
         </form>
+        <ToastContainer
+          position="top-center"
+          autoClose={3000}
+          closeOnClick
+          className="custom-toast-container"
+          progressClassName="custom-progress"
+        />
       </div>
     </div>
   );
-}
+};
 
-export default CreateDocuments;
+export default CreateDocument;

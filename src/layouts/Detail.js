@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Document, Page } from "react-pdf";
-import samplePdf from "../assets/PhieuTT_HoangPhuThanhDanh.pdf";
 
 function Detail() {
   const { id } = useParams();
