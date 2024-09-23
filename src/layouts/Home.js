@@ -13,14 +13,6 @@ import { LuUser2 } from "react-icons/lu";
 import { FiCheckCircle } from "react-icons/fi";
 import imgDocument from "../assets/itemDocument.png";
 
-// Hàm định dạng thời gian
-const formatTime = (isoString) => {
-  const date = new Date(isoString);
-  const hours = date.getHours().toString().padStart(2, "0");
-  const minutes = date.getMinutes().toString().padStart(2, "0");
-  return `${hours}:${minutes}`;
-};
-
 function Home() {
   const [items, setItems] = useState([]);
   const navigate = useNavigate();
@@ -94,11 +86,11 @@ function Home() {
                 <div className="titleInfo">{item.title}</div>
                 <div className="listItemInfoHome">
                   <TbClipboardList />
-                  Thể loại: {item.categoryIds}
+                  Thể loại: {item.categoryName}
                 </div>
                 <div className="listItemInfoHome">
                   <WiTime5 />
-                  Thời gian: {formatTime(item.updatedAt)}
+                  Thời gian: {item.relativeUpdatedAt}
                 </div>
                 <div className="listItemInfoHome">
                   <LuUser2 />
@@ -106,9 +98,15 @@ function Home() {
                     Người Đăng: {item.author}
                   </span>
                 </div>
+                <div className="listItemInfoHome">
+                  <FaEye />
+                  <span className="titleView">Lượt xem: {item.view}</span>
+                </div>
                 <div className="listItemInfoAcpHome">
                   <FiCheckCircle />
-                  {item.approved ? "Đã được duyệt" : "Chưa duyệt"}
+                  <span className="titleApproved">
+                    {item.approved ? "Chưa được duyệt" : " Đã duyệt"}
+                  </span>
                 </div>
                 <div className="star-rating">
                   {[1, 2, 3, 4, 5].map((star) => (
@@ -119,14 +117,14 @@ function Home() {
                   ))}
                 </div>
               </div>
-              <div className="listItemFeature">
+              {/* <div className="listItemFeature">
                 <FaEye className="iconEye" title="Xem">
                   <span className="eye">{item.views}</span>
                 </FaEye>
                 <FaEdit className="iconEdit" title="Chỉnh sửa" />
                 <FaTrash className="iconTrash" title="Xóa" />
                 <FaDownload className="iconDown" title="Tải về" />
-              </div>
+              </div> */}
             </div>
           ))
         ) : (

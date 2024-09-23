@@ -952,19 +952,23 @@
   border: 1px solid #ddd;
   background-color: #f9f9f9;
   border-radius: 10px;
-  padding: 10px;
   width: 280px;
-  height: 520px;
+  height: 530px;
   cursor: pointer;
 }
 .imgHomeNew {
-  width: 252px;
+  object-fit: cover;
+  height: 200px;
+  width: 278px;
+  border-radius: 10px;
 }
 .listInfoHome {
+  text-align: center;
+  width: 278px;
   border-radius: 10px;
   background-color: #e9f1fd;
   padding: 20px;
-  height: 55%;
+
 }
 
 .listItemInfoAcpHome {
@@ -974,7 +978,7 @@
   font-size: 14px;
   color: #52c41a;
   margin-bottom: 5px;
-  margin-top: 10%;
+  margin-top: -1px;
   font-weight: bold;
   padding: 6px;
   border: 1px solid #ade390;
@@ -999,6 +1003,10 @@
 .listItemInfoHome svg {
   margin-right: 5px;
   color: #007bff;
+}
+
+.titleApproved{
+  margin-left: 3px;
 }
 
 /* About.js */
