@@ -26,9 +26,10 @@
 }
 
 .imgDocumentHome {
-  width: 100%;
-  height: auto;
-  max-width: 150px;
+  width: 278px;
+  height: 200px;
+  object-fit: cover;
+  max-width: 278px;
   margin-bottom: 15px;
   border-radius: 8px;
 }
