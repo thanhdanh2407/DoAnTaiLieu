@@ -13,9 +13,10 @@ function Detail() {
   const { id } = useParams();
   const [document, setDocument] = useState(null);
   const [comment, setComment] = useState("");
+  const [comments, setComments] = useState([]);
   const [authToken, setAuthToken] = useState(
     localStorage.getItem("authToken") || ""
-  ); // Đổi tên thành authToken
+  );
   const [user, setUser] = useState(null);
 
   useEffect(() => {
@@ -29,6 +30,7 @@ function Detail() {
         }
         const data = await response.json();
         setDocument(data);
+        setComments(data.comments); // Lưu comments vào state
       } catch (error) {
         console.error("Failed to fetch document:", error);
       }
@@ -76,7 +78,9 @@ function Detail() {
       }
 
       setComment(""); // Reset bình luận
-      // Có thể gọi API để lấy lại bình luận mới nếu cần
+      // Cập nhật lại danh sách bình luận sau khi gửi bình luận thành công
+      const newComment = await response.json();
+      setComments([...comments, newComment]);
     } catch (error) {
       console.error("Error submitting comment:", error);
     }
@@ -127,8 +131,50 @@ function Detail() {
             title="PDF Document"
           />
         </div>
+
         <div className="containerComment">
           <div className="titleComment">Bình luận</div>
+          {/* Hiển thị danh sách bình luận */}
+          <div className="listComment">
+            {comments.length > 0 ? (
+              comments.map((comment) => (
+                <div key={comment.id} className="itemComment">
+                  <div className="avatarComment">
+                    <img src={user.avatar} alt="avatar" className="imgAva" />
+                  </div>
+                  <div className="containerCommentBody">
+                    <div className="commentRep">
+                      <div className="userComment">{comment.userName}</div>
+                      <div className="bodyComment">{comment.content}</div>
+                    </div>
+                    <div className="repComment">
+                      <span className="itemRep">Trả lời</span>
+                      <span className="itemFix">Chỉnh sửa</span>
+                      <span className="itemDel">Xoá</span>
+                    </div>
+                    <div className="listRepComment">
+                      <div className="avatarCommentRep">
+                        <img
+                          src={user.avatar}
+                          alt="avatar"
+                          className="imgAva"
+                        />
+                      </div>
+                      <div className="listCommentInfo">
+                        <div className="commentRep">
+                          <div className="userComment">{comment.userName}</div>
+                          <div className="bodyComment">{comment.content}</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p>Chưa có bình luận nào</p>
+            )}
+          </div>
+
           <div className="itemComment">
             <div className="avatarComment">
               <img
@@ -151,11 +197,6 @@ function Detail() {
                 <div className="btnSend" onClick={handleCommentSubmit}>
                   <VscSend className="iconSend" />
                 </div>
-              </div>
-              <div className="repComment">
-                <span className="itemRep">Trả lời</span>
-                <span className="itemFix">Chỉnh sửa</span>
-                <span className="itemDel">Xoá</span>
               </div>
             </div>
           </div>

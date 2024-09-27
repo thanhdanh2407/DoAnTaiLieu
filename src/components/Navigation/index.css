@@ -101,3 +101,28 @@
   border-radius: 50%;
   object-fit: cover;
 }
+.notification {
+  position: absolute;
+  background-color: white;
+  border: 1px solid #ccc;
+  width: 100%;
+  z-index: 1000;
+  max-height: 200px; /* Giới hạn chiều cao */
+  overflow-y: auto; /* Thêm thanh cuộn nếu quá nhiều kết quả */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.searchResults {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.searchResults li {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.searchResults li:hover {
+  background-color: #f0f0f0; /* Hiệu ứng hover */
+}

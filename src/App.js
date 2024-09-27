@@ -15,6 +15,7 @@ import About from "./layouts/About";
 import Footer from "./layouts/Footer";
 import Detail from "./layouts/Detail";
 import ListUser from "./layouts/ListUser";
+import DetailSearch from "./layouts/DetailSearch";
 function App() {
   return (
     <Router>
@@ -38,6 +39,7 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/documents/:id" element={<Detail />} />
           <Route path="/listuser" element={<ListUser />} />
+          <Route path="/detailsearch" element={<DetailSearch />} />
         </Routes>
         <Footer />
       </div>

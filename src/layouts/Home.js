@@ -57,12 +57,12 @@ function Home() {
       <div className="titleSort">Sắp xếp theo</div>
       <div className="filterContainer">
         <Button className="buttonSort">
-          <BsSortDown className="iconSort" onClick={() => {}} />
-          <span className="titleButtonIcon">Giá Cao - Thấp</span>
+          <BsSortDownAlt className="iconSort" onClick={() => {}} />
+          <span className="titleButtonIcon">Từ A - Z</span>
         </Button>
         <Button className="buttonSort">
-          <BsSortDownAlt className="iconSort" onClick={() => {}} />
-          <span className="titleButtonIcon">Giá Thấp - Cao</span>
+          <BsSortDown className="iconSort" onClick={() => {}} />
+          <span className="titleButtonIcon">Từ Z - A</span>
         </Button>
         <Button className="buttonSort">
           <FaEye className="iconSort" onClick={() => {}} />
@@ -117,14 +117,6 @@ function Home() {
                   ))}
                 </div>
               </div>
-              {/* <div className="listItemFeature">
-                <FaEye className="iconEye" title="Xem">
-                  <span className="eye">{item.views}</span>
-                </FaEye>
-                <FaEdit className="iconEdit" title="Chỉnh sửa" />
-                <FaTrash className="iconTrash" title="Xóa" />
-                <FaDownload className="iconDown" title="Tải về" />
-              </div> */}
             </div>
           ))
         ) : (

@@ -1169,6 +1169,14 @@
   display: flex;
 }
 
+.containerCommentBody {
+  width: 94%;
+  background-color: white;
+  border-radius: 10px;
+  margin-left: 1%;
+  padding: 10px;
+}
+
 .inputComment {
   width: 400px;
   height: 50px;
@@ -1196,4 +1204,17 @@
 .itemFix,
 .itemDel {
   margin-left: 10px;
+  cursor: pointer;
+}
+.itemRep {
+  cursor: pointer;
+}
+
+.repComment {
+  margin-top: 2%;
+}
+
+.listRepComment {
+  display: flex;
+  margin-top: 2%;
 }

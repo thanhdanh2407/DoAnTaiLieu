@@ -12,12 +12,26 @@
 //   const navigate = useNavigate();
 //   const dispatch = useDispatch();
 //   const { isAuthenticated, user } = useSelector((state) => state.auth);
+//   const [searchTerm, setSearchTerm] = React.useState("");
 
 //   const handleLogout = () => {
 //     dispatch(logout());
 //     navigate("/home");
 //   };
 
+//   const handleSearch = () => {
+//     if (searchTerm.trim()) {
+//       // Kiểm tra nếu từ khóa không rỗng
+//       navigate(
+//         `/detailsearch?searchText=${encodeURIComponent(searchTerm.trim())}`
+//       ); // Điều hướng tới trang tìm kiếm
+//     }
+//   };
+//   const handleKeyDown = (e) => {
+//     if (e.key === "Enter") {
+//       handleSearch(); // Gọi hàm tìm kiếm khi nhấn Enter
+//     }
+//   };
 //   return (
 //     <div className="containerNav">
 //       <img
@@ -35,6 +49,9 @@
 //       >
 //         Tạo tài liệu
 //       </div>
+//       <div className="containerItem" onClick={() => navigate("/detailsearch")}>
+//         tìm kiếm
+//       </div>
 //       <div className="containerItem" onClick={() => navigate("/about")}>
 //         Giới thiệu
 //       </div>
@@ -42,8 +59,19 @@
 //         Người dùng
 //       </div>
 //       <div className="inputContainer">
-//         <input type="text" placeholder="Tìm kiếm..." className="inputSearch" />
-//         <FaSearch className="searchIcon" />
+//         <input
+//           type="text"
+//           placeholder="Tìm kiếm..."
+//           className="inputSearch"
+//           value={searchTerm}
+//           onKeyDown={handleKeyDown}
+//           onChange={(e) => setSearchTerm(e.target.value)}
+//         />
+//         <FaSearch
+//           className="searchIcon"
+//           onClick={handleSearch}
+//           style={{ cursor: "pointer" }}
+//         />
 //       </div>
 //       {isAuthenticated ? (
 //         <div className="userSection">
@@ -77,10 +105,10 @@
 
 // export default Navigation;
 
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import logo from "../../assets/logo2.png";
 import { FaSearch } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../Redux/actions/authActions";
 import "../Navigation/index.css";
@@ -89,21 +117,39 @@ import defaultAvatar from "../../assets/iconAva.png";
 
 function Navigation() {
   const navigate = useNavigate();
+  const location = useLocation();
   const dispatch = useDispatch();
   const { isAuthenticated, user } = useSelector((state) => state.auth);
-
-  const [searchText, setSearchText] = useState("");
+  const [searchTerm, setSearchTerm] = React.useState("");
 
   const handleLogout = () => {
     dispatch(logout());
     navigate("/home");
   };
 
-  const handleSearch = (e) => {
-    if (e.key === "Enter") {
-      navigate(`/search?searchText=${searchText}`);
+  const handleSearch = () => {
+    if (searchTerm.trim()) {
+      navigate(
+        `/detailsearch?searchText=${encodeURIComponent(searchTerm.trim())}`
+      );
     }
   };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      handleSearch();
+    }
+  };
+
+  // Kiểm tra xem trang hiện tại có phải là trang tìm kiếm không
+  const isSearchPage = location.pathname.includes("/detailsearch");
+
+  // Reset searchTerm khi chuyển đến trang tìm kiếm
+  useEffect(() => {
+    if (isSearchPage) {
+      setSearchTerm(""); // Đặt lại giá trị tìm kiếm thành rỗng
+    }
+  }, [isSearchPage]);
 
   return (
     <div className="containerNav">
@@ -133,13 +179,19 @@ function Navigation() {
           type="text"
           placeholder="Tìm kiếm..."
           className="inputSearch"
-          value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
-          onKeyDown={handleSearch} // Thực hiện tìm kiếm khi nhấn Enter
+          value={searchTerm}
+          onKeyDown={handleKeyDown}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          disabled={isSearchPage} // Vô hiệu hóa ô tìm kiếm nếu đang ở trang tìm kiếm
+          style={{
+            opacity: isSearchPage ? 0.5 : 1, // Làm mờ ô tìm kiếm
+            cursor: isSearchPage ? "not-allowed" : "text", // Thay đổi con trỏ
+          }}
         />
         <FaSearch
           className="searchIcon"
-          onClick={() => navigate(`/search?searchText=${searchText}`)} // Thực hiện tìm kiếm khi nhấn vào icon search
+          onClick={handleSearch}
+          style={{ cursor: "pointer" }}
         />
       </div>
       {isAuthenticated ? (
