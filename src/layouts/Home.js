@@ -104,9 +104,7 @@ function Home() {
                 </div>
                 <div className="listItemInfoAcpHome">
                   <FiCheckCircle />
-                  <span className="titleApproved">
-                    {item.approved ? "Chưa được duyệt" : " Đã duyệt"}
-                  </span>
+                  <span className="titleApproved">{item.status}</span>
                 </div>
                 <div className="star-rating">
                   {[1, 2, 3, 4, 5].map((star) => (

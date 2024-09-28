@@ -1218,3 +1218,121 @@
   display: flex;
   margin-top: 2%;
 }
+
+.titleNotice{
+  margin-top: 10px;
+  margin-left: 18px;
+}
+
+
+/* DetailSearch.js */
+/* ====================================== */
+.containerSearch{
+  background-color: #f8f8f8;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  padding: 20px;
+
+}
+.titleDetailSearch{
+  font-size: 25px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.inputDetailSearch{
+  padding: 10px;
+  width: 300px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+
+.inputDetailSearch:focus-visible{
+  outline: none;
+  border-color: #66afe9;
+  box-shadow: 0 0 5px rgba(102, 175, 233, 0.5);
+}
+
+.containerDetailSearch{
+ background: #E8E8E8;
+ border-radius: 10px;
+ height: 60px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ box-shadow: 1px 1px 4px #ccc;
+ padding: 20px;
+}
+
+.btnDetailSearch{
+  padding: 10px;
+  margin-left: 10px;
+  border-radius: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.btnSort{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 10px;
+  border: 1px solid #ccc;
+  width: 160px;
+  height: 36px;
+  border-radius: 10px;
+}
+.containerListResult{
+  margin-top: 3%;
+  padding: 20px;
+  background-color:#E8E8E8 ;
+  border-radius: 10px;
+}
+
+.listResult{
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  gap: 20px;
+}
+
+.imgDetailSearch{
+  object-fit: cover;
+  width: 278px;
+  height: 200px;
+  border-radius: 10px;
+}
+.itemDetailSearch{
+  border: 1px solid #ddd;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  width: 311px;
+  height: 465px;
+  padding: 15px;
+}
+.listInfoDetailSearch{
+  text-align: center;
+  width: 278px;
+  background-color: #e9f1fd;
+  border-radius: 10px;
+  padding: 12px;
+}
+
+.titleLoading{
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+}
+.titleSearchNo{
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

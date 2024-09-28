@@ -171,7 +171,7 @@ function Detail() {
                 </div>
               ))
             ) : (
-              <p>Chưa có bình luận nào</p>
+              <p className="titleNotice">Chưa có bình luận nào</p>
             )}
           </div>
 

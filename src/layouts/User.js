@@ -181,7 +181,7 @@ function User() {
                 </div>
                 <div className="listItemInfoAcp">
                   <FiCheckCircle />
-                  {item.approved ? "Đã được duyệt" : "Chưa duyệt"}
+                  {item.status}
                 </div>
                 <div className="star-rating">
                   {[1, 2, 3, 4, 5].map((star) => (
