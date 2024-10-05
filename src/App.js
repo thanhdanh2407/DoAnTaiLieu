@@ -16,13 +16,14 @@ import Footer from "./layouts/Footer";
 import Detail from "./layouts/Detail";
 import ListUser from "./layouts/ListUser";
 import DetailSearch from "./layouts/DetailSearch";
+import CategorySearch from "./layouts/CategorySearch";
+
 function App() {
   return (
     <Router>
       <div className="App">
         <Navigation />
         <Header />
-
         <Routes>
           <Route path="*" element={<Home />} />
           <Route path="/register" element={<Register />} />
@@ -40,6 +41,10 @@ function App() {
           <Route path="/documents/:id" element={<Detail />} />
           <Route path="/listuser" element={<ListUser />} />
           <Route path="/detailsearch" element={<DetailSearch />} />
+          <Route
+            path="/documents/category/:categoryName"
+            element={<CategorySearch />}
+          />
         </Routes>
         <Footer />
       </div>

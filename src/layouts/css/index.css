@@ -1336,3 +1336,73 @@
   align-items: center;
   justify-content: center;
 }
+
+
+/* CategorySearch.js */
+/* ============================================= */
+.containerCategory{
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+.titleCategory{
+  font-size: 23px;
+  font-weight: bold;
+  margin-top: 2%;
+}
+.itemCategoryListDocument{
+  margin-top: 1%;
+  align-items: center;
+  background-color: #f8f8f8;
+  width: 70%;
+  border-radius: 10px;
+  
+}
+
+.loadingCategory{
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.grid {
+  padding: 20px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); 
+  gap: 20px; 
+}
+
+.item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.imgAvatarCategory{
+  margin-bottom: 5%;
+}
+
+.avatarCategory{
+  width: 220px;
+  height: 220px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.itemCategorySearch{
+  background-color: #e9f1fd;
+  width: 90%;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.titleNameCategory{
+  font-weight: bold;
+}
+

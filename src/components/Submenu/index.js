@@ -1,19 +1,60 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom"; // Thay đổi từ useHistory thành useNavigate
 import "./index.css";
 
 function Submenu() {
+  const [categories, setCategories] = useState([]);
+  const navigate = useNavigate(); // Khởi tạo navigate
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:8080/api/admin/categories",
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Không thể lấy dữ liệu");
+        }
+
+        const data = await response.json();
+        setCategories(data); // Giả sử `data` là mảng các danh mục
+      } catch (error) {
+        console.error("Lỗi khi lấy danh mục:", error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  const handleCategoryClick = (categoryName) => {
+    console.log(`Navigating to category: ${categoryName}`); // Log tên danh mục
+    const encodedCategoryName = encodeURIComponent(categoryName);
+    navigate(`/documents/category/${encodedCategoryName}`);
+  };
+
   return (
-    // <div className="container">
     <div className="listItemMenu">
-      <div className="itemMenu">Java</div>
-      <div className="itemMenu">Python</div>
-      <div className="itemMenu">Hướng đối tượng</div>
-      <div className="itemMenu">Lập trình web</div>
-      <div className="itemMenu">C++</div>
-      <div className="itemMenu">Xác xuất thông kê</div>
-      <div className="itemMenu">Bảo mật thông tin</div>
+      {categories.length > 0 ? (
+        categories.map((category) => (
+          <div
+            key={category.id}
+            className="itemMenu"
+            onClick={() => handleCategoryClick(category.name)} // Thêm sự kiện click
+          >
+            {category.name}
+          </div>
+        ))
+      ) : (
+        <div className="itemMenu">Không có danh mục nào</div>
+      )}
     </div>
-    // </div>
   );
 }
 
