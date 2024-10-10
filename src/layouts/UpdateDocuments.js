@@ -14,16 +14,12 @@ function UpdateDocuments() {
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState("");
   const [pdfFiles, setPdfFiles] = useState([]);
-  const [existingPdfs, setExistingPdfs] = useState([]);
-  const [selectedCategories, setSelectedCategories] = useState([]);
-  const [categories, setCategories] = useState([]);
-
-  const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(null);
-
-  const pdfInputRef = useRef(null);
   const [pdfFileNames, setPdfFileNames] = useState([]);
-
+  const [categories, setCategories] = useState([]);
+  const [categoryId, setCategoryId] = useState(null); // Store selected category ID
+  const [existingPdfs, setExistingPdfs] = useState([]);
+  const [error, setError] = useState(null);
+  const pdfInputRef = useRef(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -57,14 +53,13 @@ function UpdateDocuments() {
           setAuthor(data.author);
           setPublisher(data.publisher);
           setPublishingYear(data.publishingYear);
-          setSelectedCategories(data.categoryIds || []);
+          setImagePreview(data.image);
 
-          if (data.imageUrl) {
-            setImagePreview(data.imageUrl);
-          }
+          // Set selected category ID
+          setCategoryId(data.categoryId); // Assuming your backend returns categoryId
 
-          if (data.pdfUrls) {
-            setExistingPdfs(data.pdfUrls);
+          if (data.pdfFiles) {
+            setExistingPdfs(data.pdfFiles);
           }
         } catch (err) {
           setError("Failed to fetch document details");
@@ -104,7 +99,7 @@ function UpdateDocuments() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!selectedCategories.length) {
+    if (!categoryId) {
       toast.error("Vui lòng chọn thể loại.");
       return;
     }
@@ -119,9 +114,9 @@ function UpdateDocuments() {
       formData.append("author", author);
       formData.append("publisher", publisher);
       formData.append("publishingYear", publishingYear);
+      formData.append("categoryId", categoryId); // Append the selected category ID
       if (image) formData.append("image", image);
       pdfFiles.forEach((file) => formData.append("pdfFiles", file));
-      selectedCategories.forEach((id) => formData.append("categoryIds", id));
 
       const response = await fetch(
         `http://localhost:8080/api/documents/${documentId}`,
@@ -141,7 +136,6 @@ function UpdateDocuments() {
         );
       }
 
-      const result = await response.json();
       toast.success("Chỉnh sửa tài liệu thành công!");
       setTimeout(() => {
         navigate("/user");
@@ -213,22 +207,15 @@ function UpdateDocuments() {
                 />
               </div>
               <div className="itemFormUpload">
-                <label className="titleLabel" htmlFor="categories">
-                  Hãy Chọn Lại Thể loại<span className="requiredStar">*</span>
+                <label className="titleLabel" htmlFor="categoryId">
+                  Hãy Chọn Thể loại<span className="requiredStar">*</span>
                 </label>
                 <select
-                  id="categories"
+                  id="categoryId"
                   className="inputItem"
-                  value={selectedCategories}
-                  onChange={(e) =>
-                    setSelectedCategories(
-                      Array.from(
-                        e.target.selectedOptions,
-                        (option) => option.value
-                      )
-                    )
-                  }
-                  // multiple
+                  value={categoryId || ""}
+                  onChange={(e) => setCategoryId(e.target.value)}
+                  required
                 >
                   <option value="">Chọn thể loại</option>
                   {categories.map((category) => (
@@ -263,23 +250,14 @@ function UpdateDocuments() {
                   </div>
                   <input
                     type="file"
-                    id="pdfInput"
-                    accept=".pdf"
+                    accept="application/pdf"
                     onChange={(e) => handlePdfUpload(e.target.files)}
                     ref={pdfInputRef}
-                    style={{ display: "none" }}
                     multiple
+                    className="fileInput"
                   />
-                  <button
-                    type="button"
-                    onClick={() => pdfInputRef.current.click()}
-                    className="uploadButton"
-                  >
-                    Chọn tệp PDF
-                  </button>
                 </div>
               </div>
-
               <div className="itemFormUpload">
                 <label className="titleLabel" htmlFor="publisher">
                   Nhà xuất bản
@@ -319,6 +297,7 @@ function UpdateDocuments() {
                   onChange={(e) => setDescription(e.target.value)}
                 />
               </div>
+              <ToastContainer />
             </div>
           </div>
           <div className="btnAcp">
@@ -328,13 +307,6 @@ function UpdateDocuments() {
           </div>
         </form>
       </div>
-      <ToastContainer
-        position="top-center"
-        autoClose={3000}
-        closeOnClick
-        className="custom-toast-container"
-        progressClassName="custom-progress"
-      />
     </div>
   );
 }
