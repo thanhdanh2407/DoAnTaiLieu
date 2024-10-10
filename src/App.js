@@ -17,6 +17,8 @@ import Detail from "./layouts/Detail";
 import ListUser from "./layouts/ListUser";
 import DetailSearch from "./layouts/DetailSearch";
 import CategorySearch from "./layouts/CategorySearch";
+import LiseDocumentCreate from "./layouts/LiseDocumentCreate";
+import ListDocumentVerified from "./layouts/ListDocumentVerified";
 
 function App() {
   return (
@@ -44,6 +46,11 @@ function App() {
           <Route
             path="/documents/category/:categoryName"
             element={<CategorySearch />}
+          />
+          <Route path="/listdocumentcreate" element={<LiseDocumentCreate />} />
+          <Route
+            path="/documents/user/:userId/verified"
+            element={<ListDocumentVerified />}
           />
         </Routes>
         <Footer />

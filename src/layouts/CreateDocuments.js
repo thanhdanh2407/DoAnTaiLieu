@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const CreateDocument = () => {
+  const { documentId } = useParams();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [author, setAuthor] = useState("");
@@ -13,16 +14,12 @@ const CreateDocument = () => {
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState("");
   const [pdfFiles, setPdfFiles] = useState([]);
-  const [selectedCategories, setSelectedCategories] = useState([]);
-  const [categories, setCategories] = useState([]);
-
-  const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(null);
-
-  const pdfInputRef = useRef(null);
-
   const [pdfFileNames, setPdfFileNames] = useState([]);
-
+  const [categories, setCategories] = useState([]);
+  const [categoryId, setCategoryId] = useState(null); // Store selected category ID
+  const [existingPdfs, setExistingPdfs] = useState([]);
+  const [error, setError] = useState(null);
+  const pdfInputRef = useRef(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -31,43 +28,20 @@ const CreateDocument = () => {
         const response = await fetch(
           "http://localhost:8080/api/admin/categories"
         );
-        if (!response.ok) {
-          throw new Error("Failed to fetch categories");
-        }
+        if (!response.ok) throw new Error("Failed to fetch categories");
         const data = await response.json();
         setCategories(data);
       } catch (err) {
         setError("Failed to fetch categories");
-        console.error(err);
       }
     };
-
     fetchCategories();
   }, []);
-
-  const handlePdfUpload = (files) => {
-    const fileArray = Array.from(files);
-    setPdfFiles(fileArray);
-    setPdfFileNames(fileArray.map((file) => file.name));
-  };
-
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    setImage(file);
-
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!selectedCategories.length) {
+    if (!categoryId) {
       toast.error("Vui lòng chọn thể loại.");
       return;
     }
@@ -78,9 +52,11 @@ const CreateDocument = () => {
     formData.append("author", author);
     formData.append("publisher", publisher);
     formData.append("publishingYear", publishingYear);
+    if (categoryId) formData.append("categoryId", categoryId); // Append the selected category ID
     if (image) formData.append("image", image);
-    pdfFiles.forEach((file) => formData.append("pdfFiles", file));
-    selectedCategories.forEach((id) => formData.append("categoryIds", id));
+    pdfFiles.forEach((file) => formData.append("pdfFiles", file)); // Adjust this if your backend expects a different key
+
+    console.log("Form Data before submission:", Array.from(formData.entries())); // Debugging line
 
     try {
       const token = localStorage.getItem("authToken");
@@ -91,7 +67,7 @@ const CreateDocument = () => {
       const response = await fetch("http://localhost:8080/api/documents", {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: ` ${token}`,
         },
         body: formData,
       });
@@ -105,13 +81,32 @@ const CreateDocument = () => {
 
       const result = await response.json();
       toast.success("Tạo tài liệu thành công!");
-      console.log(result);
+      console.log(result); // Log the result for verification
       setTimeout(() => {
         navigate("/user");
       }, 1000);
     } catch (err) {
       setError(`Failed to create document: ${err.message}`);
       console.error(err);
+      toast.error(`Failed to create document: ${err.message}`);
+    }
+  };
+
+  const handlePdfUpload = (files) => {
+    const fileArray = Array.from(files);
+    setPdfFiles((prevFiles) => [...prevFiles, ...fileArray]);
+    setPdfFileNames(fileArray.map((file) => file.name));
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    setImage(file);
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
     }
   };
 
@@ -149,18 +144,6 @@ const CreateDocument = () => {
                     className="fileInput"
                     onChange={handleImageChange}
                   />
-                  {/* {imagePreview && (
-                    <div className="uploadText">
-                      <img
-                        src={imagePreview}
-                        alt="Selected preview"
-                        style={{
-                          width: "340px",
-                          height: "auto",
-                        }}
-                      />
-                    </div>
-                  )} */}
                   {!image && <div className="uploadText">Tải ảnh lên</div>}
                 </div>
               </div>
@@ -195,22 +178,15 @@ const CreateDocument = () => {
                 />
               </div>
               <div className="itemFormUpload">
-                <label className="titleLabel" htmlFor="categories">
-                  Thể loại<span className="requiredStar">*</span>
+                <label className="titleLabel" htmlFor="categoryId">
+                  Hãy Chọn Thể loại<span className="requiredStar">*</span>
                 </label>
                 <select
-                  id="categories"
+                  id="categoryId"
                   className="inputItem"
-                  value={selectedCategories}
-                  onChange={(e) =>
-                    setSelectedCategories(
-                      Array.from(
-                        e.target.selectedOptions,
-                        (option) => option.value
-                      )
-                    )
-                  }
-                  // multiple
+                  value={categoryId || ""}
+                  onChange={(e) => setCategoryId(e.target.value)}
+                  required
                 >
                   <option value="">Chọn thể loại</option>
                   {categories.map((category) => (
@@ -251,13 +227,14 @@ const CreateDocument = () => {
                     style={{ display: "none" }}
                     multiple
                   />
-                  <button
-                    type="button"
-                    onClick={() => pdfInputRef.current.click()}
-                    className="uploadButton"
-                  >
-                    Chọn tệp PDF
-                  </button>
+                  <input
+                    type="file"
+                    accept="application/pdf"
+                    onChange={(e) => handlePdfUpload(e.target.files)}
+                    ref={pdfInputRef}
+                    multiple
+                    className="fileInput"
+                  />
                 </div>
               </div>
               <div className="itemFormUpload">
@@ -301,6 +278,7 @@ const CreateDocument = () => {
                   onChange={(e) => setDescription(e.target.value)}
                 />
               </div>
+              <ToastContainer />
             </div>
           </div>
           <div className="btnAcp">
@@ -309,13 +287,6 @@ const CreateDocument = () => {
             </Button>
           </div>
         </form>
-        <ToastContainer
-          position="top-center"
-          autoClose={3000}
-          closeOnClick
-          className="custom-toast-container"
-          progressClassName="custom-progress"
-        />
       </div>
     </div>
   );
