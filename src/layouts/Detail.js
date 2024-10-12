@@ -20,12 +20,12 @@ function Detail() {
   const [user, setUser] = useState(null);
   const [replyCommentId, setReplyCommentId] = useState(null); // State để lưu ID của bình luận đang được trả lời
   const [reply, setReply] = useState(""); // State để lưu nội dung trả lời
-
   const [editingCommentId, setEditingCommentId] = useState(null); // ID của bình luận đang được chỉnh sửa
   const [editedComment, setEditedComment] = useState(""); // Nội dung bình luận đang chỉnh sửa
-
   const [editingReplyId, setEditingReplyId] = useState(null); // ID của phản hồi đang được chỉnh sửa
   const [editedReply, setEditedReply] = useState(""); // Nội dung phản hồi đang chỉnh sửa
+  const [replyToReplyId, setReplyToReplyId] = useState(null);
+  const [replyToReply, setReplyToReply] = useState("");
 
   useEffect(() => {
     const fetchDocument = async () => {
@@ -37,8 +37,11 @@ function Detail() {
           throw new Error("Network response was not ok");
         }
         const data = await response.json();
+        const sortedComments = data.comments.sort(
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+        );
+        setComments(sortedComments);
         setDocument(data);
-        setComments(data.comments); // Lưu comments vào state
       } catch (error) {
         console.error("Failed to fetch document:", error);
       }
@@ -64,20 +67,20 @@ function Detail() {
 
     fetchDocument();
     fetchUserInfo();
-  }, [id, authToken]); // Thêm authToken vào dependency array
+  }, [id, authToken]);
 
   const handleCommentSubmit = async () => {
     if (!comment.trim()) return; // Không gửi bình luận trống
     try {
       const response = await fetch(
-        `http://localhost:8080/api/documents/${id}/comments`,
+        `http://localhost:8080/api/comments/${id}/add`, // Sử dụng ID tài liệu
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${authToken}`, // Sử dụng authToken
+            Authorization: `Bearer ${authToken}`,
           },
-          body: JSON.stringify({ body: comment }),
+          body: comment,
         }
       );
 
@@ -85,28 +88,27 @@ function Detail() {
         throw new Error("Failed to submit comment");
       }
 
-      setComment(""); // Reset bình luận
-      // Cập nhật lại danh sách bình luận sau khi gửi bình luận thành công
+      setComment("");
       const newComment = await response.json();
-      setComments([...comments, newComment]);
+      setComments((prevComments) => [newComment, ...prevComments]);
     } catch (error) {
       console.error("Error submitting comment:", error);
     }
   };
 
   const handleReplySubmit = async (commentId) => {
-    if (!reply.trim()) return; // Không gửi trả lời trống
+    if (!reply.trim()) return;
 
     try {
       const response = await fetch(
-        `http://localhost:8080/api/documents/${id}/comments/${commentId}/replies`,
+        `http://localhost:8080/api/comments/${id}/replies/${commentId}`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${authToken}`,
           },
-          body: JSON.stringify({ body: reply }),
+          body: reply,
         }
       );
 
@@ -117,20 +119,60 @@ function Detail() {
       setReply(""); // Reset nội dung trả lời
       setReplyCommentId(null); // Đóng textarea trả lời
       const newReply = await response.json();
-
-      // Cập nhật lại danh sách bình luận sau khi trả lời thành công
       setComments((prevComments) =>
         prevComments.map((comment) =>
           comment.id === commentId
-            ? {
-                ...comment,
-                replies: [...(comment.replies || []), newReply], // Thêm phản hồi mới vào mảng replies
-              }
+            ? { ...comment, replies: [...(comment.replies || []), newReply] }
             : comment
         )
       );
     } catch (error) {
       console.error("Error submitting reply:", error);
+    }
+  };
+
+  const handleReplyToReplySubmit = async (replyId, commentId) => {
+    if (!replyToReply.trim()) return;
+
+    try {
+      const response = await fetch(
+        `http://localhost:8080/api/comments/${id}/replies/${commentId}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${authToken}`,
+          },
+          body: replyToReply, // Đảm bảo body là JSON
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to submit reply to reply");
+      }
+
+      setReplyToReply("");
+      setReplyToReplyId(null);
+      const newReplyToReply = await response.json();
+      setComments((prevComments) =>
+        prevComments.map((comment) =>
+          comment.id === commentId
+            ? {
+                ...comment,
+                replies: comment.replies.map((reply) =>
+                  reply.id === replyId
+                    ? {
+                        ...reply,
+                        replies: [...(reply.replies || []), newReplyToReply],
+                      }
+                    : reply
+                ),
+              }
+            : comment
+        )
+      );
+    } catch (error) {
+      console.error("Error submitting reply to reply:", error);
     }
   };
 
@@ -141,7 +183,7 @@ function Detail() {
         {
           method: "DELETE",
           headers: {
-            Authorization: `${authToken}`, // Sử dụng authToken để xác thực
+            Authorization: `${authToken}`,
           },
         }
       );
@@ -343,9 +385,10 @@ function Detail() {
                     {replyCommentId === comment.id && (
                       <div className="replyBox">
                         <textarea
-                          className="inputReply"
+                          className="inputComment"
                           value={reply}
                           onChange={(e) => setReply(e.target.value)}
+                          placeholder="Nhập bình luận của bạn..."
                         />
                         <div
                           className="btnSend"
@@ -358,41 +401,99 @@ function Detail() {
 
                     {comment.replies && comment.replies.length > 0 && (
                       <div className="replies">
+                        <div className="titleRepComment">Trả lời bình luận</div>
                         {comment.replies.map((reply) => (
                           <div key={reply.id} className="itemReply">
-                            <div className="userReply">{reply.userName}</div>
-                            <div className="bodyReply">
-                              {editingReplyId === reply.id ? (
-                                <div>
+                            <div className="avatarComment">
+                              <img
+                                src={user.avatar}
+                                alt={user.fullname}
+                                className="imgAva"
+                              />
+                            </div>
+                            <div className="containerRepComment">
+                              <div className="userReply">{reply.userName}</div>
+                              <div className="bodyReply">
+                                {editingReplyId === reply.id ? (
+                                  <div>
+                                    <textarea
+                                      value={editedReply}
+                                      onChange={(e) =>
+                                        setEditedReply(e.target.value)
+                                      }
+                                      className="inputReply"
+                                    />
+                                    <div
+                                      className="btnSend"
+                                      onClick={() =>
+                                        handleEditReply(reply.id, comment.id)
+                                      }
+                                    >
+                                      <VscSend className="iconSend" />
+                                    </div>
+                                  </div>
+                                ) : (
+                                  <div className="repCommentReq">
+                                    {reply.content}
+                                  </div>
+                                )}
+                              </div>
+                              <span
+                                className="itemFixRep"
+                                onClick={() => setReplyToReplyId(reply.id)}
+                              >
+                                Trả lời
+                              </span>
+                              {replyToReplyId === reply.id && (
+                                <div className="replyToReplySection">
                                   <textarea
-                                    value={editedReply}
+                                    value={replyToReply}
                                     onChange={(e) =>
-                                      setEditedReply(e.target.value)
+                                      setReplyToReply(e.target.value)
                                     }
-                                    className="inputReply"
+                                    className="inputComment"
+                                    placeholder="Nhập trả lời của bạn..."
                                   />
                                   <div
                                     className="btnSend"
                                     onClick={() =>
-                                      handleEditReply(reply.id, comment.id)
+                                      handleReplyToReplySubmit(
+                                        reply.id,
+                                        comment.id
+                                      )
                                     }
                                   >
                                     <VscSend className="iconSend" />
                                   </div>
                                 </div>
-                              ) : (
-                                <div>{reply.content}</div>
+                              )}
+                              {reply.replies && reply.replies.length > 0 && (
+                                <div className="repliesToRepliesList">
+                                  {reply.replies.map((replyToReply) => (
+                                    <div
+                                      key={replyToReply.id}
+                                      className="itemReplyToReply"
+                                    >
+                                      <div className="avatarComment">
+                                        <img
+                                          src={user?.avatar || avatarComment}
+                                          alt="avatar"
+                                          className="imgAva"
+                                        />
+                                      </div>
+                                      <div className="containerCommentBody">
+                                        <div className="userComment">
+                                          {replyToReply.userName}
+                                        </div>
+                                        <div className="bodyCommentRepToRep">
+                                          {replyToReply.content}
+                                        </div>
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
                               )}
                             </div>
-                            <span
-                              className="itemFix"
-                              onClick={() => {
-                                setEditingReplyId(reply.id);
-                                setEditedReply(reply.content);
-                              }}
-                            >
-                              Chỉnh sửa
-                            </span>
                           </div>
                         ))}
                       </div>
