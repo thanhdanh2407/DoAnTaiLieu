@@ -1,50 +1,145 @@
 .containerNavBar {
   display: flex;
   flex-direction: column;
-  /* align-items: flex-start; Căn lề bên trái cho tất cả các phần tử */
-  transition: width 0.3s ease; /* Thêm hiệu ứng chuyển tiếp cho chiều rộng */
-  background-color: aqua;
+  align-items: center;
+  transition: width 0.3s ease; 
+  background-color: #101933;
 }
 
 .containerNavBar.expanded {
-  width: 200px; /* Chiều rộng khi mở rộng (có thể điều chỉnh) */
-  height: 900px;
+  width: 300px; 
+  height: 950px;
 }
 
 .containerNavBar.collapsed {
-  width: 100px; /* Chiều rộng khi thu nhỏ (có thể điều chỉnh) */
-  height: 900px;
+  width: 55px; 
+  height: 950px;
 }
 
 .navbar {
-  display: flex; /* Sử dụng flexbox để xếp hàng */
-  align-items: center; /* Căn giữa nội dung theo chiều dọc */
-  overflow: hidden; /* Ẩn nội dung ngoài phạm vi nếu có */
-  transition: height 0.3s ease; /* Thêm hiệu ứng chuyển tiếp cho chiều cao */
+  display: flex; 
+  align-items: center; 
+  overflow: hidden; 
+  transition: height 0.3s ease; 
   justify-content: center;
 }
 
 .navbar-content {
-  display: flex; /* Sử dụng flexbox để xếp hàng */
-  flex-direction: column; /* Đặt icon và văn bản theo cột */
-  align-items: flex-start; /* Căn trái cho icon và văn bản */
-}
-
-.navbar-content div {
-  display: flex; /* Đặt icon và chữ theo hàng ngang */
-  align-items: center; /* Căn giữa icon và chữ theo chiều dọc */
-  margin: 5px 5px; /* Thêm khoảng cách giữa các mục */
+  display: flex; 
+  flex-direction: column; 
+  align-items: center;
+  margin: 5px 5px;
   font-size: 20px;
 }
 
+
+
 .navbar span {
-  margin-left: 8px; /* Khoảng cách giữa icon và chữ */
+  margin-left: 8px; 
 }
 
 button {
-  margin-top: 10px; /* Thêm khoảng cách trên nút */
-  cursor: pointer; /* Thay đổi con trỏ khi hover vào nút */
+  margin-top: 10px; 
+  cursor: pointer; 
 }
-.itemAdmin {
-  margin-left: 10px;
+
+.itemAdmin.expanded {
+  display: flex;
+  align-items: center;
+  border-radius: 10px;
+  padding: 10px;
+  width: 290px;
+  height: 50px;
+  cursor: pointer;
+  margin-top: 6px;
+  color: white;
 }
+
+.itemAdmin.expanded:hover {
+  display: flex;
+  padding: 10px;
+  align-items: center;
+  background-color: rgb(21, 61, 243);
+  border-radius: 10px;
+  width: 290px;
+  height: 50px;
+  cursor: pointer;
+  margin-top: 6px;
+  color: white;
+}
+
+.itemAdmin.collapsed {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+  border-radius: 10px;
+  padding: 10px;
+  cursor: pointer;
+  color: white;
+}
+
+.itemAdmin.collapsed:hover {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+  background-color: rgb(21, 61, 243);
+  border-radius: 10px;
+  padding: 10px;
+  cursor: pointer;
+  color: white;
+}
+
+
+.btnLeftRight.expanded{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+  cursor: pointer;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  width: 200px;
+  height: 30px;
+}
+
+.btnLeftRight.collapsed{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  cursor: pointer;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  height: 30px;
+}
+
+.dropdown {
+  display: flex;
+  flex-direction: column;
+  margin-left: 20px;
+}
+
+.dropdown-item {
+  color: white;
+  margin-left: 17px;
+  margin-top: 1px;
+  display: flex;
+  width: 250px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.dropdown-item:hover {
+  background-color: rgb(21, 61, 243);
+}
+
+
+.titleAdminManege{
+  display: flex;
+}
+
+.iconDownUp{
+  margin-left: 55px;
+}
+

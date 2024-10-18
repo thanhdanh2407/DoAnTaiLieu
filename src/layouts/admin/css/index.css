@@ -3,12 +3,122 @@
   width: 100%;
 }
 
-.titleAdmin {
+.rightHomeAdmin {
+  width: 100%;
+  background-color: #e6e6e6;
+}
+
+
+.containerHeaderAdmin {
   display: flex;
   background: aliceblue;
   justify-content: flex-end;
+  height: 70px;
+  align-items: center;
 }
 
-.rightHomeAdmin {
+
+.avatarAdmin{
+  margin-right: 1%;
+  margin-top: 10px;
+}
+
+.avatar{
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+
+.fullNameAdmin{
+  margin-right: 5%;
+  font-weight: bold;
+  font-size: 17px;
+}
+
+.containerInfoDocument{
+  padding: 10px;
+}
+
+.containerSearchAdmin{
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  height: 50px;
+  border-radius: 10px;
+  background-color: #f8f8f8;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  justify-content: space-between;
+}
+.titleInfoAdmin{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 10px;
+  font-weight: bold;
+  font-size: 17px;
+}
+
+.iconUser{
+  margin-right: 10px;
+}
+
+.searchDocumentAdmin{
+  position: relative;
+  max-width: 400px;
+}
+
+.inputSearchAdmin{
+  font-size: 17px;
+    border: 1px solid #ccc;
+    border-radius: 7px;
+    height: 30px;
+    color: black;
+    padding-right: 38px;
+    padding-left: 5px;
+    outline: none;
+    box-shadow: none;
+    transition: border-color 0.3s, background-color 0.3s;
+}
+
+
+
+
+.infoDocumentAdmin {
+  margin-top: 20px;
+  background-color: #ccc;
+}
+
+.documentTable {
   width: 100%;
+  border-collapse: collapse;
+}
+
+.documentTable th,
+.documentTable td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center; /* Căn giữa nội dung */
+}
+
+.documentTable th {
+  background-color: #f2f2f2;
+}
+
+.userImage {
+  width: 50px; /* Kích thước hình ảnh */
+  height: 50px; /* Kích thước hình ảnh */
+  border-radius: 50%; /* Làm hình ảnh thành hình tròn */
+}
+
+.btnLock {
+  background-color: #ff4d4d;
+  border: none;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btnLock:hover {
+  background-color: #e60000; /* Màu khi hover */
 }
