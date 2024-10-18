@@ -25,9 +25,7 @@ function UpdateDocuments() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await fetch(
-          "http://localhost:8080/api/admin/categories"
-        );
+        const response = await fetch("http://localhost:8080/api/category");
         if (!response.ok) throw new Error("Failed to fetch categories");
         const data = await response.json();
         setCategories(data);

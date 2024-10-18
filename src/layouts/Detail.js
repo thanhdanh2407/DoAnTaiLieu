@@ -278,6 +278,19 @@ function Detail() {
     }
   };
 
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault(); // Ngăn xuống dòng
+      if (replyCommentId) {
+        // Nếu có replyCommentId, nghĩa là đang trả lời bình luận
+        handleReplySubmit();
+      } else {
+        // Nếu không có, nghĩa là đang viết bình luận mới
+        handleCommentSubmit();
+      }
+    }
+  };
+
   if (!document) return <p>Loading...</p>;
 
   return (
@@ -346,6 +359,7 @@ function Detail() {
                             value={editedComment}
                             onChange={(e) => setEditedComment(e.target.value)}
                             className="inputComment"
+                            onKeyDown={handleKeyPress}
                           />
                           <div
                             className="btnSend"
@@ -389,6 +403,7 @@ function Detail() {
                           value={reply}
                           onChange={(e) => setReply(e.target.value)}
                           placeholder="Nhập bình luận của bạn..."
+                          onKeyDown={handleKeyPress}
                         />
                         <div
                           className="btnSend"
@@ -422,6 +437,7 @@ function Detail() {
                                         setEditedReply(e.target.value)
                                       }
                                       className="inputReply"
+                                      onKeyDown={handleKeyPress}
                                     />
                                     <div
                                       className="btnSend"
@@ -448,6 +464,7 @@ function Detail() {
                                 <div className="replyToReplySection">
                                   <textarea
                                     value={replyToReply}
+                                    onKeyDown={handleKeyPress}
                                     onChange={(e) =>
                                       setReplyToReply(e.target.value)
                                     }
@@ -523,6 +540,7 @@ function Detail() {
                   type="text"
                   value={comment}
                   onChange={(e) => setComment(e.target.value)}
+                  onKeyDown={handleKeyPress}
                 />
                 <div className="btnSend" onClick={handleCommentSubmit}>
                   <VscSend className="iconSend" />

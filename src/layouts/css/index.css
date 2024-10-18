@@ -1214,7 +1214,8 @@
   font-size: 23px;
 }
 .iconSend {
-  color: #a39f9f;
+  color: #1890ff;
+  cursor: pointer;
 }
 
 .itemFix,
