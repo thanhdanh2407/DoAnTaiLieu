@@ -1,0 +1,14 @@
+.containerHomeAdmin {
+  display: flex;
+  width: 100%;
+}
+
+.titleAdmin {
+  display: flex;
+  background: aliceblue;
+  justify-content: flex-end;
+}
+
+.rightHomeAdmin {
+  width: 100%;
+}

@@ -75,6 +75,23 @@ function Register() {
       return;
     }
 
+    if (role === "STUDENT" || role === "TEACHER") {
+      const identifierPattern = /^(SV|GV)\d{6}$/; // Must start with SV or GV followed by 6 digits
+      if (!identifierPattern.test(identifier)) {
+        toast.error(
+          "Mã số SV/GV phải bắt đầu bằng 'SV' hoặc 'GV' và theo sau là 6 chữ số",
+          {
+            position: "top-center",
+            autoClose: 3000,
+            closeOnClick: true,
+            className: "custom-toast",
+            progressClassName: "custom-progress",
+          }
+        );
+        return;
+      }
+    }
+
     const formData = new FormData();
     formData.append("email", email);
     formData.append("password", password);

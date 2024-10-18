@@ -1,0 +1,50 @@
+.containerNavBar {
+  display: flex;
+  flex-direction: column;
+  /* align-items: flex-start; Căn lề bên trái cho tất cả các phần tử */
+  transition: width 0.3s ease; /* Thêm hiệu ứng chuyển tiếp cho chiều rộng */
+  background-color: aqua;
+}
+
+.containerNavBar.expanded {
+  width: 200px; /* Chiều rộng khi mở rộng (có thể điều chỉnh) */
+  height: 900px;
+}
+
+.containerNavBar.collapsed {
+  width: 100px; /* Chiều rộng khi thu nhỏ (có thể điều chỉnh) */
+  height: 900px;
+}
+
+.navbar {
+  display: flex; /* Sử dụng flexbox để xếp hàng */
+  align-items: center; /* Căn giữa nội dung theo chiều dọc */
+  overflow: hidden; /* Ẩn nội dung ngoài phạm vi nếu có */
+  transition: height 0.3s ease; /* Thêm hiệu ứng chuyển tiếp cho chiều cao */
+  justify-content: center;
+}
+
+.navbar-content {
+  display: flex; /* Sử dụng flexbox để xếp hàng */
+  flex-direction: column; /* Đặt icon và văn bản theo cột */
+  align-items: flex-start; /* Căn trái cho icon và văn bản */
+}
+
+.navbar-content div {
+  display: flex; /* Đặt icon và chữ theo hàng ngang */
+  align-items: center; /* Căn giữa icon và chữ theo chiều dọc */
+  margin: 5px 5px; /* Thêm khoảng cách giữa các mục */
+  font-size: 20px;
+}
+
+.navbar span {
+  margin-left: 8px; /* Khoảng cách giữa icon và chữ */
+}
+
+button {
+  margin-top: 10px; /* Thêm khoảng cách trên nút */
+  cursor: pointer; /* Thay đổi con trỏ khi hover vào nút */
+}
+.itemAdmin {
+  margin-left: 10px;
+}
