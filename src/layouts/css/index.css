@@ -1015,6 +1015,53 @@
   margin-left: 3px;
 }
 
+.containerSub{
+  display: flex;
+  justify-content: space-between;
+}
+
+.subscribeContainer{
+  margin-left: 530px;
+}
+
+.subscribeInput {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 7px;
+  margin-top: 10px;
+  font-size: 17px;
+  display: flex;
+  align-items: center;
+}
+
+.subscribeInput:focus {
+  border-color: #ccc;
+  outline: none;
+  box-shadow: none;
+}
+
+.subscribeButton{
+  width: 120px;
+  padding: 7px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-weight: bold;
+}
+
+.unsubscribeButton{
+  font-weight: bold;
+  margin-left: 10px;
+  width: 120px;
+  padding: 7px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+}
+
+.logoSub{
+  width: 200px;
+}
+
 /* About.js */
 /* ========================================= */
 .containerAbout {
