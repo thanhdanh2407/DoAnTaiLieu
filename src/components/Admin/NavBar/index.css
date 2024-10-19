@@ -8,12 +8,12 @@
 
 .containerNavBar.expanded {
   width: 300px; 
-  height: 950px;
+  height: 1093px;
 }
 
 .containerNavBar.collapsed {
   width: 55px; 
-  height: 950px;
+  height: 1093px;
 }
 
 .navbar {
@@ -141,5 +141,6 @@ button {
 
 .iconDownUp{
   margin-left: 55px;
+  margin-top: 3px;
 }
 

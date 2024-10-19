@@ -15,15 +15,15 @@
 //   const navigate = useNavigate();
 
 //   useEffect(() => {
-//     // Fetch data from the API
-//     fetch("http://localhost:8080/api/documents")
+//     // Fetch data from the new API endpoint
+//     fetch("http://localhost:8080/api/documents/top-100-most-viewed")
 //       .then((response) => response.json())
 //       .then((data) => {
 //         // Assuming each document has a 'views' field
 //         // Sort by views and get the top 5
 //         const topViewedItems = data
 //           .sort((a, b) => b.views - a.views) // Sort by views descending
-//           .slice(0, 5); // Get top 5 items
+//           .slice(0, 50); // Get top 5 items
 //         setItems(topViewedItems);
 //       })
 //       .catch((error) => console.error("Error fetching data:", error));
@@ -32,6 +32,7 @@
 //   const handleItemClick = (id) => {
 //     navigate(`/documents/${id}`);
 //   };
+
 //   return (
 //     <div className="banner-container">
 //       <Carousel
@@ -112,18 +113,37 @@ const Slider = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Fetch data from the new API endpoint
-    fetch("http://localhost:8080/api/documents/top-100-most-viewed")
-      .then((response) => response.json())
-      .then((data) => {
-        // Assuming each document has a 'views' field
-        // Sort by views and get the top 5
+    // Fetch data from the new API endpoint with authToken
+    const fetchDocuments = async () => {
+      try {
+        const authToken = localStorage.getItem("authToken"); // Get authToken from localStorage
+
+        const response = await fetch(
+          "http://localhost:8080/api/documents/top-10-most-viewed",
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${authToken}`, // Add the auth token to the request
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+
+        const data = await response.json();
+        // Sort by views and get the top 10 items
         const topViewedItems = data
           .sort((a, b) => b.views - a.views) // Sort by views descending
-          .slice(0, 50); // Get top 5 items
+          .slice(0, 10); // Get top 10 items
         setItems(topViewedItems);
-      })
-      .catch((error) => console.error("Error fetching data:", error));
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchDocuments();
   }, []);
 
   const handleItemClick = (id) => {

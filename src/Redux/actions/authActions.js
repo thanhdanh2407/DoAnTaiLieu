@@ -40,6 +40,38 @@ export const login = (email, password) => async (dispatch) => {
   }
 };
 
+// export const fetchUserInfo = () => async (dispatch) => {
+//   try {
+//     const token = localStorage.getItem("authToken");
+//     if (!token) throw new Error("No authentication token found.");
+
+//     const response = await fetch(`http://localhost:8080/api/user/me`, {
+//       method: "GET",
+//       headers: {
+//         Authorization: `Bearer ${token}`,
+//         "Content-Type": "application/json",
+//       },
+//     });
+
+//     if (!response.ok) {
+//       throw new Error("Failed to fetch user information");
+//     }
+
+//     const userData = await response.json();
+//     console.log("Fetched User Data:", userData); // Debug the API response
+//     dispatch({
+//       type: "LOGIN_SUCCESS",
+//       payload: userData,
+//     });
+//     localStorage.setItem("user", JSON.stringify(userData));
+//   } catch (error) {
+//     dispatch({
+//       type: "LOGIN_FAILURE",
+//       payload: error.message,
+//     });
+//   }
+// };
+
 export const fetchUserInfo = () => async (dispatch) => {
   try {
     const token = localStorage.getItem("authToken");
@@ -58,12 +90,15 @@ export const fetchUserInfo = () => async (dispatch) => {
     }
 
     const userData = await response.json();
-    console.log("Fetched User Data:", userData); // Debug the API response
+    console.log("Fetched User Data:", userData); // Log user data
     dispatch({
       type: "LOGIN_SUCCESS",
       payload: userData,
     });
-    localStorage.setItem("user", JSON.stringify(userData));
+
+    // Kiểm tra trước khi lưu
+    console.log("Saving to localStorage:", userData);
+    localStorage.setItem("user", JSON.stringify(userData)); // Lưu thông tin người dùng vào localStorage
   } catch (error) {
     dispatch({
       type: "LOGIN_FAILURE",

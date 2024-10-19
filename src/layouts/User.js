@@ -154,8 +154,22 @@ function User() {
           </div>
         </div>
       </div>
-
       <div className="titleDocument">Tài liệu của tôi</div>
+      <div className="containerBtnAction">
+        <div className="btnAction">
+          <Button className="btnAll">Tất cả</Button>
+        </div>
+        <div>
+          <Button className="btnVerified">Tài liệu đã duyệt</Button>
+        </div>
+        <div>
+          <Button className="btnCreate">Tài liệu chưa duyệt</Button>
+        </div>
+        <div>
+          <Button className="btnRefuse">Từ chối</Button>
+        </div>
+      </div>
+
       <div className="height">
         <div className="containerList">
           {currentItems.map((item, index) => (
