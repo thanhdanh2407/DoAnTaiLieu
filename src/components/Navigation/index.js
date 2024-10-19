@@ -5,7 +5,9 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../Redux/actions/authActions";
 import "../Navigation/index.css";
-import { IoLogOutOutline } from "react-icons/io5";
+import { RiLogoutCircleRFill } from "react-icons/ri";
+import { FaUser } from "react-icons/fa";
+import { MdAdminPanelSettings } from "react-icons/md";
 import defaultAvatar from "../../assets/iconAva.png";
 
 function Navigation() {
@@ -14,10 +16,11 @@ function Navigation() {
   const dispatch = useDispatch();
   const { isAuthenticated, user } = useSelector((state) => state.auth);
   const [searchTerm, setSearchTerm] = React.useState("");
+  const [dropdownOpen, setDropdownOpen] = React.useState(false); // State to manage dropdown visibility
 
   const handleLogout = () => {
     dispatch(logout());
-    navigate("/home");
+    navigate("/");
   };
 
   const handleSearch = () => {
@@ -34,15 +37,17 @@ function Navigation() {
     }
   };
 
-  // Kiểm tra xem trang hiện tại có phải là trang tìm kiếm không
   const isSearchPage = location.pathname.includes("/detailsearch");
 
-  // Reset searchTerm khi chuyển đến trang tìm kiếm
   useEffect(() => {
     if (isSearchPage) {
-      setSearchTerm(""); // Đặt lại giá trị tìm kiếm thành rỗng
+      setSearchTerm("");
     }
   }, [isSearchPage]);
+
+  const toggleDropdown = () => {
+    setDropdownOpen((prev) => !prev);
+  };
 
   return (
     <div className="containerNav">
@@ -50,9 +55,9 @@ function Navigation() {
         src={logo}
         alt="logo"
         className="imgLogo"
-        onClick={() => navigate("/home")}
+        onClick={() => navigate("/")}
       />
-      <div className="containerItem" onClick={() => navigate("/home")}>
+      <div className="containerItem" onClick={() => navigate("/listDocument")}>
         Tài liệu
       </div>
       <div
@@ -75,10 +80,10 @@ function Navigation() {
           value={searchTerm}
           onKeyDown={handleKeyDown}
           onChange={(e) => setSearchTerm(e.target.value)}
-          disabled={isSearchPage} // Vô hiệu hóa ô tìm kiếm nếu đang ở trang tìm kiếm
+          disabled={isSearchPage}
           style={{
-            opacity: isSearchPage ? 0.5 : 1, // Làm mờ ô tìm kiếm
-            cursor: isSearchPage ? "not-allowed" : "text", // Thay đổi con trỏ
+            opacity: isSearchPage ? 0.5 : 1,
+            cursor: isSearchPage ? "not-allowed" : "text",
           }}
         />
         <FaSearch
@@ -88,7 +93,7 @@ function Navigation() {
         />
       </div>
       {isAuthenticated ? (
-        <div className="userSection">
+        <div className="userSection" onClick={toggleDropdown} tabIndex={0}>
           <img
             src={user?.avatar || defaultAvatar}
             alt="avatar"
@@ -98,10 +103,33 @@ function Navigation() {
             }}
           />
           <span className="userName">{user.fullname || "User"}</span>
-          <div className="logoutContainer" onClick={handleLogout}>
-            <IoLogOutOutline className="logoutIcon" />
-            <span className="logoutText">Đăng xuất</span>
-          </div>
+          {dropdownOpen && (
+            <div className="dropdownMenu">
+              <div className="dropdownItem" onClick={() => navigate("/user")}>
+                <div className="itemDropdown">
+                  <FaUser className="iconUser" />
+                  <span className="ml">Hồ sơ của tôi</span>
+                </div>
+              </div>
+              {user.role === "ADMIN" && (
+                <div
+                  className="dropdownItem"
+                  onClick={() => navigate("/admin")}
+                >
+                  <div className="itemDropdown">
+                    <MdAdminPanelSettings className="iconAdminManage" />
+                    <span className="ml">Quản lí ADMIN</span>
+                  </div>
+                </div>
+              )}
+              <div className="dropdownItem" onClick={handleLogout}>
+                <div className="itemDropdown">
+                  <RiLogoutCircleRFill className="iconLogout" />
+                  <span className="ml">Đăng xuất</span>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       ) : (
         <>

@@ -252,7 +252,7 @@ function UpdateDocuments() {
                     onChange={(e) => handlePdfUpload(e.target.files)}
                     ref={pdfInputRef}
                     multiple
-                    className="fileInput"
+                    className="fileInputUpdate"
                   />
                 </div>
               </div>

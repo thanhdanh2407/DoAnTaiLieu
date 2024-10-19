@@ -103,9 +103,9 @@ const Footer = () => {
           <Button onClick={handleSubscribe} className="subscribeButton">
             Đăng ký
           </Button>
-          <Button onClick={handleUnsubscribe} className="unsubscribeButton">
+          {/* <Button onClick={handleUnsubscribe} className="unsubscribeButton">
             Hủy đăng ký
-          </Button>
+          </Button> */}
         </div>
       </div>
 

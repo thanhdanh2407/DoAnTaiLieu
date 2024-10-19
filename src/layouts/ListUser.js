@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import ReactPaginate from "react-paginate";
 
 function ListUser() {
   const [users, setUsers] = useState([]);
   const [error, setError] = useState(null);
-  const navigate = useNavigate(); // Hook for navigation
+  const [currentPage, setCurrentPage] = useState(0);
+  const usersPerPage = 10;
+  const navigate = useNavigate();
 
-  // Kiểm tra token JWT để xác nhận người dùng đã đăng nhập
   useEffect(() => {
     const authToken = localStorage.getItem("authToken");
     if (!authToken) {
-      // Nếu không có token, điều hướng về trang đăng nhập
       navigate("/login");
     }
 
@@ -20,13 +21,12 @@ function ListUser() {
           "http://localhost:8080/api/user/by-document-count",
           {
             headers: {
-              Authorization: `Bearer ${authToken}`, // Gửi token trong header
+              Authorization: `Bearer ${authToken}`,
             },
           }
         );
         if (!response.ok) throw new Error("Failed to fetch users");
         const data = await response.json();
-        console.log("Fetched users:", data); // Log dữ liệu người dùng
         setUsers(data);
       } catch (err) {
         setError(err.message);
@@ -37,47 +37,55 @@ function ListUser() {
   }, [navigate]);
 
   const handleUserClick = (userId) => {
-    console.log("Clicked userId:", userId); // Log để kiểm tra userId
-    if (userId) {
-      navigate(`/documents/user/${userId}/verified`); // Điều hướng khi có userId hợp lệ
-    } else {
-      console.error("User ID is undefined or null");
-    }
+    navigate(`/documents/user/${userId}/verified`);
   };
+
+  const handlePageClick = ({ selected }) => {
+    setCurrentPage(selected);
+  };
+
+  const offset = currentPage * usersPerPage;
+  const currentUsers = users.slice(offset, offset + usersPerPage);
+  const pageCount = Math.ceil(users.length / usersPerPage);
 
   return (
     <div className="containerListUser">
       <div className="titleListUser">Danh sách người dùng đăng bài</div>
-      <div>
-        {error && <div className="error">{error}</div>}
-        {users.map((user) => {
-          console.log("User object:", user); // Log full user object
-          console.log("User ID:", user.userId); // Log user.userId explicitly
-          return (
-            <div
-              className="listUser"
-              key={user.userId} // Use user.userId here
-              onClick={() => {
-                console.log("Clicked userId:", user.userId); // Log userId directly on click
-                handleUserClick(user.userId); // Pass user.userId here
-              }}
-            >
-              <div className="titleFullNameUser">
-                <span className="titleDocumentUser">Tên người dùng: </span>{" "}
-                {user.fullname}
-              </div>
-              <div className="countDocumentUser">
-                <span className="titleDocumentUser">Tổng tài liệu: </span>{" "}
-                {user.documentCount}
-              </div>
-              <div className="totalView">
-                <span className="titleDocumentUser">Tổng lượt xem: </span>{" "}
-                {user.totalViews}
-              </div>
-            </div>
-          );
-        })}
+      {error && <div className="error">{error}</div>}
+      <div className="userTable">
+        <div className="userTableHeader">
+          <div className="userTableCell">STT</div>
+          <div className="userTableCell">Tên người dùng</div>
+          <div className="userTableCell">Tổng tài liệu</div>
+          <div className="userTableCell">Tổng lượt xem</div>
+        </div>
+        {currentUsers.map((user, index) => (
+          <div
+            key={user.userId}
+            className="userTableRow"
+            onClick={() => handleUserClick(user.userId)}
+          >
+            <div className="userTableCell">{offset + index + 1}</div>
+            <div className="userTableCell">{user.fullname}</div>
+            <div className="userTableCell">{user.documentCount}</div>
+            <div className="userTableCell">{user.totalViews}</div>
+          </div>
+        ))}
       </div>
+
+      {pageCount > 1 && (
+        <ReactPaginate
+          previousLabel={"←"}
+          nextLabel={"→"}
+          breakLabel={"..."}
+          pageCount={pageCount}
+          marginPagesDisplayed={2}
+          pageRangeDisplayed={5}
+          onPageChange={handlePageClick}
+          containerClassName={"pagination"}
+          activeClassName={"active"}
+        />
+      )}
     </div>
   );
 }

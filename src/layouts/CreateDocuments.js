@@ -231,7 +231,7 @@ const CreateDocument = () => {
                     onChange={(e) => handlePdfUpload(e.target.files)}
                     ref={pdfInputRef}
                     multiple
-                    className="fileInput"
+                    className="fileInputCreate"
                   />
                 </div>
               </div>
