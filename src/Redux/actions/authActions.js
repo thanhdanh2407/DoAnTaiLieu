@@ -15,6 +15,31 @@ export const loginFailure = (error) => ({
   payload: error,
 });
 
+// export const login = (email, password) => async (dispatch) => {
+//   dispatch({ type: "LOGIN_REQUEST" });
+//   try {
+//     const response = await fetch("http://localhost:8080/api/auth/login", {
+//       method: "POST",
+//       headers: {
+//         "Content-Type": "application/json",
+//       },
+//       body: JSON.stringify({ email, password }),
+//     });
+
+//     if (!response.ok) {
+//       const errorData = await response.json();
+//       throw new Error(errorData.message || "Invalid email or password");
+//     }
+
+//     const token = await response.text();
+//     localStorage.setItem("authToken", token);
+
+//     dispatch(fetchUserInfo(token));
+//   } catch (error) {
+//     dispatch(loginFailure(error.message));
+//   }
+// };
+
 export const login = (email, password) => async (dispatch) => {
   dispatch({ type: "LOGIN_REQUEST" });
   try {
@@ -34,43 +59,32 @@ export const login = (email, password) => async (dispatch) => {
     const token = await response.text();
     localStorage.setItem("authToken", token);
 
+    // Lấy thông tin người dùng
+    const userInfoResponse = await fetch("http://localhost:8080/api/user/me", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!userInfoResponse.ok) {
+      throw new Error("Unable to fetch user info");
+    }
+
+    const userInfo = await userInfoResponse.json();
+    localStorage.setItem("user", JSON.stringify(userInfo)); // Lưu thông tin người dùng vào localStorage
+
+    // Kiểm tra trạng thái tài khoản
+    if (!userInfo.enabled) {
+      localStorage.removeItem("authToken");
+      localStorage.removeItem("user");
+      throw new Error("Account is locked"); // Ghi chú: sẽ bị xử lý trong phần catch
+    }
+
     dispatch(fetchUserInfo(token));
   } catch (error) {
     dispatch(loginFailure(error.message));
   }
 };
-
-// export const fetchUserInfo = () => async (dispatch) => {
-//   try {
-//     const token = localStorage.getItem("authToken");
-//     if (!token) throw new Error("No authentication token found.");
-
-//     const response = await fetch(`http://localhost:8080/api/user/me`, {
-//       method: "GET",
-//       headers: {
-//         Authorization: `Bearer ${token}`,
-//         "Content-Type": "application/json",
-//       },
-//     });
-
-//     if (!response.ok) {
-//       throw new Error("Failed to fetch user information");
-//     }
-
-//     const userData = await response.json();
-//     console.log("Fetched User Data:", userData); // Debug the API response
-//     dispatch({
-//       type: "LOGIN_SUCCESS",
-//       payload: userData,
-//     });
-//     localStorage.setItem("user", JSON.stringify(userData));
-//   } catch (error) {
-//     dispatch({
-//       type: "LOGIN_FAILURE",
-//       payload: error.message,
-//     });
-//   }
-// };
 
 export const fetchUserInfo = () => async (dispatch) => {
   try {
@@ -90,15 +104,12 @@ export const fetchUserInfo = () => async (dispatch) => {
     }
 
     const userData = await response.json();
-    console.log("Fetched User Data:", userData); // Log user data
+    console.log("Fetched User Data:", userData); // Debug the API response
     dispatch({
       type: "LOGIN_SUCCESS",
       payload: userData,
     });
-
-    // Kiểm tra trước khi lưu
-    console.log("Saving to localStorage:", userData);
-    localStorage.setItem("user", JSON.stringify(userData)); // Lưu thông tin người dùng vào localStorage
+    localStorage.setItem("user", JSON.stringify(userData));
   } catch (error) {
     dispatch({
       type: "LOGIN_FAILURE",

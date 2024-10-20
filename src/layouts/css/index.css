@@ -905,7 +905,7 @@
   border: 1px solid #ccc;
   border-radius: 10px;
   height: 40px;
-  width: 100px;
+  width: 135px;
 }
 
 .btnRefuse:hover{
@@ -915,7 +915,7 @@
   border: 1px solid #ccc;
   border-radius: 10px;
   height: 40px;
-  width: 100px;
+  width: 135px;
   color: white;
 }
 
@@ -961,12 +961,7 @@
   margin-top: 2%;
 }
 
-.filterContainer {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 20px;
-  margin-right: 53%;
-}
+
 
 .filter {
   background-color: #f9f9f9;
@@ -1003,21 +998,6 @@
   width: 100px;
 }
 
-.buttonSort {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 8px;
-  width: 160px;
-  height: 35px;
-  border: 1px solid #ccc;
-  margin-right: 7px;
-}
-.titleSort {
-  font-size: 20px;
-  font-weight: bold;
-  margin-right: 75.5%;
-}
 .titleButtonIcon {
   margin-left: 8px;
 }
@@ -1559,6 +1539,8 @@
   justify-content: center;
 }
 
+
+
 /* CategorySearch.js */
 /* ============================================= */
 .containerCategory {
@@ -1636,10 +1618,15 @@
 }
 
 .titleListUser {
+  margin-top: 15px;
   font-size: 24px;
   font-weight: bold;
   margin-bottom: 20px;
   text-align: center;
+  background-color: #ececec;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
 }
 
 .userTable {
@@ -1761,7 +1748,7 @@
   background-color: #f9f9f9;
   border-radius: 10px;
   width: 283px;
-  height: 450px;
+  height: 483px;
 }
 
 .imgDocumentList{
@@ -1770,3 +1757,96 @@
   width: 278px;
   border-radius: 10px;
 }
+
+.titleSort {
+  font-size: 20px;
+  font-weight: bold;
+  margin-right: 1%;
+  margin-left: 1%;
+}
+
+
+.containerSort{
+  display: flex;
+  align-items: center;
+  width: 48%;
+  margin-top: 2%;
+  background-color: #e9e6e6;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.filterContainer{
+  display: flex;
+  margin-bottom: 1%;
+}
+
+.buttonSort {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 8px;
+  width: 180px;
+  height: 35px;
+  border: 1px solid #ccc;
+  margin-right: 7px;
+}
+
+.buttonSort:hover {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 8px;
+  width: 180px;
+  height: 35px;
+  border: 1px solid #ccc;
+  margin-right: 7px;
+  background-color: greenyellow;
+}
+
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5); /* Nền mờ */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000; /* Đảm bảo nó nằm trên các thành phần khác */
+}
+
+.sortModal {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.sortModal .titleSortDocument {
+  margin-bottom: 15px;
+}
+
+.titleSortDocument{
+  display: flex;
+  justify-content: center;
+}
+
+.buttonClose{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 23%;
+  border-radius: 8px;
+  width: 100px;
+  height: 35px;
+  border: 1px solid #ccc;
+  margin-right: 7px;
+  background-color: red;
+  color: white;
+}
+

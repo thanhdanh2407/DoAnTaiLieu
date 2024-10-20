@@ -21,6 +21,7 @@ function User() {
   const [role, setRole] = useState("");
   const [documents, setDocuments] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
+  const [filter, setFilter] = useState("all"); // Add filter state
 
   useEffect(() => {
     if (token) {
@@ -42,7 +43,18 @@ function User() {
 
   useEffect(() => {
     if (token) {
-      fetch("http://localhost:8080/api/documents/my", {
+      // Adjust the API endpoint based on the filter
+      let endpoint = "http://localhost:8080/api/documents/my";
+      if (filter === "created") {
+        endpoint += "/created";
+      } else if (filter === "verified") {
+        endpoint += "/verified";
+      } else if (filter === "rejected") {
+        // Add condition for rejected documents
+        endpoint += "/rejected";
+      }
+
+      fetch(endpoint, {
         headers: {
           Authorization: `${token}`,
         },
@@ -60,7 +72,17 @@ function User() {
           console.error("Error fetching documents:", error);
         });
     }
-  }, [token, user]);
+  }, [token, user, filter]); // Add filter to the dependency array
+
+  // Kiểm tra xem người dùng có bị khóa không
+  if (user && !user.enabled) {
+    return (
+      <div className="lockedUser">
+        <h2>Tài khoản của bạn đã bị khóa!</h2>
+        <p>Vui lòng liên hệ với quản trị viên để biết thêm chi tiết.</p>
+      </div>
+    );
+  }
 
   const itemsPerPage = 8;
   const offset = currentPage * itemsPerPage;
@@ -112,6 +134,21 @@ function User() {
     }
   };
 
+  const handleCreatedDocuments = () => {
+    setFilter("created");
+    setCurrentPage(0); // Reset to the first page when changing filter
+  };
+
+  const handleVerifiedDocuments = () => {
+    setFilter("verified");
+    setCurrentPage(0); // Reset to the first page when changing filter
+  };
+
+  const handleRejectedDocuments = () => {
+    setFilter("rejected");
+    setCurrentPage(0); // Reset to the first page when changing filter
+  };
+
   return (
     <div className="containerUser">
       <div className="formUser">
@@ -157,16 +194,24 @@ function User() {
       <div className="titleDocument">Tài liệu của tôi</div>
       <div className="containerBtnAction">
         <div className="btnAction">
-          <Button className="btnAll">Tất cả</Button>
+          <Button className="btnAll" onClick={() => setFilter("all")}>
+            Tất cả
+          </Button>
         </div>
         <div>
-          <Button className="btnVerified">Tài liệu đã duyệt</Button>
+          <Button className="btnVerified" onClick={handleVerifiedDocuments}>
+            Tài liệu đã duyệt
+          </Button>
         </div>
         <div>
-          <Button className="btnCreate">Tài liệu chưa duyệt</Button>
+          <Button className="btnCreate" onClick={handleCreatedDocuments}>
+            Tài liệu chưa duyệt
+          </Button>
         </div>
         <div>
-          <Button className="btnRefuse">Từ chối</Button>
+          <Button className="btnRefuse" onClick={handleRejectedDocuments}>
+            Tài liệu từ chối
+          </Button>
         </div>
       </div>
 
@@ -229,9 +274,10 @@ function User() {
           ))}
         </div>
       </div>
+
       <ReactPaginate
-        previousLabel={"←"}
-        nextLabel={" →"}
+        previousLabel={"<"}
+        nextLabel={">"}
         breakLabel={"..."}
         pageCount={Math.ceil(documents.length / itemsPerPage)}
         marginPagesDisplayed={2}

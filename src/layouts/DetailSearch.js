@@ -94,7 +94,7 @@ function DetailSearch() {
           >
             Tìm kiếm
           </button>
-          <Button className="btnSort">
+          {/* <Button className="btnSort">
             <BsSortDownAlt className="iconSort" onClick={() => {}} />
             <span className="titleButtonIcon">Từ A - Z</span>
           </Button>
@@ -105,7 +105,7 @@ function DetailSearch() {
           <Button className="btnSort">
             <FaEye className="iconSort" onClick={() => {}} />
             <span className="titleButtonIcon">Xem Nhiều</span>
-          </Button>
+          </Button> */}
         </div>
       </div>
       <div className="containerListResult">

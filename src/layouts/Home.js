@@ -66,21 +66,6 @@ function Home() {
       <div className="titleHome">Tài Liệu Nổi Bật</div>
       <Slider />
       <div className="titleHomeNew">Tài Liệu Mới</div>
-      <div className="titleSort">Sắp xếp theo</div>
-      <div className="filterContainer">
-        <Button className="buttonSort">
-          <BsSortDownAlt className="iconSort" onClick={() => {}} />
-          <span className="titleButtonIcon">Từ A - Z</span>
-        </Button>
-        <Button className="buttonSort">
-          <BsSortDown className="iconSort" onClick={() => {}} />
-          <span className="titleButtonIcon">Từ Z - A</span>
-        </Button>
-        <Button className="buttonSort">
-          <FaEye className="iconSort" onClick={() => {}} />
-          <span className="titleButtonIcon">Xem Nhiều</span>
-        </Button>
-      </div>
       <div className="containerList">
         {items.length > 0 ? (
           (showAll ? items : items.slice(0, 8)).map((item) => (

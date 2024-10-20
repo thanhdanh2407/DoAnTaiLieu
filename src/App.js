@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Navigation from "./components/Navigation";
 import Header from "./layouts/Header";
@@ -33,10 +33,23 @@ import AdminCreateDocument from "./layouts/admin/AdminCreateDocument";
 import AdminUpdateDocument from "./layouts/admin/AdminUpdateDocument";
 import AdminDetailDocument from "./layouts/admin/AdminDetailDocument";
 import AdminListAllDocument from "./layouts/admin/AdminListAllDocument";
+import { useDispatch } from "react-redux";
+import AccountStatusChecker from "./Redux/AccountStatusChecker";
+import ListDocumentVerifiedMy from "./layouts/ListDocumentVerifiedMy";
+import ListDocumentCreateMy from "./layouts/ListDocumentCreateMy";
 
 function App() {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const token = localStorage.getItem("authToken");
+    if (token) {
+      // Logic to fetch user info if needed can go here
+    }
+  }, [dispatch]);
   return (
     <Router>
+      <AccountStatusChecker />
       <div className="App">
         <Routes>
           <Route
@@ -167,12 +180,16 @@ function App() {
                     element={<CategorySearch />}
                   />
                   <Route
-                    path="/listdocumentcreate"
-                    element={<LiseDocumentCreate />}
-                  />
-                  <Route
                     path="/documents/user/:userId/verified"
                     element={<ListDocumentVerified />}
+                  />
+                  <Route
+                    path="/listdocumentverifiedmy"
+                    element={<ListDocumentVerifiedMy />}
+                  />
+                  <Route
+                    path="/listdocumentcreatemy"
+                    element={<ListDocumentCreateMy />}
                   />
                 </Routes>
                 <Footer />

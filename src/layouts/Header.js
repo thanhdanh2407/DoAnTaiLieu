@@ -13,11 +13,17 @@ function Header() {
         <HiOutlineUserCircle className="icon" />
         Hồ sơ của bạn
       </div>
-      <div className="itemHeader">
+      <div
+        className="itemHeader"
+        onClick={() => navigate("/listdocumentcreatemy")}
+      >
         <LiaHourglassEndSolid className="icon" />
         Tài liệu đang chờ của bạn
       </div>
-      <div className="itemHeader">
+      <div
+        className="itemHeader"
+        onClick={() => navigate("/listdocumentverifiedmy")}
+      >
         <IoMdCheckmarkCircleOutline className="icon" />
         Tài liệu đã được duyệt của bạn
       </div>
