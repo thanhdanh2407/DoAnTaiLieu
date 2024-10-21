@@ -163,14 +163,29 @@ function App() {
                   <Route path="/changepassword" element={<ChangePassword />} />
                   <Route
                     path="/createdocuments"
-                    element={<CreateDocuments />}
+                    element={
+                      <PrivateRoute>
+                        <CreateDocuments />
+                      </PrivateRoute>
+                    }
                   />
                   <Route
                     path="/updatedocument/:documentId"
-                    element={<UpdateDocuments />}
+                    element={
+                      <PrivateRoute>
+                        <UpdateDocuments />
+                      </PrivateRoute>
+                    }
                   />
                   <Route path="/updateuser" element={<UpdateUser />} />
-                  <Route path="/user" element={<User />} />
+                  <Route
+                    path="/user"
+                    element={
+                      <PrivateRoute>
+                        <User />
+                      </PrivateRoute>
+                    }
+                  />
                   <Route path="/about" element={<About />} />
                   <Route path="/documents/:id" element={<Detail />} />
                   <Route path="/listuser" element={<ListUser />} />
@@ -185,11 +200,19 @@ function App() {
                   />
                   <Route
                     path="/listdocumentverifiedmy"
-                    element={<ListDocumentVerifiedMy />}
+                    element={
+                      <PrivateRoute>
+                        <ListDocumentVerifiedMy />
+                      </PrivateRoute>
+                    }
                   />
                   <Route
                     path="/listdocumentcreatemy"
-                    element={<ListDocumentCreateMy />}
+                    element={
+                      <PrivateRoute>
+                        <ListDocumentCreateMy />
+                      </PrivateRoute>
+                    }
                   />
                 </Routes>
                 <Footer />

@@ -60,9 +60,21 @@ function Navigation() {
       <div className="containerItem" onClick={() => navigate("/listDocument")}>
         Tài liệu
       </div>
-      <div
+      {/* <div
         className="containerItem"
         onClick={() => navigate("/createdocuments")}
+      >
+        Tạo tài liệu
+      </div> */}
+      <div
+        className="containerItem"
+        onClick={() => {
+          if (isAuthenticated) {
+            navigate("/createdocuments");
+          } else {
+            navigate("/login");
+          }
+        }}
       >
         Tạo tài liệu
       </div>
