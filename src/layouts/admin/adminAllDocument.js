@@ -388,8 +388,6 @@ function AdminAllDocument() {
     }
   };
 
-  console.log(documents);
-
   return (
     <div className="containerAdminAllDocument">
       <ToastContainer position="top-center" autoClose={5000} />{" "}

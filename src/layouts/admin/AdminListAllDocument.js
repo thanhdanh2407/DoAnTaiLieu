@@ -132,14 +132,6 @@ function AdminListAllDocument() {
               <FaUser className="iconUser" />
               <span className="titleInfo">Danh sách người dùng</span>
             </span>
-            <div className="searchDocumentAdmin">
-              <input
-                type="text"
-                placeholder="Tìm kiếm tài liệu"
-                className="inputSearchAdmin"
-              />
-              <FiSearch className="searchIcon" />
-            </div>
           </div>
           <div className="bl">
             <div className="containerListDocumentCreate">
