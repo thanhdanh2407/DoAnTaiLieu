@@ -37,6 +37,7 @@ import { useDispatch } from "react-redux";
 import AccountStatusChecker from "./Redux/AccountStatusChecker";
 import ListDocumentVerifiedMy from "./layouts/ListDocumentVerifiedMy";
 import ListDocumentCreateMy from "./layouts/ListDocumentCreateMy";
+import AdminDocumentCancel from "./layouts/admin/AdminDocumentCancel";
 
 function App() {
   const dispatch = useDispatch();
@@ -109,7 +110,7 @@ function App() {
             }
           />
           <Route
-            path="/admin/adminUpdateCategory"
+            path="/admin/adminUpdateCategory/:id"
             element={
               <PrivateRoute role="ADMIN">
                 <AdminUpdateCategory />
@@ -125,7 +126,15 @@ function App() {
             }
           />
           <Route
-            path="/admin/adminUpdateDocument/updatedocument/:documentId"
+            path="/admin/adminDocumentCancel"
+            element={
+              <PrivateRoute role="ADMIN">
+                <AdminDocumentCancel />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin/adminUpdateDocument/:documentId"
             element={
               <PrivateRoute role="ADMIN">
                 <AdminUpdateDocument />
@@ -141,7 +150,7 @@ function App() {
             }
           />
           <Route
-            path="/admin/adminListAllDocument/documents/user/:userId/verified"
+            path="/admin/adminListAllDocument/admin/documents/user/:userId/verified"
             element={
               <PrivateRoute role="ADMIN">
                 <AdminListAllDocument />

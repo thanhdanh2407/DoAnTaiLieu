@@ -1,12 +1,119 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import NavBar from "../../components/Admin/NavBar/NavBar";
 import avatar from "../../assets/iconAva.png";
 import { FaUser } from "react-icons/fa6";
 import { FiSearch } from "react-icons/fi";
 import Button from "../../components/Button";
 import HeaderAdmin from "../../components/Admin/HeaderAdmin/HeaderAdmin";
+import { toast } from "react-toastify";
+import ReactPaginate from "react-paginate"; // Import ReactPaginate
+import { useNavigate } from "react-router-dom";
 
 function AdminDocumentApproved() {
+  const [verifiedDocuments, setVerifiedDocuments] = useState([]);
+  const [currentPage, setCurrentPage] = useState(0); // Khởi tạo currentPage với 0
+  const itemsPerPage = 10; // số lượng tài liệu mỗi trang
+  const navigate = useNavigate();
+  const [documents, setDocuments] = useState([]);
+
+  const fetchVerifiedDocuments = async () => {
+    const authToken = localStorage.getItem("authToken");
+
+    try {
+      const response = await fetch(
+        "http://localhost:8080/api/admin/documents/verified",
+        {
+          method: "GET",
+          headers: {
+            Authorization: `${authToken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch verified documents");
+      }
+
+      const data = await response.json();
+      setVerifiedDocuments(data);
+    } catch (error) {
+      console.error("Error fetching verified documents:", error);
+      toast.error("Không thể tải tài liệu đã duyệt.");
+    }
+  };
+
+  const handleDeleteDocument = async (id) => {
+    const authToken = localStorage.getItem("authToken"); // Get the token from local storage
+
+    // Confirmation dialog
+    if (window.confirm("Are you sure you want to delete this document?")) {
+      try {
+        const response = await fetch(
+          `http://localhost:8080/api/admin/documents/${id}`,
+          {
+            method: "DELETE",
+            headers: {
+              Authorization: `${authToken}`, // Set the Authorization header
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to delete document");
+        }
+
+        // Update state to remove the deleted document
+        setDocuments((prevDocuments) =>
+          prevDocuments.filter((doc) => doc.id !== id)
+        );
+        toast.success("Xoá tài liệu thành công"); // Show success toast
+      } catch (error) {
+        console.error("Error deleting document:", error);
+        toast.error("Failed to delete document"); // Show error toast
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchVerifiedDocuments();
+  }, []);
+
+  // Tính toán số lượng trang
+  const pageCount = Math.ceil(verifiedDocuments.length / itemsPerPage);
+
+  // Cắt tài liệu để chỉ hiển thị những tài liệu của trang hiện tại
+  const indexOfLastDocument = (currentPage + 1) * itemsPerPage;
+  const indexOfFirstDocument = indexOfLastDocument - itemsPerPage;
+  const currentDocuments = verifiedDocuments.slice(
+    indexOfFirstDocument,
+    indexOfLastDocument
+  );
+
+  // Hàm xử lý sự kiện khi chuyển trang
+  const handlePageClick = (event) => {
+    const selectedPage = event.selected;
+    setCurrentPage(selectedPage);
+  };
+
+  const getStatusClass = (status) => {
+    switch (status) {
+      case "VERIFIED":
+        return "status-verified"; // Green color class
+      default:
+        return "";
+    }
+  };
+
+  const handleAdminDetailDocumentClick = (id) => {
+    navigate(`/admin/adminDetailDocument/documents/${id}`); // Pass ID for detail
+  };
+
+  const handleAdminUpdateDocumentClick = (id) => {
+    navigate(`/admin/adminUpdateDocument/${id}`); // Pass ID for update
+  };
+
   return (
     <div className="containerAdminDocumentApproved">
       <div className="leftAdminWaitDocument">
@@ -20,9 +127,9 @@ function AdminDocumentApproved() {
               <FaUser className="iconUser" />
               <span className="titleInfo">Tài liệu đã duyệt</span>
             </span>
-            <div className="containerBtnAdd">
+            {/* <div className="containerBtnAdd">
               <Button className="btnAdd">Tạo tài liệu</Button>
-            </div>
+            </div> */}
             <div className="searchDocumentAdmin">
               <input
                 type="text"
@@ -46,36 +153,74 @@ function AdminDocumentApproved() {
                   <th>Tài liệu sở hữu</th>
                   <th>Sửa tài liệu</th>
                   <th>Xoá tài liệu</th>
-                  <th>Từ chối tài liệu</th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>1</td>
-                  <td>
-                    <img src={avatar} alt="User" className="userImage" />
-                  </td>
-                  <td>Phạm Minh Trọng</td>
-                  <td>Nguyễn Văn A</td>
-                  <td>122</td>
-                  <td>NodeJS</td>
-                  <td>Create</td>
-                  <td>
-                    <button className="btnOpen">Xem</button>
-                  </td>
-                  <td>
-                    <button className="btnOpen">Sửa</button>
-                  </td>
-                  <td>
-                    <button className="btnOpen">Xoá</button>
-                  </td>
-                  <td>
-                    <button className="btnOpen">Từ chối</button>
-                  </td>
-                </tr>
+                {currentDocuments.map((document, index) => (
+                  <tr key={document.id}>
+                    <td>{index + 1 + indexOfFirstDocument}</td>
+                    <td>
+                      <img
+                        src={document.image || avatar}
+                        alt="User"
+                        className="userImage"
+                      />
+                    </td>
+                    <td>{document.title}</td>
+                    <td>{document.author}</td>
+                    <td>{document.view}</td>
+                    <td>{document.categoryName}</td>
+                    <td>
+                      <div
+                        className={`status ${getStatusClass(document.status)}`}
+                      >
+                        {document.status}
+                      </div>
+                    </td>
+                    <td>
+                      <button
+                        className="btnOpenDocument"
+                        onClick={() =>
+                          handleAdminDetailDocumentClick(document.id)
+                        } // Pass document ID
+                      >
+                        Xem
+                      </button>
+                    </td>
+                    <td>
+                      <button
+                        className="btnUpdateDocument"
+                        onClick={() =>
+                          handleAdminUpdateDocumentClick(document.id)
+                        } // Pass document ID
+                      >
+                        Sửa
+                      </button>
+                    </td>
+                    <td>
+                      <button
+                        className="btnDelete"
+                        onClick={() => handleDeleteDocument(document.id)} // Pass document ID for deletion
+                      >
+                        Xoá
+                      </button>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
+          <ReactPaginate
+            previousLabel={"←"}
+            nextLabel={" →"}
+            breakLabel={"..."}
+            pageCount={pageCount}
+            marginPagesDisplayed={2}
+            pageRangeDisplayed={3}
+            onPageChange={handlePageClick}
+            containerClassName={"pagination"}
+            activeClassName={"active"}
+          />
         </div>
       </div>
     </div>

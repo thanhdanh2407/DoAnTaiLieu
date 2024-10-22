@@ -7,42 +7,35 @@ import { WiTime5 } from "react-icons/wi";
 import { LuUser2 } from "react-icons/lu";
 import { FiCheckCircle } from "react-icons/fi";
 import { FaEye } from "react-icons/fa";
-import avatarComment from "../../assets/iconAva.png";
-import { VscSend } from "react-icons/vsc";
+import { toast } from "react-toastify";
 
 function AdminDetailDocument() {
   const { id } = useParams();
   const [document, setDocument] = useState(null);
-  const [comment, setComment] = useState("");
-  const [comments, setComments] = useState([]);
   const [authToken, setAuthToken] = useState(
     localStorage.getItem("authToken") || ""
   );
   const [user, setUser] = useState(null);
-  const [replyCommentId, setReplyCommentId] = useState(null);
-  const [reply, setReply] = useState("");
-  const [editingCommentId, setEditingCommentId] = useState(null);
-  const [editedComment, setEditedComment] = useState("");
-  const [editingReplyId, setEditingReplyId] = useState(null);
-  const [editedReply, setEditedReply] = useState("");
-  const [replyToReplyId, setReplyToReplyId] = useState(null);
-  const [replyToReply, setReplyToReply] = useState("");
 
   useEffect(() => {
     const fetchDocument = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8080/api/documents/${id}`
+          `http://localhost:8080/api/admin/documents/${id}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `${authToken}`,
+            },
+          }
         );
-        if (!response.ok) throw new Error("Network response was not ok");
+
+        if (!response.ok) throw new Error("Không thể lấy tài liệu.");
         const data = await response.json();
-        const sortedComments = data.comments.sort(
-          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-        );
-        setComments(sortedComments);
         setDocument(data);
       } catch (error) {
-        console.error("Failed to fetch document:", error);
+        toast.error("Lỗi khi lấy tài liệu: " + error.message);
       }
     };
 
@@ -51,208 +44,21 @@ function AdminDetailDocument() {
       try {
         const response = await fetch("http://localhost:8080/api/user/me", {
           headers: {
-            Authorization: `Bearer ${authToken}`,
+            Authorization: `${authToken}`,
           },
         });
-        if (!response.ok) throw new Error("Failed to fetch user info");
+        if (!response.ok)
+          throw new Error("Không thể lấy thông tin người dùng.");
         const data = await response.json();
         setUser(data);
       } catch (error) {
-        console.error("Failed to fetch user info:", error);
+        toast.error("Lỗi khi lấy thông tin người dùng: " + error.message);
       }
     };
 
     fetchDocument();
     fetchUserInfo();
   }, [id, authToken]);
-
-  const handleCommentSubmit = async () => {
-    if (!comment.trim()) return;
-    try {
-      const response = await fetch(
-        `http://localhost:8080/api/comments/${id}/add`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${authToken}`,
-          },
-          body: JSON.stringify({ content: comment }),
-        }
-      );
-
-      if (!response.ok) throw new Error("Failed to submit comment");
-      const newComment = await response.json();
-      setComments((prevComments) => [newComment, ...prevComments]);
-      setComment("");
-    } catch (error) {
-      console.error("Error submitting comment:", error);
-    }
-  };
-
-  const handleReplySubmit = async (commentId) => {
-    if (!reply.trim()) return;
-    try {
-      const response = await fetch(
-        `http://localhost:8080/api/comments/${id}/replies/${commentId}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${authToken}`,
-          },
-          body: JSON.stringify({ content: reply }),
-        }
-      );
-
-      if (!response.ok) throw new Error("Failed to submit reply");
-      const newReply = await response.json();
-      setComments((prevComments) =>
-        prevComments.map((comment) =>
-          comment.id === commentId
-            ? { ...comment, replies: [...(comment.replies || []), newReply] }
-            : comment
-        )
-      );
-      setReply("");
-      setReplyCommentId(null);
-    } catch (error) {
-      console.error("Error submitting reply:", error);
-    }
-  };
-
-  const handleDeleteComment = async (commentId) => {
-    try {
-      const response = await fetch(
-        `http://localhost:8080/api/documents/comments/${commentId}`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${authToken}`,
-          },
-        }
-      );
-
-      if (!response.ok) throw new Error("Failed to delete comment");
-      setComments((prevComments) =>
-        prevComments.filter((comment) => comment.id !== commentId)
-      );
-    } catch (error) {
-      console.error("Error deleting comment:", error);
-    }
-  };
-
-  const handleEditComment = async (commentId) => {
-    if (!editedComment.trim()) return;
-    try {
-      const response = await fetch(
-        `http://localhost:8080/api/documents/comments/${commentId}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${authToken}`,
-          },
-          body: JSON.stringify({ body: editedComment }),
-        }
-      );
-
-      if (!response.ok) throw new Error("Failed to edit comment");
-      setComments((prevComments) =>
-        prevComments.map((comment) =>
-          comment.id === commentId
-            ? { ...comment, content: editedComment }
-            : comment
-        )
-      );
-      setEditedComment("");
-      setEditingCommentId(null);
-    } catch (error) {
-      console.error("Error editing comment:", error);
-    }
-  };
-
-  const handleEditReply = async (replyId, commentId) => {
-    if (!editedReply.trim()) return;
-    try {
-      const response = await fetch(
-        `http://localhost:8080/api/documents/comments/replies/${replyId}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${authToken}`,
-          },
-          body: JSON.stringify({ body: editedReply }),
-        }
-      );
-
-      if (!response.ok) throw new Error("Failed to edit reply");
-      setComments((prevComments) =>
-        prevComments.map((comment) =>
-          comment.id === commentId
-            ? {
-                ...comment,
-                replies: comment.replies.map((reply) =>
-                  reply.id === replyId
-                    ? { ...reply, content: editedReply }
-                    : reply
-                ),
-              }
-            : comment
-        )
-      );
-      setEditedReply("");
-      setEditingReplyId(null);
-    } catch (error) {
-      console.error("Error editing reply:", error);
-    }
-  };
-
-  const handleReplyToReplySubmit = async (replyId, commentId) => {
-    if (!replyToReply.trim()) return;
-    try {
-      const response = await fetch(
-        `http://localhost:8080/api/documents/comments/replies/${replyId}/add`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${authToken}`,
-          },
-          body: JSON.stringify({ content: replyToReply }),
-        }
-      );
-
-      if (!response.ok) throw new Error("Failed to submit reply to reply");
-      const newReplyToReply = await response.json();
-      setComments((prevComments) =>
-        prevComments.map((comment) =>
-          comment.id === commentId
-            ? {
-                ...comment,
-                replies: [...(comment.replies || []), newReplyToReply],
-              }
-            : comment
-        )
-      );
-      setReplyToReply("");
-      setReplyToReplyId(null);
-    } catch (error) {
-      console.error("Error submitting reply to reply:", error);
-    }
-  };
-
-  const handleKeyPress = (e) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      if (replyCommentId) {
-        handleReplySubmit(replyCommentId);
-      } else {
-        handleCommentSubmit();
-      }
-    }
-  };
 
   return (
     <div className="containerAdminDetailDocument">
@@ -298,241 +104,16 @@ function AdminDetailDocument() {
                       </div>
                     </div>
                   </div>
-                  {/* <div className="textDetail">{document.description}</div> */}
+                  <div className="listPDF">
+                    <iframe
+                      src={document.pdfFiles}
+                      width="100%"
+                      height="1000px"
+                      title="PDF Document"
+                    />
+                  </div>
                 </>
               )}
-            </div>
-            <div className="listPDF">
-              <iframe
-                src={document.pdfFiles}
-                width="100%"
-                height="1000px"
-                title="PDF Document"
-              />
-            </div>
-            <div className="containerComment">
-              <div className="titleComment">Bình luận</div>
-              <div className="listComment">
-                {comments.length > 0 ? (
-                  comments.map((comment) => (
-                    <div key={comment.id} className="itemComment">
-                      <div className="avatarComment">
-                        <img
-                          src={user?.avatar || avatarComment}
-                          alt="avatar"
-                          className="imgAva"
-                        />
-                      </div>
-                      <div className="containerCommentBody">
-                        <div className="commentRep">
-                          <div className="userComment">{comment.userName}</div>
-                          {editingCommentId === comment.id ? (
-                            <div className="bodyComment">
-                              <textarea
-                                value={editedComment}
-                                onChange={(e) =>
-                                  setEditedComment(e.target.value)
-                                }
-                                className="inputComment"
-                                onKeyDown={handleKeyPress}
-                              />
-                              <div
-                                className="btnSend"
-                                onClick={() => handleEditComment(comment.id)}
-                              >
-                                <VscSend className="iconSend" />
-                              </div>
-                            </div>
-                          ) : (
-                            <div className="bodyComment">{comment.content}</div>
-                          )}
-                        </div>
-                        <div className="repComment">
-                          <span
-                            className="itemRep"
-                            onClick={() => setReplyCommentId(comment.id)}
-                          >
-                            Trả lời
-                          </span>
-                          <span
-                            className="itemFix"
-                            onClick={() => {
-                              setEditingCommentId(comment.id);
-                              setEditedComment(comment.content);
-                            }}
-                          >
-                            Chỉnh sửa
-                          </span>
-                          <span
-                            className="itemDel"
-                            onClick={() => handleDeleteComment(comment.id)}
-                          >
-                            Xoá
-                          </span>
-                        </div>
-
-                        {replyCommentId === comment.id && (
-                          <div className="replyBox">
-                            <textarea
-                              className="inputComment"
-                              value={reply}
-                              onChange={(e) => setReply(e.target.value)}
-                              placeholder="Nhập bình luận của bạn..."
-                              onKeyDown={handleKeyPress}
-                            />
-                            <div
-                              className="btnSend"
-                              onClick={() => handleReplySubmit(comment.id)}
-                            >
-                              <VscSend className="iconSend" />
-                            </div>
-                          </div>
-                        )}
-
-                        {comment.replies && comment.replies.length > 0 && (
-                          <div className="replies">
-                            <div className="titleRepComment">
-                              Trả lời bình luận
-                            </div>
-                            {comment.replies.map((reply) => (
-                              <div key={reply.id} className="itemReply">
-                                <div className="avatarComment">
-                                  <img
-                                    src={user.avatar}
-                                    alt={user.fullname}
-                                    className="imgAva"
-                                  />
-                                </div>
-                                <div className="containerRepComment">
-                                  <div className="userReply">
-                                    {reply.userName}
-                                  </div>
-                                  <div className="bodyReply">
-                                    {editingReplyId === reply.id ? (
-                                      <div>
-                                        <textarea
-                                          value={editedReply}
-                                          onChange={(e) =>
-                                            setEditedReply(e.target.value)
-                                          }
-                                          className="inputReply"
-                                          onKeyDown={handleKeyPress}
-                                        />
-                                        <div
-                                          className="btnSend"
-                                          onClick={() =>
-                                            handleEditReply(
-                                              reply.id,
-                                              comment.id
-                                            )
-                                          }
-                                        >
-                                          <VscSend className="iconSend" />
-                                        </div>
-                                      </div>
-                                    ) : (
-                                      <div className="repCommentReq">
-                                        {reply.content}
-                                      </div>
-                                    )}
-                                  </div>
-                                  <span
-                                    className="itemFixRep"
-                                    onClick={() => setReplyToReplyId(reply.id)}
-                                  >
-                                    Trả lời
-                                  </span>
-                                  {replyToReplyId === reply.id && (
-                                    <div className="replyToReplySection">
-                                      <textarea
-                                        value={replyToReply}
-                                        onKeyDown={handleKeyPress}
-                                        onChange={(e) =>
-                                          setReplyToReply(e.target.value)
-                                        }
-                                        className="inputComment"
-                                        placeholder="Nhập trả lời của bạn..."
-                                      />
-                                      <div
-                                        className="btnSend"
-                                        onClick={() =>
-                                          handleReplyToReplySubmit(
-                                            reply.id,
-                                            comment.id
-                                          )
-                                        }
-                                      >
-                                        <VscSend className="iconSend" />
-                                      </div>
-                                    </div>
-                                  )}
-                                  {reply.replies &&
-                                    reply.replies.length > 0 && (
-                                      <div className="repliesToRepliesList">
-                                        {reply.replies.map((replyToReply) => (
-                                          <div
-                                            key={replyToReply.id}
-                                            className="itemReplyToReply"
-                                          >
-                                            <div className="avatarComment">
-                                              <img
-                                                src={
-                                                  user?.avatar || avatarComment
-                                                }
-                                                alt="avatar"
-                                                className="imgAva"
-                                              />
-                                            </div>
-                                            <div className="containerCommentBody">
-                                              <div className="userComment">
-                                                {replyToReply.userName}
-                                              </div>
-                                              <div className="bodyCommentRepToRep">
-                                                {replyToReply.content}
-                                              </div>
-                                            </div>
-                                          </div>
-                                        ))}
-                                      </div>
-                                    )}
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  ))
-                ) : (
-                  <p className="titleNotice">Chưa có bình luận nào</p>
-                )}
-              </div>
-              <div className="itemComment">
-                <div className="avatarComment">
-                  <img
-                    src={user?.avatar || avatarComment}
-                    alt="avatar"
-                    className="imgAva"
-                  />
-                </div>
-                <div className="comment">
-                  <div className="userComment">
-                    {user ? user.fullname : "Người dùng"}
-                  </div>
-                  <div className="bodyComment">
-                    <textarea
-                      className="inputComment"
-                      type="text"
-                      value={comment}
-                      onChange={(e) => setComment(e.target.value)}
-                      onKeyDown={handleKeyPress}
-                    />
-                    <div className="btnSend" onClick={handleCommentSubmit}>
-                      <VscSend className="iconSend" />
-                    </div>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>

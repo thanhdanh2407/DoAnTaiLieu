@@ -1117,6 +1117,7 @@
 }
 
 .subscribeButton{
+  margin-top: 10px;
   margin-left: 10px;
   height: 40px;
   width: 120px;
@@ -1792,6 +1793,7 @@
   height: 35px;
   border: 1px solid #ccc;
   margin-right: 7px;
+  margin-bottom: 10px;
 }
 
 .buttonSort:hover {
