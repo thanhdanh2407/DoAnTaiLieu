@@ -64,13 +64,16 @@ function AdminCreateDocument() {
         throw new Error("No token found");
       }
 
-      const response = await fetch("http://localhost:8080/api/documents", {
-        method: "POST",
-        headers: {
-          Authorization: ` ${token}`,
-        },
-        body: formData,
-      });
+      const response = await fetch(
+        "http://localhost:8080/api/admin/documents",
+        {
+          method: "POST",
+          headers: {
+            Authorization: ` ${token}`,
+          },
+          body: formData,
+        }
+      );
 
       if (!response.ok) {
         const errorText = await response.text();

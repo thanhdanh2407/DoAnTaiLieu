@@ -42,10 +42,20 @@ function AdminUpdateDocument() {
     if (documentId) {
       const fetchDocumentDetails = async () => {
         try {
+          const token = localStorage.getItem("authToken"); // Retrieve the auth token
+          if (!token) throw new Error("No token found"); // Check if token exists
+
           const response = await fetch(
-            `http://localhost:8080/api/documents/${documentId}`
+            `http://localhost:8080/api/admin/documents/${documentId}`, // Updated endpoint
+            {
+              headers: {
+                Authorization: `${token}`, // Add Authorization header
+              },
+            }
           );
+
           if (!response.ok) throw new Error("Failed to fetch document details");
+
           const data = await response.json();
 
           setTitle(data.title);
@@ -119,11 +129,11 @@ function AdminUpdateDocument() {
       pdfFiles.forEach((file) => formData.append("pdfFiles", file));
 
       const response = await fetch(
-        `http://localhost:8080/api/documents/${documentId}`,
+        `http://localhost:8080/api/admin/documents/${documentId}`, // Updated endpoint
         {
           method: "PUT",
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `${token}`,
           },
           body: formData,
         }
@@ -264,22 +274,10 @@ function AdminUpdateDocument() {
                       />
                     </div>
                   </div>
-                  <div className="itemFormUpload">
-                    <label className="titleLabel" htmlFor="publisher">
-                      Nhà xuất bản
-                    </label>
-                    <input
-                      type="text"
-                      id="publisher"
-                      placeholder="Nhập tên nhà xuất bản"
-                      className="inputItem"
-                      value={publisher}
-                      onChange={(e) => setPublisher(e.target.value)}
-                    />
-                  </div>
+
                   <div className="itemFormUpload">
                     <label className="titleLabel" htmlFor="author">
-                      Tên tác giả
+                      Tác giả<span className="requiredStar">*</span>
                     </label>
                     <input
                       type="text"
@@ -288,22 +286,38 @@ function AdminUpdateDocument() {
                       className="inputItem"
                       value={author}
                       onChange={(e) => setAuthor(e.target.value)}
+                      required
                     />
                   </div>
+
+                  <div className="itemFormUpload">
+                    <label className="titleLabel" htmlFor="publisher">
+                      Nhà xuất bản<span className="requiredStar">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      id="publisher"
+                      placeholder="Nhập nhà xuất bản"
+                      className="inputItem"
+                      value={publisher}
+                      onChange={(e) => setPublisher(e.target.value)}
+                      required
+                    />
+                  </div>
+
                   <div className="itemFormUpload">
                     <label className="titleLabel" htmlFor="description">
-                      Mô tả chi tiết<span className="requiredStar">*</span>
+                      Mô tả<span className="requiredStar">*</span>
                     </label>
                     <textarea
                       id="description"
-                      placeholder="Nhập mô tả chi tiết"
-                      className="textareaItem"
-                      rows="4"
+                      placeholder="Nhập mô tả tài liệu"
+                      className="inputItem"
                       value={description}
                       onChange={(e) => setDescription(e.target.value)}
+                      required
                     />
                   </div>
-                  <ToastContainer />
                 </div>
               </div>
               <div className="btnAcp">
@@ -312,9 +326,11 @@ function AdminUpdateDocument() {
                 </Button>
               </div>
             </form>
+            {error && <div className="errorText">{error}</div>}
           </div>
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 }

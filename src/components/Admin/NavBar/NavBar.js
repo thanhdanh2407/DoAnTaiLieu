@@ -13,6 +13,7 @@ import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../../Redux/actions/authActions";
+import { MdOutlineCancel } from "react-icons/md";
 
 function NavBar() {
   const [isExpanded, setIsExpanded] = useState(true);
@@ -51,6 +52,10 @@ function NavBar() {
 
   const handleAdminApprovedDocumentClick = () => {
     navigate("/admin/adminDocumentApproved");
+  };
+
+  const handleAdminDocumentCancelClick = () => {
+    navigate("/admin/adminDocumentCancel");
   };
 
   const handleAdminCategoryClick = () => {
@@ -118,6 +123,13 @@ function NavBar() {
               >
                 <IoCheckmarkDoneCircle />
                 <span>Tài liệu đã duyệt</span>
+              </div>
+              <div
+                className="dropdown-item"
+                onClick={handleAdminDocumentCancelClick}
+              >
+                <MdOutlineCancel />
+                <span>Tài liệu từ chối</span>
               </div>
             </div>
           )}
