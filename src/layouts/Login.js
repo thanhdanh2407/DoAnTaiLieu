@@ -24,29 +24,85 @@ function Login() {
     (state) => state.auth
   );
 
+  // useEffect(() => {
+  //   if (loginAttempted) {
+  //     if (isAuthenticated) {
+  //       toast.success("Đăng nhập thành công!", {
+  //         position: "top-center",
+  //         autoClose: 3000,
+  //         closeOnClick: true,
+  //         className: "custom-toast",
+  //         progressClassName: "custom-progress",
+  //       });
+
+  //       const user = JSON.parse(localStorage.getItem("user"));
+  //       const role = user?.role;
+
+  //       if (role === "ADMIN") {
+  //         toast.info("Chào mừng bạn trở lại, Quản trị viên!", {
+  //           position: "top-center",
+  //           autoClose: 3000,
+  //           closeOnClick: true,
+  //           className: "custom-toast",
+  //           progressClassName: "custom-progress",
+  //         });
+  //         navigate("/admin");
+  //       } else {
+  //         navigate("/");
+  //       }
+  //     } else if (error) {
+  //       toast.error(getErrorMessage(error), {
+  //         position: "top-center",
+  //         autoClose: 3000,
+  //         closeOnClick: true,
+  //         className: "custom-toast",
+  //         progressClassName: "custom-progress",
+  //       });
+  //     }
+  //   }
+  // }, [isAuthenticated, error, loginAttempted, navigate]);
+
   useEffect(() => {
     if (loginAttempted) {
       if (isAuthenticated) {
-        toast.success("Đăng nhập thành công!", {
-          position: "top-center",
-          autoClose: 1000,
-          closeOnClick: true,
-          className: "custom-toast",
-          progressClassName: "custom-progress",
-        });
+        // toast.success("Đăng nhập thành công!", {
+        //   position: "top-center",
+        //   autoClose: 3000,
+        //   closeOnClick: true,
+        //   className: "custom-toast",
+        //   progressClassName: "custom-progress",
+        // });
 
-        // Lấy thông tin người dùng từ localStorage
         const user = JSON.parse(localStorage.getItem("user"));
-        const role = user?.role; // Giả sử role nằm trong user
+        const role = user?.role;
 
-        // Điều hướng dựa trên vai trò
+        // Thêm một thông báo chào mừng dựa trên vai trò
         if (role === "ADMIN") {
-          navigate("/admin");
+          toast.success("Chào mừng quay lại trang quản lý !", {
+            position: "top-center",
+            autoClose: 1000,
+            closeOnClick: true,
+            className: "custom-toast",
+            progressClassName: "custom-progress",
+          });
+          setTimeout(() => {
+            navigate("/admin");
+          }, 1000);
         } else {
-          navigate("/");
+          // Bạn có thể thêm một thông báo chào mừng khác cho người dùng thông thường
+          toast.success("Đăng nhập thành công!", {
+            position: "top-center",
+            autoClose: 1000,
+            closeOnClick: true,
+            className: "custom-toast",
+            progressClassName: "custom-progress",
+          });
+          setTimeout(() => {
+            navigate("/");
+          }, 1000);
         }
       } else if (error) {
-        toast.error("Nhập sai Email hoặc Password", {
+        toast.error(getErrorMessage(error), {
           position: "top-center",
           autoClose: 3000,
           closeOnClick: true,
@@ -56,6 +112,21 @@ function Login() {
       }
     }
   }, [isAuthenticated, error, loginAttempted, navigate]);
+
+  const getErrorMessage = (error) => {
+    // Check for the specific error patterns and return the corresponding messages
+    if (error.includes("Unexpected token 'T'") && error.includes("Tài khoản")) {
+      return "Tài khoản đã bị khoá. Vui lòng liên hệ quản trị viên!";
+    } else if (
+      error.includes("Unexpected token 'E'") &&
+      error.includes("Email hoặc")
+    ) {
+      return "Email hoặc mật khẩu không đúng.";
+    }
+
+    // Fallback for any other error messages
+    return error || "Đăng nhập thất bại! Vui lòng thử lại.";
+  };
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -79,6 +150,7 @@ function Login() {
             className="inputItem"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            required
           />
         </div>
         <div className="itemFormLogin">
@@ -93,6 +165,7 @@ function Login() {
               className="inputItem"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              required
             />
             <span className="togglePassword" onClick={togglePasswordVisibility}>
               {showPassword ? <FaEye /> : <FaEyeSlash />}

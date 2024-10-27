@@ -123,7 +123,7 @@ const Slider = () => {
           {
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${authToken}`, // Add the auth token to the request
+              Authorization: `${authToken}`, // Add the auth token to the request
             },
           }
         );

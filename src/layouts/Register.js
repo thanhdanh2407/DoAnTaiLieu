@@ -35,10 +35,22 @@ function Register() {
   const handleRegister = async (e) => {
     e.preventDefault();
 
-    // Validate email
-    const emailPattern = /^[\w-\.]+@gmail\.com$/;
+    if (!address.trim()) {
+      toast.error("Vui lòng nhập địa chỉ", {
+        position: "top-center",
+        autoClose: 3000,
+        closeOnClick: true,
+        className: "custom-toast",
+        progressClassName: "custom-progress",
+      });
+      return;
+    }
+
+    // const emailPattern = /^[\w.-]+@[a-zA-Z\d.-]+\.[a-zA-Z]{2,}$/;
+    const emailPattern = /^(?=.{2,})[\w.-]+@[\w.-]+\.[a-zA-Z]{2,}$/;
+
     if (!emailPattern.test(email)) {
-      toast.error("Email phải kết thúc bằng @gmail.com", {
+      toast.error("Email không hợp lệ", {
         position: "top-center",
         autoClose: 3000,
         closeOnClick: true,
@@ -49,7 +61,9 @@ function Register() {
     }
 
     // Validate password
-    const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{6,}$/;
+    const passwordPattern =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@$%&*]).{6,}$/;
+
     if (!passwordPattern.test(password)) {
       toast.error(
         "Mật khẩu phải có ít nhất 6 ký tự, bao gồm viết hoa, viết thường và ký tự đặc biệt",
@@ -75,21 +89,23 @@ function Register() {
       return;
     }
 
-    if (role === "STUDENT" || role === "TEACHER") {
-      const identifierPattern = /^(SV|GV)\d{6}$/; // Must start with SV or GV followed by 6 digits
-      if (!identifierPattern.test(identifier)) {
-        toast.error(
-          "Mã số SV/GV phải bắt đầu bằng 'SV' hoặc 'GV' và theo sau là 6 chữ số",
-          {
-            position: "top-center",
-            autoClose: 3000,
-            closeOnClick: true,
-            className: "custom-toast",
-            progressClassName: "custom-progress",
-          }
-        );
-        return;
-      }
+    const identifierPattern = /^(SV|GV)\d{6}$/;
+    if (
+      (role === "STUDENT" && !identifier.startsWith("SV")) ||
+      (role === "TEACHER" && !identifier.startsWith("GV")) ||
+      !identifierPattern.test(identifier)
+    ) {
+      toast.error(
+        "Mã số SV/GV phải bắt đầu bằng 'SV' cho học sinh hoặc 'GV' cho giáo viên và theo sau là 6 chữ số",
+        {
+          position: "top-center",
+          autoClose: 3000,
+          closeOnClick: true,
+          className: "custom-toast",
+          progressClassName: "custom-progress",
+        }
+      );
+      return;
     }
 
     const formData = new FormData();
@@ -100,7 +116,6 @@ function Register() {
     formData.append("role", role);
     formData.append("repassword", repassword);
 
-    // Append identifier only if role is STUDENT or TEACHER
     if (role === "STUDENT" || role === "TEACHER") {
       formData.append("identifier", identifier);
     }
@@ -120,13 +135,31 @@ function Register() {
         navigate("/login");
       }, 3000);
     } catch (err) {
-      toast.error("Đăng ký thất bại", {
-        position: "top-center",
-        autoClose: 3000,
-        closeOnClick: true,
-        className: "custom-toast",
-        progressClassName: "custom-progress",
-      });
+      // toast.error("Đăng ký thất bại", {
+      //   position: "top-center",
+      //   autoClose: 3000,
+      //   closeOnClick: true,
+      //   className: "custom-toast",
+      //   progressClassName: "custom-progress",
+      // });
+      if (err.response && err.response.status === 409) {
+        // Assuming a 409 Conflict status for duplicate identifiers
+        toast.error("Mã số đã tồn tại. Vui lòng nhập mã khác.", {
+          position: "top-center",
+          autoClose: 3000,
+          closeOnClick: true,
+          className: "custom-toast",
+          progressClassName: "custom-progress",
+        });
+      } else {
+        toast.error(err.message || "Đăng ký thất bại", {
+          position: "top-center",
+          autoClose: 3000,
+          closeOnClick: true,
+          className: "custom-toast",
+          progressClassName: "custom-progress",
+        });
+      }
     } finally {
       setRegistering(false);
     }
@@ -245,7 +278,7 @@ function Register() {
             onChange={(e) => setRole(e.target.value)}
           >
             <option value="USER">Người dùng</option>
-            <option value="STUDENT">Học sinh</option>
+            <option value="STUDENT">Sinh viên</option>
             <option value="TEACHER">Giáo viên</option>
           </select>
         </div>

@@ -59,7 +59,7 @@ function AdminManageCategory() {
           {
             method: "DELETE",
             headers: {
-              Authorization: `${authToken}`, // Ensure Bearer is included
+              Authorization: `${authToken}`,
             },
           }
         );

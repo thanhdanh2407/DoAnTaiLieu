@@ -78,7 +78,7 @@ function Detail() {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${authToken}`,
+            Authorization: `${authToken}`,
           },
           body: comment,
         }
@@ -106,7 +106,7 @@ function Detail() {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${authToken}`,
+            Authorization: `${authToken}`,
           },
           body: reply,
         }
@@ -141,7 +141,7 @@ function Detail() {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${authToken}`,
+            Authorization: `${authToken}`,
           },
           body: replyToReply, // Đảm bảo body là JSON
         }
@@ -210,7 +210,7 @@ function Detail() {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${authToken}`, // Sử dụng authToken
+            Authorization: `${authToken}`, // Sử dụng authToken
           },
           body: JSON.stringify({ body: editedComment }), // Chỉ định nội dung bình luận mới
         }

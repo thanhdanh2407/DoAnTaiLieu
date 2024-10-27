@@ -121,7 +121,7 @@ function UpdateDocuments() {
         {
           method: "PUT",
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `${token}`,
           },
           body: formData,
         }

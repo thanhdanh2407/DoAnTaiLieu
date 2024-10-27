@@ -4,6 +4,7 @@ import {
   fetchDocumentSuccess,
   fetchDocumentFailure,
 } from "./actions";
+import { toast } from "react-toastify";
 
 export const loginSuccess = (user) => ({
   type: "LOGIN_SUCCESS",
@@ -17,6 +18,7 @@ export const loginFailure = (error) => ({
 
 // export const login = (email, password) => async (dispatch) => {
 //   dispatch({ type: "LOGIN_REQUEST" });
+
 //   try {
 //     const response = await fetch("http://localhost:8080/api/auth/login", {
 //       method: "POST",
@@ -28,15 +30,48 @@ export const loginFailure = (error) => ({
 
 //     if (!response.ok) {
 //       const errorData = await response.json();
-//       throw new Error(errorData.message || "Invalid email or password");
+
+//       // Kiểm tra nếu tài khoản bị khóa
+//       if (errorData.message.includes("Tài khoản của bạn đã bị khóa")) {
+//         throw new Error(
+//           "Tài khoản của bạn đã bị khóa. Vui lòng liên hệ với quản trị viên."
+//         );
+//       }
+
+//       // Nếu thông tin đăng nhập không hợp lệ
+//       throw new Error("Email hoặc mật khẩu không đúng.");
 //     }
 
 //     const token = await response.text();
 //     localStorage.setItem("authToken", token);
 
-//     dispatch(fetchUserInfo(token));
+//     const userInfoResponse = await fetch("http://localhost:8080/api/user/me", {
+//       headers: {
+//         Authorization: `${token}`,
+//       },
+//     });
+
+//     if (!userInfoResponse.ok) {
+//       throw new Error("Không thể lấy thông tin người dùng.");
+//     }
+
+//     const userInfo = await userInfoResponse.json();
+//     localStorage.setItem("user", JSON.stringify(userInfo));
+
+//     // Kiểm tra nếu tài khoản đã được kích hoạt
+//     if (!userInfo.enabled) {
+//       localStorage.removeItem("authToken");
+//       localStorage.removeItem("user");
+//       throw new Error(
+//         "Tài khoản của bạn chưa được kích hoạt. Vui lòng kiểm tra email."
+//       );
+//     }
+
+//     // Dispatch thông tin đăng nhập thành công
+//     dispatch({ type: "LOGIN_SUCCESS", payload: userInfo });
 //   } catch (error) {
-//     dispatch(loginFailure(error.message));
+//     // Dispatch lỗi đăng nhập với thông điệp cụ thể
+//     dispatch({ type: "LOGIN_FAILURE", payload: error.message });
 //   }
 // };
 
@@ -94,7 +129,7 @@ export const fetchUserInfo = () => async (dispatch) => {
     const response = await fetch(`http://localhost:8080/api/user/me`, {
       method: "GET",
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `${token}`,
         "Content-Type": "application/json",
       },
     });
@@ -124,6 +159,27 @@ export const logout = () => (dispatch) => {
   dispatch({ type: "LOGOUT" });
 };
 
+// export const register = (formData) => async (dispatch) => {
+//   dispatch({ type: "REGISTER_REQUEST" });
+//   try {
+//     const response = await fetch("http://localhost:8080/api/auth/register", {
+//       method: "POST",
+//       body: formData,
+//     });
+
+//     if (!response.ok) {
+//       const errorText = await response.text();
+//       throw new Error(errorText || "Registration failed");
+//     }
+
+//     dispatch({
+//       type: "REGISTER_SUCCESS",
+//     });
+//   } catch (error) {
+//     console.error("Catch Error:", error);
+//     dispatch({ type: "REGISTER_FAILURE", payload: error.message });
+//   }
+// };
 export const register = (formData) => async (dispatch) => {
   dispatch({ type: "REGISTER_REQUEST" });
   try {
@@ -143,6 +199,7 @@ export const register = (formData) => async (dispatch) => {
   } catch (error) {
     console.error("Catch Error:", error);
     dispatch({ type: "REGISTER_FAILURE", payload: error.message });
+    throw error; // Rethrow to catch in component
   }
 };
 
@@ -248,7 +305,7 @@ export const updateUser = (userId, userData) => async (dispatch) => {
     const response = await fetch(`http://localhost:8080/api/user/update`, {
       method: "PUT",
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+        Authorization: `${localStorage.getItem("authToken")}`,
         // No need to set Content-Type header with FormData
       },
       body: formData,
@@ -311,7 +368,7 @@ export const fetchUserDocuments = () => async (dispatch) => {
   try {
     const response = await fetch("http://localhost:8080/api/documents", {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+        Authorization: `${localStorage.getItem("authToken")}`,
       },
     });
     const data = await response.json();

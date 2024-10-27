@@ -21,7 +21,7 @@ function ListUser() {
           "http://localhost:8080/api/user/by-document-count",
           {
             headers: {
-              Authorization: `Bearer ${authToken}`,
+              Authorization: `${authToken}`,
             },
           }
         );

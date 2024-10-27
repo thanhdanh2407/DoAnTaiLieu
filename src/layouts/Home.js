@@ -30,7 +30,7 @@ function Home() {
           {
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${authToken}`, // Add Authorization header
+              Authorization: `${authToken}`, // Add Authorization header
             },
           }
         );
