@@ -8,6 +8,7 @@ import { FiCheckCircle } from "react-icons/fi";
 import { FaEye } from "react-icons/fa";
 import avatarComment from "../assets/iconAva.png";
 import { VscSend } from "react-icons/vsc";
+import imgDocument from "../assets/itemDocument.png";
 
 function Detail() {
   const { id } = useParams();
@@ -291,265 +292,535 @@ function Detail() {
     }
   };
 
-  if (!document) return <p>Loading...</p>;
+  // if (!document) return <div className="loading">Loading...</div>;
 
+  // return (
+  //   <div className="containerDetail">
+  //     <div className="formDetail">
+  //       <div className="titleDetail">{document.title}</div>
+  //       <div className="imgContainerDetail">
+  //         <div className="left">
+  //           <img
+  //             src={document.image}
+  //             alt={document.title}
+  //             className="imgDetail"
+  //           />
+  //         </div>
+  //         <div className="right">
+  //           <div className="itemListDetail">
+  //             <TbClipboardList className="iconDetail" />
+  //             Thể loại: {document.categoryName}
+  //           </div>
+  //           <div className="itemListDetail">
+  //             <WiTime5 className="iconDetail" />
+  //             Thời Gian: {document.relativeUpdatedAt}
+  //           </div>
+  //           <div className="itemListDetail">
+  //             <LuUser2 className="iconDetail" />
+  //             Người Đăng: {document.author}
+  //           </div>
+  //           <div className="itemListAcpDetail">
+  //             <FiCheckCircle className="iconDetail" />
+  //             {document.approved ? "Chưa được duyệt" : " Đã duyệt"}
+  //           </div>
+  //           <div className="itemListDetail">
+  //             <FaEye className="iconDetail" />
+  //             Lượt xem: {document.view}
+  //           </div>
+  //         </div>
+  //       </div>
+  //       <div className="listPDF">
+  //         <iframe
+  //           src={document.pdfFiles}
+  //           width="100%"
+  //           height="1000px"
+  //           title="PDF Document"
+  //         />
+  //       </div>
+
+  //       <div className="containerComment">
+  //         <div className="titleComment">Bình luận</div>
+  //         <div className="listComment">
+  //           {comments.length > 0 ? (
+  //             comments.map((comment) => (
+  //               <div key={comment.id} className="itemComment">
+  //                 <div className="avatarComment">
+  //                   <img
+  //                     src={user?.avatar || avatarComment}
+  //                     alt="avatar"
+  //                     className="imgAva"
+  //                   />
+  //                 </div>
+  //                 <div className="containerCommentBody">
+  //                   <div className="commentRep">
+  //                     <div className="userComment">{comment.userName}</div>
+  //                     {editingCommentId === comment.id ? (
+  //                       <div className="bodyComment">
+  //                         <textarea
+  //                           value={editedComment}
+  //                           onChange={(e) => setEditedComment(e.target.value)}
+  //                           className="inputComment"
+  //                           onKeyDown={handleKeyPress}
+  //                         />
+  //                         <div
+  //                           className="btnSend"
+  //                           onClick={() => handleEditComment(comment.id)}
+  //                         >
+  //                           <VscSend className="iconSend" />
+  //                         </div>
+  //                       </div>
+  //                     ) : (
+  //                       <div className="bodyComment">{comment.content}</div>
+  //                     )}
+  //                   </div>
+  //                   <div className="repComment">
+  //                     <span
+  //                       className="itemRep"
+  //                       onClick={() => setReplyCommentId(comment.id)}
+  //                     >
+  //                       Trả lời
+  //                     </span>
+  //                     <span
+  //                       className="itemFix"
+  //                       onClick={() => {
+  //                         setEditingCommentId(comment.id);
+  //                         setEditedComment(comment.content);
+  //                       }}
+  //                     >
+  //                       Chỉnh sửa
+  //                     </span>
+  //                     <span
+  //                       className="itemDel"
+  //                       onClick={() => handleDeleteComment(comment.id)}
+  //                     >
+  //                       Xoá
+  //                     </span>
+  //                   </div>
+
+  //                   {replyCommentId === comment.id && (
+  //                     <div className="replyBox">
+  //                       <textarea
+  //                         className="inputComment"
+  //                         value={reply}
+  //                         onChange={(e) => setReply(e.target.value)}
+  //                         placeholder="Nhập bình luận của bạn..."
+  //                         onKeyDown={handleKeyPress}
+  //                       />
+  //                       <div
+  //                         className="btnSend"
+  //                         onClick={() => handleReplySubmit(comment.id)}
+  //                       >
+  //                         <VscSend className="iconSend" />
+  //                       </div>
+  //                     </div>
+  //                   )}
+
+  //                   {comment.replies && comment.replies.length > 0 && (
+  //                     <div className="replies">
+  //                       <div className="titleRepComment">Trả lời bình luận</div>
+  //                       {comment.replies.map((reply) => (
+  //                         <div key={reply.id} className="itemReply">
+  //                           <div className="avatarComment">
+  //                             <img
+  //                               src={user.avatar}
+  //                               alt={user.fullname}
+  //                               className="imgAva"
+  //                             />
+  //                           </div>
+  //                           <div className="containerRepComment">
+  //                             <div className="userReply">{reply.userName}</div>
+  //                             <div className="bodyReply">
+  //                               {editingReplyId === reply.id ? (
+  //                                 <div>
+  //                                   <textarea
+  //                                     value={editedReply}
+  //                                     onChange={(e) =>
+  //                                       setEditedReply(e.target.value)
+  //                                     }
+  //                                     className="inputReply"
+  //                                     onKeyDown={handleKeyPress}
+  //                                   />
+  //                                   <div
+  //                                     className="btnSend"
+  //                                     onClick={() =>
+  //                                       handleEditReply(reply.id, comment.id)
+  //                                     }
+  //                                   >
+  //                                     <VscSend className="iconSend" />
+  //                                   </div>
+  //                                 </div>
+  //                               ) : (
+  //                                 <div className="repCommentReq">
+  //                                   {reply.content}
+  //                                 </div>
+  //                               )}
+  //                             </div>
+  //                             <span
+  //                               className="itemFixRep"
+  //                               onClick={() => setReplyToReplyId(reply.id)}
+  //                             >
+  //                               Trả lời
+  //                             </span>
+  //                             {replyToReplyId === reply.id && (
+  //                               <div className="replyToReplySection">
+  //                                 <textarea
+  //                                   value={replyToReply}
+  //                                   onKeyDown={handleKeyPress}
+  //                                   onChange={(e) =>
+  //                                     setReplyToReply(e.target.value)
+  //                                   }
+  //                                   className="inputComment"
+  //                                   placeholder="Nhập trả lời của bạn..."
+  //                                 />
+  //                                 <div
+  //                                   className="btnSend"
+  //                                   onClick={() =>
+  //                                     handleReplyToReplySubmit(
+  //                                       reply.id,
+  //                                       comment.id
+  //                                     )
+  //                                   }
+  //                                 >
+  //                                   <VscSend className="iconSend" />
+  //                                 </div>
+  //                               </div>
+  //                             )}
+  //                             {reply.replies && reply.replies.length > 0 && (
+  //                               <div className="repliesToRepliesList">
+  //                                 {reply.replies.map((replyToReply) => (
+  //                                   <div
+  //                                     key={replyToReply.id}
+  //                                     className="itemReplyToReply"
+  //                                   >
+  //                                     <div className="avatarComment">
+  //                                       <img
+  //                                         src={user?.avatar || avatarComment}
+  //                                         alt="avatar"
+  //                                         className="imgAva"
+  //                                       />
+  //                                     </div>
+  //                                     <div className="containerCommentBody">
+  //                                       <div className="userComment">
+  //                                         {replyToReply.userName}
+  //                                       </div>
+  //                                       <div className="bodyCommentRepToRep">
+  //                                         {replyToReply.content}
+  //                                       </div>
+  //                                     </div>
+  //                                   </div>
+  //                                 ))}
+  //                               </div>
+  //                             )}
+  //                           </div>
+  //                         </div>
+  //                       ))}
+  //                     </div>
+  //                   )}
+  //                 </div>
+  //               </div>
+  //             ))
+  //           ) : (
+  //             <p className="titleNotice">Chưa có bình luận nào</p>
+  //           )}
+  //         </div>
+  //         <div className="itemComment">
+  //           <div className="avatarComment">
+  //             <img
+  //               src={user?.avatar || avatarComment}
+  //               alt="avatar"
+  //               className="imgAva"
+  //             />
+  //           </div>
+  //           <div className="comment">
+  //             <div className="userComment">
+  //               {user ? user.fullname : "Người dùng"}
+  //             </div>
+  //             <div className="bodyComment">
+  //               <textarea
+  //                 className="inputComment"
+  //                 type="text"
+  //                 value={comment}
+  //                 onChange={(e) => setComment(e.target.value)}
+  //                 onKeyDown={handleKeyPress}
+  //               />
+  //               <div className="btnSend" onClick={handleCommentSubmit}>
+  //                 <VscSend className="iconSend" />
+  //               </div>
+  //             </div>
+  //           </div>
+  //         </div>
+  //       </div>
+  //     </div>
+  //   </div>
+  // );
   return (
     <div className="containerDetail">
-      <div className="formDetail">
-        <div className="titleDetail">{document.title}</div>
-        <div className="imgContainerDetail">
-          <div className="left">
-            <img
-              src={document.image}
-              alt={document.title}
-              className="imgDetail"
+      {!document ? (
+        <div className="loading">Loading...</div>
+      ) : (
+        <div className="formDetail">
+          <div className="titleDetail">{document.title}</div>
+          <div className="imgContainerDetail">
+            <div className="left">
+              <img
+                src={document.image}
+                alt={document.title}
+                className="imgDetail"
+                onError={(e) => {
+                  e.target.src = imgDocument; // Thay đổi src nếu không tải được
+                }}
+              />
+            </div>
+            <div className="right">
+              <div className="itemListDetail">
+                <TbClipboardList className="iconDetail" />
+                Thể loại: {document.categoryName}
+              </div>
+              <div className="itemListDetail">
+                <WiTime5 className="iconDetail" />
+                Thời Gian: {document.relativeUpdatedAt}
+              </div>
+              <div className="itemListDetail">
+                <LuUser2 className="iconDetail" />
+                Người Đăng: {document.author}
+              </div>
+              <div className="itemListAcpDetail">
+                <FiCheckCircle className="iconDetail" />
+                {document.status}
+              </div>
+              <div className="itemListDetail">
+                <FaEye className="iconDetail" />
+                Lượt xem: {document.view}
+              </div>
+            </div>
+          </div>
+          <div className="listPDF">
+            <iframe
+              src={document.pdfFiles}
+              width="100%"
+              height="1000px"
+              title="PDF Document"
             />
           </div>
-          <div className="right">
-            <div className="itemListDetail">
-              <TbClipboardList className="iconDetail" />
-              Thể loại: {document.categoryName}
-            </div>
-            <div className="itemListDetail">
-              <WiTime5 className="iconDetail" />
-              Thời Gian: {document.relativeUpdatedAt}
-            </div>
-            <div className="itemListDetail">
-              <LuUser2 className="iconDetail" />
-              Người Đăng: {document.author}
-            </div>
-            <div className="itemListAcpDetail">
-              <FiCheckCircle className="iconDetail" />
-              {document.approved ? "Chưa được duyệt" : " Đã duyệt"}
-            </div>
-            <div className="itemListDetail">
-              <FaEye className="iconDetail" />
-              Lượt xem: {document.view}
-            </div>
-          </div>
-        </div>
-        <div className="listPDF">
-          <iframe
-            src={document.pdfFiles}
-            width="100%"
-            height="1000px"
-            title="PDF Document"
-          />
-        </div>
 
-        <div className="containerComment">
-          <div className="titleComment">Bình luận</div>
-          <div className="listComment">
-            {comments.length > 0 ? (
-              comments.map((comment) => (
-                <div key={comment.id} className="itemComment">
-                  <div className="avatarComment">
-                    <img
-                      src={user?.avatar || avatarComment}
-                      alt="avatar"
-                      className="imgAva"
-                    />
-                  </div>
-                  <div className="containerCommentBody">
-                    <div className="commentRep">
-                      <div className="userComment">{comment.userName}</div>
-                      {editingCommentId === comment.id ? (
-                        <div className="bodyComment">
+          <div className="containerComment">
+            <div className="titleComment">Bình luận</div>
+            <div className="listComment">
+              {comments.length > 0 ? (
+                comments.map((comment) => (
+                  <div key={comment.id} className="itemComment">
+                    <div className="avatarComment">
+                      <img
+                        src={user?.avatar || avatarComment}
+                        alt="avatar"
+                        className="imgAva"
+                      />
+                    </div>
+                    <div className="containerCommentBody">
+                      <div className="commentRep">
+                        <div className="userComment">{comment.userName}</div>
+                        {editingCommentId === comment.id ? (
+                          <div className="bodyComment">
+                            <textarea
+                              value={editedComment}
+                              onChange={(e) => setEditedComment(e.target.value)}
+                              className="inputComment"
+                              onKeyDown={handleKeyPress}
+                            />
+                            <div
+                              className="btnSend"
+                              onClick={() => handleEditComment(comment.id)}
+                            >
+                              <VscSend className="iconSend" />
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="bodyComment">{comment.content}</div>
+                        )}
+                      </div>
+                      <div className="repComment">
+                        <span
+                          className="itemRep"
+                          onClick={() => setReplyCommentId(comment.id)}
+                        >
+                          Trả lời
+                        </span>
+                        <span
+                          className="itemFix"
+                          onClick={() => {
+                            setEditingCommentId(comment.id);
+                            setEditedComment(comment.content);
+                          }}
+                        >
+                          Chỉnh sửa
+                        </span>
+                        <span
+                          className="itemDel"
+                          onClick={() => handleDeleteComment(comment.id)}
+                        >
+                          Xoá
+                        </span>
+                      </div>
+
+                      {replyCommentId === comment.id && (
+                        <div className="replyBox">
                           <textarea
-                            value={editedComment}
-                            onChange={(e) => setEditedComment(e.target.value)}
                             className="inputComment"
+                            value={reply}
+                            onChange={(e) => setReply(e.target.value)}
+                            placeholder="Nhập bình luận của bạn..."
                             onKeyDown={handleKeyPress}
                           />
                           <div
                             className="btnSend"
-                            onClick={() => handleEditComment(comment.id)}
+                            onClick={() => handleReplySubmit(comment.id)}
                           >
                             <VscSend className="iconSend" />
                           </div>
                         </div>
-                      ) : (
-                        <div className="bodyComment">{comment.content}</div>
                       )}
-                    </div>
-                    <div className="repComment">
-                      <span
-                        className="itemRep"
-                        onClick={() => setReplyCommentId(comment.id)}
-                      >
-                        Trả lời
-                      </span>
-                      <span
-                        className="itemFix"
-                        onClick={() => {
-                          setEditingCommentId(comment.id);
-                          setEditedComment(comment.content);
-                        }}
-                      >
-                        Chỉnh sửa
-                      </span>
-                      <span
-                        className="itemDel"
-                        onClick={() => handleDeleteComment(comment.id)}
-                      >
-                        Xoá
-                      </span>
-                    </div>
 
-                    {replyCommentId === comment.id && (
-                      <div className="replyBox">
-                        <textarea
-                          className="inputComment"
-                          value={reply}
-                          onChange={(e) => setReply(e.target.value)}
-                          placeholder="Nhập bình luận của bạn..."
-                          onKeyDown={handleKeyPress}
-                        />
-                        <div
-                          className="btnSend"
-                          onClick={() => handleReplySubmit(comment.id)}
-                        >
-                          <VscSend className="iconSend" />
-                        </div>
-                      </div>
-                    )}
-
-                    {comment.replies && comment.replies.length > 0 && (
-                      <div className="replies">
-                        <div className="titleRepComment">Trả lời bình luận</div>
-                        {comment.replies.map((reply) => (
-                          <div key={reply.id} className="itemReply">
-                            <div className="avatarComment">
-                              <img
-                                src={user.avatar}
-                                alt={user.fullname}
-                                className="imgAva"
-                              />
-                            </div>
-                            <div className="containerRepComment">
-                              <div className="userReply">{reply.userName}</div>
-                              <div className="bodyReply">
-                                {editingReplyId === reply.id ? (
-                                  <div>
+                      {comment.replies && comment.replies.length > 0 && (
+                        <div className="replies">
+                          <div className="titleRepComment">
+                            Trả lời bình luận
+                          </div>
+                          {comment.replies.map((reply) => (
+                            <div key={reply.id} className="itemReply">
+                              <div className="avatarComment">
+                                <img
+                                  src={user.avatar}
+                                  alt={user.fullname}
+                                  className="imgAva"
+                                />
+                              </div>
+                              <div className="containerRepComment">
+                                <div className="userReply">
+                                  {reply.userName}
+                                </div>
+                                <div className="bodyReply">
+                                  {editingReplyId === reply.id ? (
+                                    <div>
+                                      <textarea
+                                        value={editedReply}
+                                        onChange={(e) =>
+                                          setEditedReply(e.target.value)
+                                        }
+                                        className="inputReply"
+                                        onKeyDown={handleKeyPress}
+                                      />
+                                      <div
+                                        className="btnSend"
+                                        onClick={() =>
+                                          handleEditReply(reply.id, comment.id)
+                                        }
+                                      >
+                                        <VscSend className="iconSend" />
+                                      </div>
+                                    </div>
+                                  ) : (
+                                    <div className="repCommentReq">
+                                      {reply.content}
+                                    </div>
+                                  )}
+                                </div>
+                                <span
+                                  className="itemFixRep"
+                                  onClick={() => setReplyToReplyId(reply.id)}
+                                >
+                                  Trả lời
+                                </span>
+                                {replyToReplyId === reply.id && (
+                                  <div className="replyToReplySection">
                                     <textarea
-                                      value={editedReply}
-                                      onChange={(e) =>
-                                        setEditedReply(e.target.value)
-                                      }
-                                      className="inputReply"
+                                      value={replyToReply}
                                       onKeyDown={handleKeyPress}
+                                      onChange={(e) =>
+                                        setReplyToReply(e.target.value)
+                                      }
+                                      className="inputComment"
+                                      placeholder="Nhập trả lời của bạn..."
                                     />
                                     <div
                                       className="btnSend"
                                       onClick={() =>
-                                        handleEditReply(reply.id, comment.id)
+                                        handleReplyToReplySubmit(
+                                          reply.id,
+                                          comment.id
+                                        )
                                       }
                                     >
                                       <VscSend className="iconSend" />
                                     </div>
                                   </div>
-                                ) : (
-                                  <div className="repCommentReq">
-                                    {reply.content}
+                                )}
+                                {reply.replies && reply.replies.length > 0 && (
+                                  <div className="repliesToRepliesList">
+                                    {reply.replies.map((replyToReply) => (
+                                      <div
+                                        key={replyToReply.id}
+                                        className="itemReplyToReply"
+                                      >
+                                        <div className="avatarComment">
+                                          <img
+                                            src={user?.avatar || avatarComment}
+                                            alt="avatar"
+                                            className="imgAva"
+                                          />
+                                        </div>
+                                        <div className="containerCommentBody">
+                                          <div className="userComment">
+                                            {replyToReply.userName}
+                                          </div>
+                                          <div className="bodyCommentRepToRep">
+                                            {replyToReply.content}
+                                          </div>
+                                        </div>
+                                      </div>
+                                    ))}
                                   </div>
                                 )}
                               </div>
-                              <span
-                                className="itemFixRep"
-                                onClick={() => setReplyToReplyId(reply.id)}
-                              >
-                                Trả lời
-                              </span>
-                              {replyToReplyId === reply.id && (
-                                <div className="replyToReplySection">
-                                  <textarea
-                                    value={replyToReply}
-                                    onKeyDown={handleKeyPress}
-                                    onChange={(e) =>
-                                      setReplyToReply(e.target.value)
-                                    }
-                                    className="inputComment"
-                                    placeholder="Nhập trả lời của bạn..."
-                                  />
-                                  <div
-                                    className="btnSend"
-                                    onClick={() =>
-                                      handleReplyToReplySubmit(
-                                        reply.id,
-                                        comment.id
-                                      )
-                                    }
-                                  >
-                                    <VscSend className="iconSend" />
-                                  </div>
-                                </div>
-                              )}
-                              {reply.replies && reply.replies.length > 0 && (
-                                <div className="repliesToRepliesList">
-                                  {reply.replies.map((replyToReply) => (
-                                    <div
-                                      key={replyToReply.id}
-                                      className="itemReplyToReply"
-                                    >
-                                      <div className="avatarComment">
-                                        <img
-                                          src={user?.avatar || avatarComment}
-                                          alt="avatar"
-                                          className="imgAva"
-                                        />
-                                      </div>
-                                      <div className="containerCommentBody">
-                                        <div className="userComment">
-                                          {replyToReply.userName}
-                                        </div>
-                                        <div className="bodyCommentRepToRep">
-                                          {replyToReply.content}
-                                        </div>
-                                      </div>
-                                    </div>
-                                  ))}
-                                </div>
-                              )}
                             </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))
-            ) : (
-              <p className="titleNotice">Chưa có bình luận nào</p>
-            )}
-          </div>
-          <div className="itemComment">
-            <div className="avatarComment">
-              <img
-                src={user?.avatar || avatarComment}
-                alt="avatar"
-                className="imgAva"
-              />
+                ))
+              ) : (
+                <p className="titleNotice">Chưa có bình luận nào</p>
+              )}
             </div>
-            <div className="comment">
-              <div className="userComment">
-                {user ? user.fullname : "Người dùng"}
-              </div>
-              <div className="bodyComment">
-                <textarea
-                  className="inputComment"
-                  type="text"
-                  value={comment}
-                  onChange={(e) => setComment(e.target.value)}
-                  onKeyDown={handleKeyPress}
+            <div className="itemComment">
+              <div className="avatarComment">
+                <img
+                  src={user?.avatar || avatarComment}
+                  alt="avatar"
+                  className="imgAva"
                 />
-                <div className="btnSend" onClick={handleCommentSubmit}>
-                  <VscSend className="iconSend" />
+              </div>
+              <div className="comment">
+                <div className="userComment">
+                  {user ? user.fullname : "Người dùng"}
+                </div>
+                <div className="bodyComment">
+                  <textarea
+                    className="inputComment"
+                    type="text"
+                    value={comment}
+                    onChange={(e) => setComment(e.target.value)}
+                    onKeyDown={handleKeyPress}
+                  />
+                  <div className="btnSend" onClick={handleCommentSubmit}>
+                    <VscSend className="iconSend" />
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

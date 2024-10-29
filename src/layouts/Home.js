@@ -78,6 +78,9 @@ function Home() {
                 src={item.image || imgDocument}
                 alt={item.title}
                 className="imgHomeNew"
+                onError={(e) => {
+                  e.target.src = imgDocument; // Thay đổi src nếu không tải được
+                }}
               />
               <div className="listInfoHome">
                 <div className="titleInfo">{item.title}</div>

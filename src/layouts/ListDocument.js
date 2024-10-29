@@ -10,6 +10,7 @@ import { BsSortDown, BsSortDownAlt } from "react-icons/bs";
 import Button from "../components/Button";
 import { FaEye } from "react-icons/fa";
 import "./css/index.css";
+import imgDocument from "../assets/itemDocument.png";
 
 function ListDocument() {
   const [documents, setDocuments] = useState([]);
@@ -116,31 +117,31 @@ function ListDocument() {
               Xem ít nhất
             </Button> */}
             <Button
-              className="buttonSort"
+              className="buttonSortToast"
               onClick={() => handleSortChange("createdAt")}
             >
               Ngày tạo mới nhất
             </Button>
             <Button
-              className="buttonSort"
+              className="buttonSortToast"
               onClick={() => handleSortChange("createdAt_asc")}
             >
               Ngày tạo cũ nhất
             </Button>
             <Button
-              className="buttonSort"
+              className="buttonSortToast"
               onClick={() => handleSortChange("a_to_z")}
             >
               Từ A - Z
             </Button>
             <Button
-              className="buttonSort"
+              className="buttonSortToast"
               onClick={() => handleSortChange("z_to_a")}
             >
               Từ Z - A
             </Button>
             <Button
-              className="buttonSort"
+              className="buttonSortToast"
               onClick={() => handleShowAllDocuments()}
             >
               Tất cả
@@ -166,6 +167,9 @@ function ListDocument() {
                 src={doc.image}
                 alt={doc.title}
                 className="imgDocumentList"
+                onError={(e) => {
+                  e.target.src = imgDocument; // Thay đổi src nếu không tải được
+                }}
               />
               <div className="listInfo">
                 <div className="titleInfo">{doc.title}</div>

@@ -21,7 +21,8 @@ function User() {
   const [role, setRole] = useState("");
   const [documents, setDocuments] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
-  const [filter, setFilter] = useState("all"); // Add filter state
+  const [filter, setFilter] = useState("all");
+  const [loading, setLoading] = useState(false); // Add loading state
 
   useEffect(() => {
     if (token) {
@@ -43,14 +44,13 @@ function User() {
 
   useEffect(() => {
     if (token) {
-      // Adjust the API endpoint based on the filter
+      setLoading(true); // Start loading
       let endpoint = "http://localhost:8080/api/documents/my";
       if (filter === "created") {
         endpoint += "/created";
       } else if (filter === "verified") {
         endpoint += "/verified";
       } else if (filter === "rejected") {
-        // Add condition for rejected documents
         endpoint += "/rejected";
       }
 
@@ -70,19 +70,10 @@ function User() {
         })
         .catch((error) => {
           console.error("Error fetching documents:", error);
-        });
+        })
+        .finally(() => setLoading(false)); // Stop loading
     }
-  }, [token, user, filter]); // Add filter to the dependency array
-
-  // Kiểm tra xem người dùng có bị khóa không
-  if (user && !user.enabled) {
-    return (
-      <div className="lockedUser">
-        <h2>Tài khoản của bạn đã bị khóa!</h2>
-        <p>Vui lòng liên hệ với quản trị viên để biết thêm chi tiết.</p>
-      </div>
-    );
-  }
+  }, [token, user, filter]);
 
   const itemsPerPage = 8;
   const offset = currentPage * itemsPerPage;
@@ -136,24 +127,31 @@ function User() {
 
   const handleCreatedDocuments = () => {
     setFilter("created");
-    setCurrentPage(0); // Reset to the first page when changing filter
+    setCurrentPage(0);
   };
 
   const handleVerifiedDocuments = () => {
     setFilter("verified");
-    setCurrentPage(0); // Reset to the first page when changing filter
+    setCurrentPage(0);
   };
 
   const handleRejectedDocuments = () => {
     setFilter("rejected");
-    setCurrentPage(0); // Reset to the first page when changing filter
+    setCurrentPage(0);
   };
 
   return (
     <div className="containerUser">
       <div className="formUser">
         <div className="avatarContainer">
-          <img src={avatarUrl} alt="avatar" className="avatar" />
+          <img
+            src={avatarUrl}
+            alt="avatar"
+            className="avatar"
+            onError={(e) => {
+              e.target.src = defaultAvatar; // Thay đổi src nếu không tải được
+            }}
+          />
           <div className="titleRole">{role || "Người Dùng"}</div>
         </div>
         <div className="titleNameUser">{user?.fullname || "Name"}</div>
@@ -215,77 +213,158 @@ function User() {
         </div>
       </div>
 
-      <div className="height">
-        <div className="containerList">
-          {currentItems.map((item, index) => (
-            <div key={index} className="itemDocument">
-              <img
-                src={item.image || imgDocument}
-                alt={item.title}
-                className="imgDocument"
-              />
-              <div className="listInfo">
-                <div className="titleInfo">{item.title}</div>
-                <div className="listItemInfo">
-                  <TbClipboardList />
-                  Thể loại: {item.categoryName}
+      {/* {loading ? (
+        <div className="loadingMessage">Đang tải tài liệu...</div>
+      ) : (
+        <div className="height">
+          <div className="containerList">
+            {currentItems.map((item, index) => (
+              <div key={index} className="itemDocument">
+                <img
+                  src={item.image || imgDocument}
+                  alt={item.title}
+                  className="imgDocument"
+                />
+                <div className="listInfo">
+                  <div className="titleInfo">{item.title}</div>
+                  <div className="listItemInfo">
+                    <TbClipboardList />
+                    Thể loại: {item.categoryName}
+                  </div>
+                  <div className="listItemInfo">
+                    <WiTime5 />
+                    Thời gian: {item.relativeUpdatedAt}
+                  </div>
+                  <div className="listItemInfo">
+                    <LuUser2 />
+                    Người Đăng: {item.author}
+                  </div>
+                  <div className="listItemInfoAcp">
+                    <FiCheckCircle />
+                    {item.status}
+                  </div>
+                  <div className="star-rating">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <FaStar
+                        key={star}
+                        className={`star ${star <= 5 ? "filled" : ""}`}
+                      />
+                    ))}
+                  </div>
                 </div>
-                <div className="listItemInfo">
-                  <WiTime5 />
-                  Thời gian: {item.relativeUpdatedAt}
-                </div>
-                <div className="listItemInfo">
-                  <LuUser2 />
-                  Người Đăng: {item.author}
-                </div>
-                <div className="listItemInfoAcp">
-                  <FiCheckCircle />
-                  {item.status}
-                </div>
-                <div className="star-rating">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <FaStar
-                      key={star}
-                      className={`star ${star <= 5 ? "filled" : ""}`}
-                    />
-                  ))}
+                <div className="listItemFeature">
+                  <FaEye
+                    className="iconEye"
+                    title="Xem"
+                    onClick={() => handleViewClick(item.id)}
+                  />
+                  <label className="view">{item.view}</label>
+                  <FaEdit
+                    className="iconEdit"
+                    title="Chỉnh sửa"
+                    onClick={() => handleEditClick(item.id)}
+                  />
+                  <FaTrash
+                    className="iconTrash"
+                    title="Xóa"
+                    onClick={() => handleDeleteClick(item.id)}
+                  />
+                  <FaDownload className="iconDown" title="Tải xuống" />
                 </div>
               </div>
-              <div className="listItemFeature">
-                <FaEye
-                  className="iconEye"
-                  title="Xem"
-                  onClick={() => handleViewClick(item.id)}
-                />
-                <label className="view">{item.view}</label>
-                <FaEdit
-                  className="iconEdit"
-                  title="Chỉnh sửa"
-                  onClick={() => handleEditClick(item.id)}
-                />
-                <FaTrash
-                  className="iconTrash"
-                  title="Xóa"
-                  onClick={() => handleDeleteClick(item.id)}
-                />
-                <FaDownload className="iconDown" title="Tải về" />
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
+          <ReactPaginate
+            previousLabel={"Trước"}
+            nextLabel={"Sau"}
+            breakLabel={"..."}
+            pageCount={Math.ceil(documents.length / itemsPerPage)}
+            onPageChange={handlePageClick}
+            containerClassName={"pagination"}
+            activeClassName={"active"}
+          />
         </div>
-      </div>
+      )} */}
 
-      <ReactPaginate
-        previousLabel={"<"}
-        nextLabel={">"}
-        breakLabel={"..."}
-        pageCount={Math.ceil(documents.length / itemsPerPage)}
-        marginPagesDisplayed={2}
-        pageRangeDisplayed={5}
-        onPageChange={handlePageClick}
-        containerClassName={"pagination"}
-        activeClassName={"active"}
-      />
+      {loading ? (
+        <div className="loadingMessage">Đang tải tài liệu...</div>
+      ) : (
+        <div className="height">
+          {documents.length === 0 ? (
+            <div className="noDocumentsMessage">Không có tài liệu nào.</div>
+          ) : (
+            <div className="containerList">
+              {currentItems.map((item, index) => (
+                <div key={index} className="itemDocument">
+                  <img
+                    src={item.image || imgDocument}
+                    alt={item.title}
+                    className="imgDocument"
+                    onError={(e) => {
+                      e.target.src = imgDocument; // Thay đổi src nếu không tải được
+                    }}
+                  />
+                  <div className="listInfo">
+                    <div className="titleInfo">{item.title}</div>
+                    <div className="listItemInfo">
+                      <TbClipboardList />
+                      Thể loại: {item.categoryName}
+                    </div>
+                    <div className="listItemInfo">
+                      <WiTime5 />
+                      Thời gian: {item.relativeUpdatedAt}
+                    </div>
+                    <div className="listItemInfo">
+                      <LuUser2 />
+                      Người Đăng: {item.author}
+                    </div>
+                    <div className="listItemInfoAcp">
+                      <FiCheckCircle />
+                      {item.status}
+                    </div>
+                    <div className="star-rating">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <FaStar
+                          key={star}
+                          className={`star ${star <= 5 ? "filled" : ""}`}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                  <div className="listItemFeature">
+                    <FaEye
+                      className="iconEye"
+                      title="Xem"
+                      onClick={() => handleViewClick(item.id)}
+                    />
+                    <label className="view">{item.view}</label>
+                    <FaEdit
+                      className="iconEdit"
+                      title="Chỉnh sửa"
+                      onClick={() => handleEditClick(item.id)}
+                    />
+                    <FaTrash
+                      className="iconTrash"
+                      title="Xóa"
+                      onClick={() => handleDeleteClick(item.id)}
+                    />
+                    <FaDownload className="iconDown" title="Tải xuống" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+          <ReactPaginate
+            previousLabel={"←"}
+            nextLabel={" →"}
+            breakLabel={"..."}
+            pageCount={Math.ceil(documents.length / itemsPerPage)}
+            onPageChange={handlePageClick}
+            containerClassName={"pagination"}
+            activeClassName={"active"}
+          />
+        </div>
+      )}
     </div>
   );
 }

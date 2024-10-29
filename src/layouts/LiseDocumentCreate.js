@@ -6,6 +6,7 @@ import { FiCheckCircle } from "react-icons/fi";
 import ReactPaginate from "react-paginate";
 import { useNavigate } from "react-router-dom";
 import { FaStar, FaEye, FaEdit, FaTrash, FaDownload } from "react-icons/fa";
+import imgDocument from "../assets/itemDocument.png";
 
 function ListDocumentCreate() {
   const [documents, setDocuments] = useState([]);
@@ -74,6 +75,9 @@ function ListDocumentCreate() {
                   src={document.image}
                   alt={document.title}
                   className="imgDocument"
+                  onError={(e) => {
+                    e.target.src = imgDocument; // Thay đổi src nếu không tải được
+                  }}
                 />
                 <div className="listInfo">
                   <div className="titleInfo">{document.title}</div>

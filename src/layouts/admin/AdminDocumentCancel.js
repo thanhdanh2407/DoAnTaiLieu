@@ -4,7 +4,7 @@ import HeaderAdmin from "../../components/Admin/HeaderAdmin/HeaderAdmin";
 import { FaUser } from "react-icons/fa";
 import Button from "../../components/Button";
 import { FiSearch } from "react-icons/fi";
-import avatar from "../../assets/iconAva.png";
+import avatar from "../../assets/itemDocument.png";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
@@ -134,6 +134,9 @@ function AdminDocumentCancel() {
                           src={document.image || avatar}
                           alt="User"
                           className="userImage"
+                          onError={(e) => {
+                            e.target.src = avatar; // Thay đổi src nếu không tải được
+                          }}
                         />
                       </td>
                       <td>{document.title}</td>

@@ -30,6 +30,7 @@ function ForgotPassword() {
           progressClassName: "custom-progress",
         }
       );
+      setEmail("");
     } catch (error) {
       toast.error(error.message, {
         position: "top-center",

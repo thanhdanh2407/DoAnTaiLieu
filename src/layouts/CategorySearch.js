@@ -114,12 +114,12 @@ function CategorySearch() {
             ))}
           </div>
         ) : (
-          <div>Không có item nào trong danh mục này.</div>
+          <div className="noMess">Không có item nào trong danh mục này.</div>
         )}
       </div>
       <ReactPaginate
-        previousLabel={"<"}
-        nextLabel={">"}
+        previousLabel={"←"}
+        nextLabel={" →"}
         breakLabel={"..."}
         breakClassName={"break-me"}
         pageCount={Math.ceil(items.length / itemsPerPage)}

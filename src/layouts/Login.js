@@ -24,55 +24,9 @@ function Login() {
     (state) => state.auth
   );
 
-  // useEffect(() => {
-  //   if (loginAttempted) {
-  //     if (isAuthenticated) {
-  //       toast.success("Đăng nhập thành công!", {
-  //         position: "top-center",
-  //         autoClose: 3000,
-  //         closeOnClick: true,
-  //         className: "custom-toast",
-  //         progressClassName: "custom-progress",
-  //       });
-
-  //       const user = JSON.parse(localStorage.getItem("user"));
-  //       const role = user?.role;
-
-  //       if (role === "ADMIN") {
-  //         toast.info("Chào mừng bạn trở lại, Quản trị viên!", {
-  //           position: "top-center",
-  //           autoClose: 3000,
-  //           closeOnClick: true,
-  //           className: "custom-toast",
-  //           progressClassName: "custom-progress",
-  //         });
-  //         navigate("/admin");
-  //       } else {
-  //         navigate("/");
-  //       }
-  //     } else if (error) {
-  //       toast.error(getErrorMessage(error), {
-  //         position: "top-center",
-  //         autoClose: 3000,
-  //         closeOnClick: true,
-  //         className: "custom-toast",
-  //         progressClassName: "custom-progress",
-  //       });
-  //     }
-  //   }
-  // }, [isAuthenticated, error, loginAttempted, navigate]);
-
   useEffect(() => {
     if (loginAttempted) {
       if (isAuthenticated) {
-        // toast.success("Đăng nhập thành công!", {
-        //   position: "top-center",
-        //   autoClose: 3000,
-        //   closeOnClick: true,
-        //   className: "custom-toast",
-        //   progressClassName: "custom-progress",
-        // });
-
         const user = JSON.parse(localStorage.getItem("user"));
         const role = user?.role;
 

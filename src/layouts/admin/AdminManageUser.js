@@ -142,16 +142,10 @@ function AdminManageUser() {
           <div className="containerSearchAdmin">
             <span className="titleInfoAdmin">
               <FaUser className="iconUser" />
-              <span className="titleInfo">Thông tin người dùng</span>
+              <span className="titleInfo">
+                Thông tin người dùng đã tạo tài liệu
+              </span>
             </span>
-            {/* <div className="searchDocumentAdmin">
-              <input
-                type="text"
-                placeholder="Tìm kiếm tài liệu"
-                className="inputSearchAdmin"
-              />
-              <FiSearch className="searchIcon" />
-            </div> */}
           </div>
           <div className="infoDocumentAdmin">
             <div className="tableContainer">
@@ -230,21 +224,20 @@ function AdminManageUser() {
                 </tbody>
               </table>
             </div>
-
-            {pageCount > 1 && (
-              <ReactPaginate
-                previousLabel={"←"}
-                nextLabel={"→"}
-                breakLabel={"..."}
-                pageCount={pageCount}
-                marginPagesDisplayed={2}
-                pageRangeDisplayed={5}
-                onPageChange={handlePageClick}
-                containerClassName={"pagination"}
-                activeClassName={"active"}
-              />
-            )}
           </div>
+          {pageCount > 1 && (
+            <ReactPaginate
+              previousLabel={"←"}
+              nextLabel={"→"}
+              breakLabel={"..."}
+              pageCount={pageCount}
+              marginPagesDisplayed={2}
+              pageRangeDisplayed={5}
+              onPageChange={handlePageClick}
+              containerClassName={"pagination"}
+              activeClassName={"active"}
+            />
+          )}
         </div>
       </div>
     </div>

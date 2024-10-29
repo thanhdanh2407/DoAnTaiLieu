@@ -69,7 +69,7 @@ function ChangePassword() {
       });
       setError(null);
       setTimeout(() => {
-        navigate("/");
+        navigate("/user");
       }, 1000);
     } catch (err) {
       setError(err.message || "Đã xảy ra lỗi.");
@@ -87,7 +87,6 @@ function ChangePassword() {
     <div className="container">
       <div className="form">
         <div className="titleChangePassword">Thay đổi mật khẩu</div>
-        {error && <div className="errorMessage">{error}</div>}
         <form onSubmit={handleSubmit}>
           <div className="itemFormChangePassword">
             <label className="titleLabel" htmlFor="oldPassword">

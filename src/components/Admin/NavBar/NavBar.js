@@ -14,6 +14,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../../Redux/actions/authActions";
 import { MdOutlineCancel } from "react-icons/md";
+import { PiUserList } from "react-icons/pi";
 
 function NavBar() {
   const [isExpanded, setIsExpanded] = useState(true);
@@ -61,6 +62,9 @@ function NavBar() {
   const handleAdminCategoryClick = () => {
     navigate("/admin/adminManageCategory");
   };
+  const handleAdminListUserClick = () => {
+    navigate("/admin/adminListUser");
+  };
 
   const handleLogout = () => {
     dispatch(logout());
@@ -84,9 +88,18 @@ function NavBar() {
           >
             <FaUser />
             {isExpanded && (
-              <span className="titleAdminManege">Quản lí người dùng</span>
+              <span className="titleAdminManege">Người dùng tạo tài liệu</span>
             )}
           </div>
+          <div
+            className={`itemAdmin ${isExpanded ? "expanded" : "collapsed"}`}
+            onClick={handleAdminListUserClick}
+          >
+            <PiUserList />
+            {isExpanded && (
+              <span className="titleAdminManege">Quản lí người dùng</span>
+            )}
+          </div>{" "}
           <div
             className={`itemAdmin ${isExpanded ? "expanded" : "collapsed"}`}
             onClick={toggleDropdown}

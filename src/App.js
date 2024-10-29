@@ -38,6 +38,8 @@ import AccountStatusChecker from "./Redux/AccountStatusChecker";
 import ListDocumentVerifiedMy from "./layouts/ListDocumentVerifiedMy";
 import ListDocumentCreateMy from "./layouts/ListDocumentCreateMy";
 import AdminDocumentCancel from "./layouts/admin/AdminDocumentCancel";
+import AdminListUser from "./layouts/admin/AdminListUser";
+import AdminDetailUser from "./layouts/admin/AdminDetailUser";
 
 function App() {
   const dispatch = useDispatch();
@@ -146,6 +148,22 @@ function App() {
             element={
               <PrivateRoute role="ADMIN">
                 <AdminDetailDocument />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin/adminListUser"
+            element={
+              <PrivateRoute role="ADMIN">
+                <AdminListUser />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin/adminDetailUser/admin/users/:id"
+            element={
+              <PrivateRoute role="ADMIN">
+                <AdminDetailUser />
               </PrivateRoute>
             }
           />

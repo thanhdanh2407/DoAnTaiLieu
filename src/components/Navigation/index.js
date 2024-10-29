@@ -60,12 +60,6 @@ function Navigation() {
       <div className="containerItem" onClick={() => navigate("/listDocument")}>
         Tài liệu
       </div>
-      {/* <div
-        className="containerItem"
-        onClick={() => navigate("/createdocuments")}
-      >
-        Tạo tài liệu
-      </div> */}
       <div
         className="containerItem"
         onClick={() => {

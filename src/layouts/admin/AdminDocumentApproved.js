@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import NavBar from "../../components/Admin/NavBar/NavBar";
-import avatar from "../../assets/iconAva.png";
+import avatar from "../../assets/itemDocument.png";
 import { FaUser } from "react-icons/fa6";
 import { FiSearch } from "react-icons/fi";
 import Button from "../../components/Button";
@@ -164,6 +164,9 @@ function AdminDocumentApproved() {
                         src={document.image || avatar}
                         alt="User"
                         className="userImage"
+                        onError={(e) => {
+                          e.target.src = avatar; // Thay đổi src nếu không tải được
+                        }}
                       />
                     </td>
                     <td>{document.title}</td>

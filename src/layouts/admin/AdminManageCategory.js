@@ -103,12 +103,12 @@ function AdminManageCategory() {
               <span className="titleInfo">Quản lí thể loại</span>
             </span>
             <div className="searchDocumentAdmin">
-              <input
-                type="text"
-                placeholder="Tìm kiếm tài liệu"
-                className="inputSearchAdmin"
-              />
-              <FiSearch className="searchIcon" />
+              <button
+                className="btnAddAdmin"
+                onClick={handleAdminCreateCategoryClick}
+              >
+                Thêm
+              </button>
             </div>
           </div>
           <div className="infoDocumentAdmin">
@@ -135,12 +135,6 @@ function AdminManageCategory() {
                       <td>{index + 1}</td>
                       <td>{category.name}</td>
                       <td>
-                        <button
-                          className="btnAddAdmin"
-                          onClick={handleAdminCreateCategoryClick}
-                        >
-                          Thêm
-                        </button>
                         <button
                           className="btnUpdate"
                           onClick={() =>

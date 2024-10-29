@@ -8,6 +8,7 @@ import { LuUser2 } from "react-icons/lu";
 import { FiCheckCircle } from "react-icons/fi";
 import ReactPaginate from "react-paginate";
 import { FaStar, FaEye, FaEdit, FaTrash, FaDownload } from "react-icons/fa";
+import imgDocument from "../assets/itemDocument.png";
 
 function DetailSearch() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -127,6 +128,9 @@ function DetailSearch() {
                   src={item.image}
                   alt={item.title}
                   className="imgDetailSearch"
+                  onError={(e) => {
+                    e.target.src = imgDocument; // Thay đổi src nếu không tải được
+                  }}
                 />
                 <div className="listInfoDetailSearch">
                   <div className="titleInfo">{item.title}</div>
@@ -144,7 +148,7 @@ function DetailSearch() {
                   </div>
                   <div className="listItemInfoAcp">
                     <FiCheckCircle />
-                    {item.approved ? "Đã được duyệt" : "Chưa duyệt"}
+                    {item.status}
                   </div>
                   <div className="star-rating">
                     {[1, 2, 3, 4, 5].map((star) => (
