@@ -35,6 +35,28 @@ function Register() {
   const handleRegister = async (e) => {
     e.preventDefault();
 
+    if (!fullname.trim()) {
+      toast.error("Vui lòng nhập họ và tên đầy đủ", {
+        position: "top-center",
+        autoClose: 3000,
+        closeOnClick: true,
+        className: "custom-toast",
+        progressClassName: "custom-progress",
+      });
+      return;
+    }
+
+    if (!email.trim()) {
+      toast.error("Vui lòng nhập email", {
+        position: "top-center",
+        autoClose: 3000,
+        closeOnClick: true,
+        className: "custom-toast",
+        progressClassName: "custom-progress",
+      });
+      return;
+    }
+
     if (!address.trim()) {
       toast.error("Vui lòng nhập địa chỉ", {
         position: "top-center",
@@ -59,14 +81,25 @@ function Register() {
       return;
     }
 
-    // Validate password
-
     const passwordPattern =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%&*]).{6,}$/;
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%&*]).{8,}$/;
 
+    // Kiểm tra độ dài mật khẩu
+    if (password.length < 8 || repassword.length < 8) {
+      toast.error("Mật khẩu phải có ít nhất 8 ký tự", {
+        position: "top-center",
+        autoClose: 3000,
+        closeOnClick: true,
+        className: "custom-toast",
+        progressClassName: "custom-progress",
+      });
+      return;
+    }
+
+    // Kiểm tra định dạng mật khẩu
     if (!passwordPattern.test(password)) {
       toast.error(
-        "Mật khẩu phải có ít nhất 6 ký tự, bao gồm viết hoa, viết thường và ký tự đặc biệt là !@#$%&*",
+        "Mật khẩu phải bao gồm chữ hoa, chữ thường, ký tự số và ký tự đặc biệt là !@#$%&*",
         {
           position: "top-center",
           autoClose: 3000,
@@ -78,6 +111,7 @@ function Register() {
       return;
     }
 
+    // Kiểm tra khớp của mật khẩu và mật khẩu nhập lại
     if (password !== repassword) {
       toast.error("Mật khẩu không khớp", {
         position: "top-center",
@@ -90,38 +124,30 @@ function Register() {
     }
 
     const identifierPattern = /^(SV|GV)\d{6}$/;
-    // if (
-    //   (role === "STUDENT" && !identifier.startsWith("SV")) ||
-    //   (role === "TEACHER" && !identifier.startsWith("GV")) ||
-    //   !identifierPattern.test(identifier)
-    // ) {
-    //   toast.error(
-    //     "Mã số SV/GV phải bắt đầu bằng 'SV' cho học sinh hoặc 'GV' cho giáo viên và theo sau là 6 chữ số",
-    //     {
-    //       position: "top-center",
-    //       autoClose: 3000,
-    //       closeOnClick: true,
-    //       className: "custom-toast",
-    //       progressClassName: "custom-progress",
-    //     }
-    //   );
-    //   return;
-    // }
-    if (role === "STUDENT" || role === "TEACHER") {
-      const identifierPattern = /^(SV|GV)\d{6}$/; // Must start with SV or GV followed by 6 digits
-      if (!identifierPattern.test(identifier)) {
-        toast.error(
-          "Mã số SV/GV phải bắt đầu bằng 'SV' hoặc 'GV' và theo sau là 6 chữ số",
-          {
-            position: "top-center",
-            autoClose: 3000,
-            closeOnClick: true,
-            className: "custom-toast",
-            progressClassName: "custom-progress",
-          }
-        );
-        return;
-      }
+    if (role === "STUDENT" && !identifier.startsWith("SV")) {
+      toast.error(
+        "Mã số sinh viên phải bắt đầu bằng 'SV' và theo sau là 6 chữ số",
+        {
+          position: "top-center",
+          autoClose: 3000,
+          closeOnClick: true,
+          className: "custom-toast",
+          progressClassName: "custom-progress",
+        }
+      );
+      return;
+    } else if (role === "TEACHER" && !identifier.startsWith("GV")) {
+      toast.error(
+        "Mã số giáo viên phải bắt đầu bằng 'GV' và theo sau là 6 chữ số",
+        {
+          position: "top-center",
+          autoClose: 3000,
+          closeOnClick: true,
+          className: "custom-toast",
+          progressClassName: "custom-progress",
+        }
+      );
+      return;
     }
 
     const formData = new FormData();
