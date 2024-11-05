@@ -202,7 +202,6 @@ function Register() {
 
   return (
     <div className="container">
-      <ToastContainer />
       <form className="form" onSubmit={handleRegister}>
         <div className="titleRegister">Đăng ký</div>
         <div className="form-row">

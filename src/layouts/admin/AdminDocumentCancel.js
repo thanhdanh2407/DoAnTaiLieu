@@ -5,7 +5,7 @@ import { FaUser } from "react-icons/fa";
 import Button from "../../components/Button";
 import { FiSearch } from "react-icons/fi";
 import avatar from "../../assets/itemDocument.png";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
 function AdminDocumentCancel() {
@@ -43,7 +43,7 @@ function AdminDocumentCancel() {
   const handleDeleteDocument = async (id) => {
     const authToken = localStorage.getItem("authToken");
 
-    if (window.confirm("Are you sure you want to delete this document?")) {
+    if (window.confirm("Bạn có chắc là muốn xoá tài liệu này ?")) {
       try {
         const response = await fetch(
           `http://localhost:8080/api/admin/documents/${id}`,
@@ -101,14 +101,14 @@ function AdminDocumentCancel() {
               <FaUser className="iconUser" />
               <span className="titleInfo">Tài liệu bị từ chối</span>
             </span>
-            <div className="searchDocumentAdmin">
+            {/* <div className="searchDocumentAdmin">
               <input
                 type="text"
                 placeholder="Tìm kiếm tài liệu"
                 className="inputSearchAdmin"
               />
               <FiSearch className="searchIcon" />
-            </div>
+            </div> */}
           </div>
           <div className="infoDocumentAdmin">
             <table className="documentTable">
@@ -179,6 +179,15 @@ function AdminDocumentCancel() {
             </table>
           </div>
         </div>
+        <ToastContainer
+          position="top-center"
+          autoClose={3000}
+          hideProgressBar={false}
+          closeOnClick
+          pauseOnHover
+          draggable
+          pauseOnFocusLoss
+        />
       </div>
     </div>
   );

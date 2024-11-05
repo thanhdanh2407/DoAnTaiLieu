@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ReactPaginate from "react-paginate";
+import avatar from "../assets/iconAva.png";
 
 function ListUser() {
   const [users, setUsers] = useState([]);
@@ -55,6 +56,7 @@ function ListUser() {
       <div className="userTable">
         <div className="userTableHeader">
           <div className="userTableCell">STT</div>
+          <div className="userTableCell">Hình ảnh</div>
           <div className="userTableCell">Tên người dùng</div>
           <div className="userTableCell">Tổng tài liệu</div>
           <div className="userTableCell">Tổng lượt xem</div>
@@ -66,6 +68,16 @@ function ListUser() {
             onClick={() => handleUserClick(user.userId)}
           >
             <div className="userTableCell">{offset + index + 1}</div>
+            <div className="userTableCell">
+              <img
+                src={user.avatar || avatar}
+                alt="User"
+                className="userImage"
+                onError={(e) => {
+                  e.target.src = avatar;
+                }}
+              />
+            </div>
             <div className="userTableCell">{user.fullname}</div>
             <div className="userTableCell">{user.documentCount}</div>
             <div className="userTableCell">{user.totalViews}</div>

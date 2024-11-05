@@ -1308,6 +1308,7 @@
 
 .imgAva {
   margin-top: 1%;
+  height: 50px;
   width: 50px;
   border-radius: 50%;
 }
@@ -1459,6 +1460,23 @@
   font-size: 17px;
   font-weight: bold;
   border-radius: 10px;
+}
+.btnDownload {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 7px;
+  cursor: pointer;
+  width: 16%;
+  height: 50px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btnDownload:hover {
+  background-color: #0056b3;
+  transform: scale(1.05);
 }
 
 /* DetailSearch.js */
@@ -1669,7 +1687,7 @@
 
 .userTable {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 10px;
   background-color: #ececec;
   border-radius: 10px;

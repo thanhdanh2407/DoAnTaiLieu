@@ -5,6 +5,7 @@ import { FiSearch } from "react-icons/fi";
 import "./css/index.css";
 import { useNavigate } from "react-router-dom";
 import HeaderAdmin from "../../components/Admin/HeaderAdmin/HeaderAdmin";
+import { ToastContainer } from "react-toastify";
 
 function AdminManageCategory() {
   const [categories, setCategories] = useState([]); // State to hold categories
@@ -157,6 +158,15 @@ function AdminManageCategory() {
             </table>
           </div>
         </div>
+        <ToastContainer
+          position="top-center"
+          autoClose={3000}
+          hideProgressBar={false}
+          closeOnClick
+          pauseOnHover
+          draggable
+          pauseOnFocusLoss
+        />
       </div>
     </div>
   );

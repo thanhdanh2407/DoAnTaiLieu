@@ -36,9 +36,9 @@ function ListDocument() {
         : sortOrder === "createdAt_asc"
         ? `${baseURL}/sorted?sortBy=createdAt&order=asc`
         : sortOrder === "a_to_z"
-        ? `${baseURL}/sorted?sortBy=view&order=asc`
+        ? `${baseURL}/sorted?sortBy=title&order=asc`
         : sortOrder === "z_to_a"
-        ? `${baseURL}/sorted?sortBy=view&order=desc`
+        ? `${baseURL}/sorted?sortBy=title&order=desc`
         : baseURL;
 
     fetch(url)
@@ -179,11 +179,11 @@ function ListDocument() {
                 </div>
                 <div className="listItemInfo">
                   <WiTime5 />
-                  Thời gian: {doc.relativeUpdatedAt}
+                  Thời gian: {doc.relativeCreatedAt}
                 </div>
                 <div className="listItemInfo">
                   <LuUser2 />
-                  Người Đăng: {doc.author}
+                  {doc.userName}
                 </div>
                 <div className="listItemInfo">
                   <FaEye />

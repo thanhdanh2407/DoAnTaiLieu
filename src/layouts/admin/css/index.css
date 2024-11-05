@@ -253,8 +253,8 @@
 }
 
 .containerBtnAdd {
-  margin-left: 77%;
-  margin-right: 1%;
+  margin-left: 55%;
+  /* margin-right: 1%; */
 }
 
 .btnAdd {
@@ -263,6 +263,32 @@
   width: 100px;
   border-radius: 10px;
   border: 1px solid #ccc;
+}
+
+.btnAdd:hover {
+  background-color: greenyellow;
+  height: 40px;
+  width: 100px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.btnSortAdminDocument {
+  /* background-color: rgb(155, 216, 241); */
+  height: 40px;
+  width: 100px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+}
+
+.btnSortAdminDocument:hover {
+  background-color: rgb(155, 216, 241);
+  height: 40px;
+  width: 100px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 }
 
 .btnSortAdmin {
@@ -408,7 +434,7 @@
 }
 
 .containerBtn {
-  margin-top: -12px;
+  margin-top: 0px;
   margin-left: 10px;
 }
 

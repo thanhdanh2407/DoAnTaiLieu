@@ -4,10 +4,11 @@
 // import { FaUser } from "react-icons/fa6";
 // import "./css/index.css";
 // import HeaderAdmin from "../../components/Admin/HeaderAdmin/HeaderAdmin";
-// import { useNavigate } from "react-router-dom";
+// import { useNavigate, useParams } from "react-router-dom";
 // import ReactPaginate from "react-paginate";
 
 // function AdminListUser() {
+//   const { id } = useParams();
 //   const [users, setUsers] = useState([]);
 //   const [loading, setLoading] = useState(true);
 //   const [error, setError] = useState(null);
@@ -21,7 +22,7 @@
 //         const response = await fetch("http://localhost:8080/api/admin/users", {
 //           method: "GET",
 //           headers: {
-//             Authorization: `${localStorage.getItem("authToken")}`, // Lấy authToken từ localStorage
+//             Authorization: `${localStorage.getItem("authToken")}`,
 //             "Content-Type": "application/json",
 //           },
 //         });
@@ -54,6 +55,77 @@
 //     navigate(`/admin/adminDetailUser/admin/users/${userId}`);
 //   };
 
+//   const handleLockUser = async (userId) => {
+//     const authToken = localStorage.getItem("authToken");
+//     if (!authToken) {
+//       navigate("/login");
+//       return;
+//     }
+
+//     try {
+//       const response = await fetch(
+//         `http://localhost:8080/api/admin/users/${userId}/status?enabled=false`,
+//         {
+//           method: "PUT",
+//           headers: {
+//             Authorization: `${authToken}`,
+//             "Content-Type": "application/json",
+//           },
+//         }
+//       );
+
+//       if (!response.ok) {
+//         throw new Error("Failed to lock user");
+//       }
+
+//       alert("Tài khoản đã bị khoá thành công!");
+
+//       setUsers(
+//         users.map((user) =>
+//           user.userId === userId ? { ...user, status: "locked" } : user
+//         )
+//       );
+//     } catch (error) {
+//       console.error(error);
+//       alert("Failed to lock user");
+//     }
+//   };
+
+//   const handleUnlockUser = async (userId) => {
+//     const authToken = localStorage.getItem("authToken");
+//     if (!authToken) {
+//       navigate("/login");
+//       return;
+//     }
+
+//     try {
+//       const response = await fetch(
+//         `http://localhost:8080/api/admin/users/${userId}/status?enabled=true`,
+//         {
+//           method: "PUT",
+//           headers: {
+//             Authorization: `${authToken}`,
+//             "Content-Type": "application/json",
+//           },
+//         }
+//       );
+
+//       if (!response.ok) {
+//         throw new Error("Failed to unlock user");
+//       }
+
+//       alert("Tài khoản đã mở khoá thành công!");
+
+//       setUsers(
+//         users.map((user) =>
+//           user.userId === userId ? { ...user, status: "enabled" } : user
+//         )
+//       );
+//     } catch (error) {
+//       console.error(error);
+//       alert("Failed to unlock user");
+//     }
+//   };
 //   return (
 //     <div className="containerAdminManageUser">
 //       <div className="leftAdminManageUser">
@@ -99,7 +171,7 @@
 //                     </tr>
 //                   ) : (
 //                     currentUsers.map((user, index) => (
-//                       <tr key={user.userId}>
+//                       <tr key={user.id}>
 //                         <td>{offset + index + 1}</td>
 //                         <td>
 //                           <img
@@ -126,10 +198,39 @@
 //                             Xem
 //                           </button>
 //                         </td>
+//                         {/* <td>
+//                           <div className="dis">
+//                             <button
+//                               className="btnUnlock"
+//                               onClick={() => handleUnlockUser(user.id)}
+//                             >
+//                               Mở khóa
+//                             </button>
+//                             <button
+//                               className="btnLock"
+//                               onClick={() => handleLockUser(user.id)}
+//                             >
+//                               Khóa
+//                             </button>
+//                           </div>
+//                         </td> */}
 //                         <td>
 //                           <div className="dis">
-//                             <button className="btnUnlock">Mở khóa</button>
-//                             <button className="btnLock">Khóa</button>
+//                             {user.status === "locked" ? (
+//                               <button
+//                                 className="btnUnlock"
+//                                 onClick={() => handleUnlockUser(user.id)} // Thay user.userId bằng user.id nếu cần
+//                               >
+//                                 Mở khóa
+//                               </button>
+//                             ) : (
+//                               <button
+//                                 className="btnLock"
+//                                 onClick={() => handleLockUser(user.id)} // Thay user.userId bằng user.id nếu cần
+//                               >
+//                                 Khóa
+//                               </button>
+//                             )}
 //                           </div>
 //                         </td>
 //                       </tr>
@@ -166,11 +267,10 @@ import avatar from "../../assets/iconAva.png";
 import { FaUser } from "react-icons/fa6";
 import "./css/index.css";
 import HeaderAdmin from "../../components/Admin/HeaderAdmin/HeaderAdmin";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import ReactPaginate from "react-paginate";
 
 function AdminListUser() {
-  const { id } = useParams();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -242,9 +342,10 @@ function AdminListUser() {
 
       alert("Tài khoản đã bị khoá thành công!");
 
-      setUsers(
-        users.map((user) =>
-          user.userId === userId ? { ...user, status: "locked" } : user
+      // Cập nhật trạng thái của người dùng trong state
+      setUsers((prevUsers) =>
+        prevUsers.map((user) =>
+          user.id === userId ? { ...user, status: "locked" } : user
         )
       );
     } catch (error) {
@@ -278,9 +379,10 @@ function AdminListUser() {
 
       alert("Tài khoản đã mở khoá thành công!");
 
-      setUsers(
-        users.map((user) =>
-          user.userId === userId ? { ...user, status: "enabled" } : user
+      // Cập nhật trạng thái của người dùng trong state
+      setUsers((prevUsers) =>
+        prevUsers.map((user) =>
+          user.id === userId ? { ...user, status: "enabled" } : user
         )
       );
     } catch (error) {
@@ -288,6 +390,7 @@ function AdminListUser() {
       alert("Failed to unlock user");
     }
   };
+
   return (
     <div className="containerAdminManageUser">
       <div className="leftAdminManageUser">
@@ -333,7 +436,7 @@ function AdminListUser() {
                     </tr>
                   ) : (
                     currentUsers.map((user, index) => (
-                      <tr key={user.userId}>
+                      <tr key={user.id}>
                         <td>{offset + index + 1}</td>
                         <td>
                           <img
@@ -355,25 +458,28 @@ function AdminListUser() {
                         <td>
                           <button
                             className="btnOpen"
-                            onClick={() => handleUserClick(user.userId)}
+                            onClick={() => handleUserClick(user.id)}
                           >
                             Xem
                           </button>
                         </td>
                         <td>
                           <div className="dis">
-                            <button
-                              className="btnUnlock"
-                              onClick={() => handleUnlockUser(user.id)}
-                            >
-                              Mở khóa
-                            </button>
-                            <button
-                              className="btnLock"
-                              onClick={() => handleLockUser(user.id)}
-                            >
-                              Khóa
-                            </button>
+                            {user.status === "locked" ? (
+                              <button
+                                className="btnUnlock"
+                                onClick={() => handleUnlockUser(user.id)}
+                              >
+                                Mở khóa
+                              </button>
+                            ) : (
+                              <button
+                                className="btnLock"
+                                onClick={() => handleLockUser(user.id)}
+                              >
+                                Khóa
+                              </button>
+                            )}
                           </div>
                         </td>
                       </tr>

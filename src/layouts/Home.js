@@ -90,13 +90,11 @@ function Home() {
                 </div>
                 <div className="listItemInfoHome">
                   <WiTime5 />
-                  Thời gian: {item.relativeUpdatedAt}
+                  Thời gian: {item.relativeCreatedAt}
                 </div>
                 <div className="listItemInfoHome">
                   <LuUser2 />
-                  <span className="titleHomeUser">
-                    Người Đăng: {item.author}
-                  </span>
+                  <span className="titleHomeUser">{item.userName}</span>
                 </div>
                 <div className="listItemInfoHome">
                   <FaEye />

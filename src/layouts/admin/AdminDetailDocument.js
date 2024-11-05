@@ -8,6 +8,7 @@ import { LuUser2 } from "react-icons/lu";
 import { FiCheckCircle } from "react-icons/fi";
 import { FaEye } from "react-icons/fa";
 import { toast } from "react-toastify";
+import avatar from "../../assets/itemDocument.png";
 
 function AdminDetailDocument() {
   const { id } = useParams();
@@ -79,6 +80,9 @@ function AdminDetailDocument() {
                         src={document.image}
                         alt={document.title}
                         className="imgDetail"
+                        onError={(e) => {
+                          e.target.src = avatar;
+                        }}
                       />
                     </div>
                     <div className="right">
@@ -88,15 +92,15 @@ function AdminDetailDocument() {
                       </div>
                       <div className="itemListDetail">
                         <WiTime5 className="iconDetail" />
-                        Thời Gian: {document.relativeUpdatedAt}
+                        Thời Gian: {document.relativeCreatedAt}
                       </div>
                       <div className="itemListDetail">
                         <LuUser2 className="iconDetail" />
-                        Người Đăng: {document.author}
+                        {document.userName}
                       </div>
                       <div className="itemListAcpDetail">
                         <FiCheckCircle className="iconDetail" />
-                        {document.approved ? "Chưa được duyệt" : " Đã duyệt"}
+                        {document.status}
                       </div>
                       <div className="itemListDetail">
                         <FaEye className="iconDetail" />

@@ -98,11 +98,11 @@ function ListDocumentVerifiedMy() {
                   </div>
                   <div className="listItemInfo">
                     <WiTime5 />
-                    Thời gian: {document.relativeUpdatedAt}
+                    Thời gian: {document.relativeCreatedAt}
                   </div>
                   <div className="listItemInfo">
                     <LuUser2 />
-                    Người Đăng: {document.author}
+                    {document.userName}
                   </div>
                   <div className="listItemInfo">
                     <FaEye />

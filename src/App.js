@@ -40,6 +40,7 @@ import ListDocumentCreateMy from "./layouts/ListDocumentCreateMy";
 import AdminDocumentCancel from "./layouts/admin/AdminDocumentCancel";
 import AdminListUser from "./layouts/admin/AdminListUser";
 import AdminDetailUser from "./layouts/admin/AdminDetailUser";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   const dispatch = useDispatch();
@@ -175,6 +176,7 @@ function App() {
               </PrivateRoute>
             }
           />
+
           <Route
             path="*"
             element={
@@ -243,6 +245,7 @@ function App() {
                   />
                 </Routes>
                 <Footer />
+                <ToastContainer />
               </>
             }
           />

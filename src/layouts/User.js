@@ -32,13 +32,17 @@ function User() {
 
   useEffect(() => {
     if (user) {
-      setRole(
-        user.identifier?.startsWith("SV")
-          ? "Sinh Viên"
-          : user.identifier?.startsWith("GV")
-          ? "Giảng Viên"
-          : "Người Dùng"
-      );
+      setRole(() => {
+        if (user.role === "ADMIN") {
+          return "ADMIN";
+        } else if (user.identifier?.startsWith("SV")) {
+          return "Sinh Viên";
+        } else if (user.identifier?.startsWith("GV")) {
+          return "Giảng Viên";
+        } else {
+          return "Người Dùng";
+        }
+      });
     }
   }, [user]);
 
@@ -86,11 +90,12 @@ function User() {
   };
 
   const getFormattedIdentifier = () => {
+    if (user?.role === "ADMIN") return null;
     if (!user?.identifier) return null;
     return user.identifier.startsWith("SV")
       ? `Mã số SV: ${user.identifier}`
       : user.identifier.startsWith("GV")
-      ? `Mã số: ${user.identifier}`
+      ? `Mã số GV: ${user.identifier}`
       : null;
   };
 
@@ -149,7 +154,7 @@ function User() {
             alt="avatar"
             className="avatar"
             onError={(e) => {
-              e.target.src = defaultAvatar; // Thay đổi src nếu không tải được
+              e.target.src = defaultAvatar;
             }}
           />
           <div className="titleRole">{role || "Người Dùng"}</div>
@@ -213,79 +218,6 @@ function User() {
         </div>
       </div>
 
-      {/* {loading ? (
-        <div className="loadingMessage">Đang tải tài liệu...</div>
-      ) : (
-        <div className="height">
-          <div className="containerList">
-            {currentItems.map((item, index) => (
-              <div key={index} className="itemDocument">
-                <img
-                  src={item.image || imgDocument}
-                  alt={item.title}
-                  className="imgDocument"
-                />
-                <div className="listInfo">
-                  <div className="titleInfo">{item.title}</div>
-                  <div className="listItemInfo">
-                    <TbClipboardList />
-                    Thể loại: {item.categoryName}
-                  </div>
-                  <div className="listItemInfo">
-                    <WiTime5 />
-                    Thời gian: {item.relativeUpdatedAt}
-                  </div>
-                  <div className="listItemInfo">
-                    <LuUser2 />
-                    Người Đăng: {item.author}
-                  </div>
-                  <div className="listItemInfoAcp">
-                    <FiCheckCircle />
-                    {item.status}
-                  </div>
-                  <div className="star-rating">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <FaStar
-                        key={star}
-                        className={`star ${star <= 5 ? "filled" : ""}`}
-                      />
-                    ))}
-                  </div>
-                </div>
-                <div className="listItemFeature">
-                  <FaEye
-                    className="iconEye"
-                    title="Xem"
-                    onClick={() => handleViewClick(item.id)}
-                  />
-                  <label className="view">{item.view}</label>
-                  <FaEdit
-                    className="iconEdit"
-                    title="Chỉnh sửa"
-                    onClick={() => handleEditClick(item.id)}
-                  />
-                  <FaTrash
-                    className="iconTrash"
-                    title="Xóa"
-                    onClick={() => handleDeleteClick(item.id)}
-                  />
-                  <FaDownload className="iconDown" title="Tải xuống" />
-                </div>
-              </div>
-            ))}
-          </div>
-          <ReactPaginate
-            previousLabel={"Trước"}
-            nextLabel={"Sau"}
-            breakLabel={"..."}
-            pageCount={Math.ceil(documents.length / itemsPerPage)}
-            onPageChange={handlePageClick}
-            containerClassName={"pagination"}
-            activeClassName={"active"}
-          />
-        </div>
-      )} */}
-
       {loading ? (
         <div className="loadingMessage">Đang tải tài liệu...</div>
       ) : (
@@ -312,11 +244,11 @@ function User() {
                     </div>
                     <div className="listItemInfo">
                       <WiTime5 />
-                      Thời gian: {item.relativeUpdatedAt}
+                      Thời gian: {item.relativeCreatedAt}
                     </div>
                     <div className="listItemInfo">
                       <LuUser2 />
-                      Người Đăng: {item.author}
+                      {item.userName}
                     </div>
                     <div className="listItemInfoAcp">
                       <FiCheckCircle />

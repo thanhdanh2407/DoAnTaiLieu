@@ -15,67 +15,54 @@ function AdminAllDocument() {
   const [currentPage, setCurrentPage] = useState(0); // State for current page
   const itemsPerPage = 10; // Number of items per page
   const navigate = useNavigate();
+  const [sortOrder, setSortOrder] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const authToken = localStorage.getItem("authToken");
 
   // Function to fetch documents from the API
-  const fetchDocuments = async () => {
-    const authToken = localStorage.getItem("authToken"); // Get the token from local storage
+  const fetchDocuments = () => {
+    const baseURL = "http://localhost:8080/api/admin/documents";
+    const url =
+      sortOrder === "view"
+        ? `${baseURL}/sorted?sortBy=view&order=asc`
+        : sortOrder === "view_desc"
+        ? `${baseURL}/sorted?sortBy=view&order=desc`
+        : sortOrder === "createdAt"
+        ? `${baseURL}/sorted?sortBy=createdAt&order=desc`
+        : sortOrder === "createdAt_asc"
+        ? `${baseURL}/sorted?sortBy=createdAt&order=asc`
+        : sortOrder === "a_to_z"
+        ? `${baseURL}/sorted?sortBy=title&order=asc`
+        : sortOrder === "z_to_a"
+        ? `${baseURL}/sorted?sortBy=title&order=desc`
+        : baseURL;
 
-    try {
-      const response = await fetch(
-        "http://localhost:8080/api/admin/documents",
-        {
-          method: "GET",
-          headers: {
-            Authorization: `${authToken}`, // Set the Authorization header
-            "Content-Type": "application/json",
-          },
+    fetch(url, {
+      method: "GET",
+      headers: {
+        Authorization: `${authToken}`, // Include the auth token in the header
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
         }
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch documents");
-      }
-
-      const data = await response.json();
-      setDocuments(data); // Store the fetched documents in state
-    } catch (error) {
-      console.error("Error fetching documents:", error); // Log any errors
-      toast.error("Error fetching documents"); // Show error toast
-    }
-  };
-
-  // Function to sort documents by view count in descending order
-  const handleSortDocuments = async () => {
-    const authToken = localStorage.getItem("authToken"); // Get the token from local storage
-
-    try {
-      const response = await fetch(
-        "http://localhost:8080/api/admin/documents/sorted?sortBy=view&order=desc",
-        {
-          method: "GET",
-          headers: {
-            Authorization: `${authToken}`, // Set the Authorization header
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to sort documents");
-      }
-
-      const sortedData = await response.json();
-      setDocuments(sortedData); // Update the state with sorted documents
-      toast.success("Sắp xếp tài liệu thành công"); // Show success toast
-    } catch (error) {
-      console.error("Error sorting documents:", error); // Log any errors
-      toast.error("Error sorting documents"); // Show error toast
-    }
+        return response.json();
+      })
+      .then((data) => {
+        console.log(data);
+        setDocuments(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching documents:", error);
+        toast.error("Error fetching documents"); // Show error toast
+      });
   };
 
   useEffect(() => {
-    fetchDocuments(); // Fetch documents on component mount
-  }, []);
+    fetchDocuments();
+  }, [sortOrder]);
 
   // Calculate the number of pages based on the total number of documents
   const pageCount = Math.ceil(documents.length / itemsPerPage);
@@ -121,7 +108,7 @@ function AdminAllDocument() {
     const authToken = localStorage.getItem("authToken"); // Get the token from local storage
 
     // Confirmation dialog
-    if (window.confirm("Are you sure you want to delete this document?")) {
+    if (window.confirm("Bạn có muốn xoá tài liệu chứ")) {
       try {
         const response = await fetch(
           `http://localhost:8080/api/admin/documents/${id}`,
@@ -150,6 +137,17 @@ function AdminAllDocument() {
     }
   };
 
+  const handleSortChange = (order) => {
+    setSortOrder(order);
+    setCurrentPage(0);
+    setIsModalOpen(false);
+  };
+
+  const handleShowAllDocuments = () => {
+    setSortOrder("");
+    setCurrentPage(0);
+  };
+
   return (
     <div className="containerAdminAllDocument">
       <ToastContainer position="top-center" autoClose={5000} />{" "}
@@ -171,12 +169,68 @@ function AdminAllDocument() {
             >
               <Button className="btnAdd">Tạo tài liệu</Button>
             </div>
-            <div className="containerBtnSort">
-              <Button className="btnAdd" onClick={handleSortDocuments}>
-                Sắp xếp
-              </Button>
-            </div>
+            <Button
+              className="btnSortAdminDocument"
+              onClick={() => handleSortChange("view_desc")}
+            >
+              Xem nhiều nhất
+            </Button>
+            <Button
+              className="btnSortAdminDocument"
+              onClick={() => handleSortChange("view")}
+            >
+              Xem ít nhất
+            </Button>
+            <Button
+              className="btnSortAdminDocument"
+              onClick={() => setIsModalOpen(true)}
+            >
+              Xem thêm sắp xếp
+            </Button>
           </div>
+          {isModalOpen && (
+            <div className="modalOverlay">
+              <div className="sortModal">
+                <h2 className="titleSortDocument">Sắp xếp</h2>
+                <Button
+                  className="buttonSortToast"
+                  onClick={() => handleSortChange("createdAt")}
+                >
+                  Ngày tạo mới nhất
+                </Button>
+                <Button
+                  className="buttonSortToast"
+                  onClick={() => handleSortChange("createdAt_asc")}
+                >
+                  Ngày tạo cũ nhất
+                </Button>
+                <Button
+                  className="buttonSortToast"
+                  onClick={() => handleSortChange("a_to_z")}
+                >
+                  Từ A - Z
+                </Button>
+                <Button
+                  className="buttonSortToast"
+                  onClick={() => handleSortChange("z_to_a")}
+                >
+                  Từ Z - A
+                </Button>
+                <Button
+                  className="buttonSortToast"
+                  onClick={() => handleShowAllDocuments()}
+                >
+                  Tất cả
+                </Button>
+                <Button
+                  className="buttonClose"
+                  onClick={() => setIsModalOpen(false)}
+                >
+                  Đóng
+                </Button>
+              </div>
+            </div>
+          )}
           <div className="infoDocumentAdmin">
             <table className="documentTable">
               <thead>
@@ -199,11 +253,11 @@ function AdminAllDocument() {
                     <td>{offset + index + 1}</td>
                     <td>
                       <img
-                        src={document.image || avatar}
+                        src={document.image}
                         alt="User"
                         className="userImage"
                         onError={(e) => {
-                          e.target.src = avatar; // Thay đổi src nếu không tải được
+                          e.target.src = avatar;
                         }}
                       />
                     </td>

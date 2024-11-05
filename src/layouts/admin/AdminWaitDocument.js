@@ -5,7 +5,7 @@ import { FaUser } from "react-icons/fa6";
 import { FiSearch } from "react-icons/fi";
 import Button from "../../components/Button";
 import HeaderAdmin from "../../components/Admin/HeaderAdmin/HeaderAdmin";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import ReactPaginate from "react-paginate";
 import { useNavigate } from "react-router-dom";
 
@@ -45,7 +45,7 @@ function AdminWaitDocument() {
   const handleDeleteDocument = async (id) => {
     const authToken = localStorage.getItem("authToken");
 
-    if (window.confirm("Are you sure you want to delete this document?")) {
+    if (window.confirm("Bạn có chắc chắn muốn xoá tài liệu ?")) {
       try {
         const response = await fetch(
           `http://localhost:8080/api/admin/documents/${id}`,
@@ -179,17 +179,14 @@ function AdminWaitDocument() {
               <FaUser className="iconUser" />
               <span className="titleInfo">Tài liệu chờ duyệt</span>
             </span>
-            {/* <div className="containerBtnAdd">
-              <Button className="btnAdd">Tạo tài liệu</Button>
-            </div> */}
-            <div className="searchDocumentAdmin">
+            {/* <div className="searchDocumentAdmin">
               <input
                 type="text"
                 placeholder="Tìm kiếm tài liệu"
                 className="inputSearchAdmin"
               />
               <FiSearch className="searchIcon" />
-            </div>
+            </div> */}
           </div>
           <div className="infoDocumentAdmin">
             <table className="documentTable">
@@ -278,6 +275,15 @@ function AdminWaitDocument() {
             activeClassName={"active"}
           />
         </div>
+        <ToastContainer
+          position="top-center"
+          autoClose={3000}
+          hideProgressBar={false}
+          closeOnClick
+          pauseOnHover
+          draggable
+          pauseOnFocusLoss
+        />
       </div>
     </div>
   );

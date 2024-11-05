@@ -86,11 +86,11 @@ const Slider = () => {
               </div>
               <div className="listItemInfo">
                 <WiTime5 />
-                Thời gian: {item.relativeUpdatedAt}
+                Thời gian: {item.relativeCreatedAt}
               </div>
               <div className="listItemInfo">
                 <LuUser2 />
-                Người Đăng: {item.author}
+                {item.userName}
               </div>
               <div className="listItemInfo">
                 <FaEye />

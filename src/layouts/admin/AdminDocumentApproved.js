@@ -5,7 +5,7 @@ import { FaUser } from "react-icons/fa6";
 import { FiSearch } from "react-icons/fi";
 import Button from "../../components/Button";
 import HeaderAdmin from "../../components/Admin/HeaderAdmin/HeaderAdmin";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import ReactPaginate from "react-paginate"; // Import ReactPaginate
 import { useNavigate } from "react-router-dom";
 
@@ -47,7 +47,7 @@ function AdminDocumentApproved() {
     const authToken = localStorage.getItem("authToken"); // Get the token from local storage
 
     // Confirmation dialog
-    if (window.confirm("Are you sure you want to delete this document?")) {
+    if (window.confirm("Bạn có chắc là muốn xoá tài liệu ?")) {
       try {
         const response = await fetch(
           `http://localhost:8080/api/admin/documents/${id}`,
@@ -130,14 +130,14 @@ function AdminDocumentApproved() {
             {/* <div className="containerBtnAdd">
               <Button className="btnAdd">Tạo tài liệu</Button>
             </div> */}
-            <div className="searchDocumentAdmin">
+            {/* <div className="searchDocumentAdmin">
               <input
                 type="text"
                 placeholder="Tìm kiếm tài liệu"
                 className="inputSearchAdmin"
               />
               <FiSearch className="searchIcon" />
-            </div>
+            </div> */}
           </div>
           <div className="infoDocumentAdmin">
             <table className="documentTable">
@@ -225,6 +225,15 @@ function AdminDocumentApproved() {
             activeClassName={"active"}
           />
         </div>
+        <ToastContainer
+          position="top-center"
+          autoClose={3000}
+          hideProgressBar={false}
+          closeOnClick
+          pauseOnHover
+          draggable
+          pauseOnFocusLoss
+        />
       </div>
     </div>
   );

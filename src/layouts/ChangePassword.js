@@ -19,6 +19,10 @@ function ChangePassword() {
   const [showReNewPassword, setShowReNewPassword] = useState(false);
   const [error, setError] = useState(null);
 
+  // Password pattern validation
+  const passwordPattern =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%&*]).{8,}$/;
+
   const toggleOldPasswordVisibility = () => {
     setOldShowPassword(!showOldPassword);
   };
@@ -34,9 +38,33 @@ function ChangePassword() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!oldPassword || !newPassword || !reNewPassword) {
-      setError("Mật khẩu mới không khớp.");
-      toast.error("Mật khẩu mới không khớp.", {
+    if (!oldPassword) {
+      setError("Mật khẩu cũ không được để trống.");
+      toast.error("Mật khẩu cũ không được để trống.", {
+        position: "top-center",
+        autoClose: 3000,
+        closeOnClick: true,
+        className: "custom-toast",
+        progressClassName: "custom-progress",
+      });
+      return;
+    }
+
+    if (!newPassword) {
+      setError("Mật khẩu mới không được để trống.");
+      toast.error("Mật khẩu mới không được để trống.", {
+        position: "top-center",
+        autoClose: 3000,
+        closeOnClick: true,
+        className: "custom-toast",
+        progressClassName: "custom-progress",
+      });
+      return;
+    }
+
+    if (!reNewPassword) {
+      setError("Nhập lại mật khẩu mới không được để trống.");
+      toast.error("Nhập lại mật khẩu mới không được để trống.", {
         position: "top-center",
         autoClose: 3000,
         closeOnClick: true,
@@ -55,6 +83,23 @@ function ChangePassword() {
         className: "custom-toast",
         progressClassName: "custom-progress",
       });
+      return;
+    }
+
+    const passwordPattern =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%&*])[A-Za-z\d!@#$%&*]{8,}$/;
+
+    if (!passwordPattern.test(newPassword)) {
+      toast.error(
+        "Mật khẩu phải 8 ký tự và chỉ cho phép chữ hoa, chữ thường, ký tự số và ký tự đặc biệt là !@#$%&*",
+        {
+          position: "top-center",
+          autoClose: 3000,
+          closeOnClick: true,
+          className: "custom-toast",
+          progressClassName: "custom-progress",
+        }
+      );
       return;
     }
 

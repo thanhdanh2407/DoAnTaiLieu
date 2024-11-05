@@ -31,7 +31,7 @@ const ToastNotification = ({ error }) => {
     }
   }, [error]);
 
-  return <ToastContainer />;
+  return;
 };
 
 export default ToastNotification;

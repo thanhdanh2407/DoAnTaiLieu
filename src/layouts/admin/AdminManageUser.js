@@ -2,11 +2,10 @@ import React, { useEffect, useState } from "react";
 import NavBar from "../../components/Admin/NavBar/NavBar";
 import avatar from "../../assets/iconAva.png";
 import { FaUser } from "react-icons/fa6";
-import { FiSearch } from "react-icons/fi";
-import "./css/index.css";
-import HeaderAdmin from "../../components/Admin/HeaderAdmin/HeaderAdmin";
 import { useNavigate } from "react-router-dom";
 import ReactPaginate from "react-paginate";
+import "./css/index.css";
+import HeaderAdmin from "../../components/Admin/HeaderAdmin/HeaderAdmin";
 
 function AdminManageUser() {
   const [users, setUsers] = useState([]);
@@ -20,7 +19,9 @@ function AdminManageUser() {
     const authToken = localStorage.getItem("authToken");
     if (!authToken) {
       navigate("/login");
+      return;
     }
+
     const fetchUsers = async () => {
       setLoading(true);
       try {
@@ -34,7 +35,16 @@ function AdminManageUser() {
         );
         if (!response.ok) throw new Error("Failed to fetch users");
         const data = await response.json();
-        setUsers(data);
+
+        // Store user data in local storage
+        localStorage.setItem("usersData", JSON.stringify(data));
+
+        const updatedUsers = data.map((user) => ({
+          ...user,
+          status: user.enabled ? "enabled" : "locked", // Determine initial status
+        }));
+
+        setUsers(updatedUsers);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -42,7 +52,14 @@ function AdminManageUser() {
       }
     };
 
-    fetchUsers();
+    // Load users from local storage if available
+    const localUsersData = localStorage.getItem("usersData");
+    if (localUsersData) {
+      setUsers(JSON.parse(localUsersData));
+      setLoading(false); // Assume local data is available, so stop loading
+    } else {
+      fetchUsers();
+    }
   }, [navigate]);
 
   const handleUserClick = (userId) => {
@@ -51,7 +68,7 @@ function AdminManageUser() {
     );
   };
 
-  const handleLockUser = async (userId) => {
+  const updateUserStatus = async (userId, status) => {
     const authToken = localStorage.getItem("authToken");
     if (!authToken) {
       navigate("/login");
@@ -60,7 +77,7 @@ function AdminManageUser() {
 
     try {
       const response = await fetch(
-        `http://localhost:8080/api/admin/users/${userId}/status?enabled=false`,
+        `http://localhost:8080/api/admin/users/${userId}/status?enabled=${status}`,
         {
           method: "PUT",
           headers: {
@@ -71,55 +88,31 @@ function AdminManageUser() {
       );
 
       if (!response.ok) {
-        throw new Error("Failed to lock user");
+        throw new Error(
+          status ? "Failed to unlock user" : "Failed to lock user"
+        );
       }
 
-      alert("Tài khoản đã bị khoá thành công!");
-
-      setUsers(
-        users.map((user) =>
-          user.userId === userId ? { ...user, status: "locked" } : user
-        )
+      const newStatus = status ? "enabled" : "locked";
+      alert(
+        `Tài khoản đã ${
+          newStatus === "enabled" ? "mở khoá" : "khoá"
+        } thành công!`
       );
+
+      // Update the user status in the state
+      setUsers((prevUsers) => {
+        const updatedUsers = prevUsers.map((user) =>
+          user.userId === userId ? { ...user, status: newStatus } : user
+        );
+
+        // Save updated users to local storage
+        localStorage.setItem("usersData", JSON.stringify(updatedUsers));
+        return updatedUsers;
+      });
     } catch (error) {
       console.error(error);
-      alert("Failed to lock user");
-    }
-  };
-
-  const handleUnlockUser = async (userId) => {
-    const authToken = localStorage.getItem("authToken");
-    if (!authToken) {
-      navigate("/login");
-      return;
-    }
-
-    try {
-      const response = await fetch(
-        `http://localhost:8080/api/admin/users/${userId}/status?enabled=true`,
-        {
-          method: "PUT",
-          headers: {
-            Authorization: `${authToken}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to unlock user");
-      }
-
-      alert("Tài khoản đã mở khoá thành công!");
-
-      setUsers(
-        users.map((user) =>
-          user.userId === userId ? { ...user, status: "enabled" } : user
-        )
-      );
-    } catch (error) {
-      console.error(error);
-      alert("Failed to unlock user");
+      alert(`Failed to ${status ? "unlock" : "lock"} user`);
     }
   };
 
@@ -157,22 +150,21 @@ function AdminManageUser() {
                     <th>Họ tên</th>
                     <th>Mã số</th>
                     <th>Email</th>
-                    {/* <th>Địa chỉ</th> */}
                     <th>Tổng lượt xem</th>
                     <th>Tổng tài liệu</th>
                     <th>Quyền</th>
                     <th>Tài liệu sở hữu</th>
-                    <th>User</th>
+                    {/* <th>User</th> */}
                   </tr>
                 </thead>
                 <tbody>
                   {error ? (
                     <tr>
-                      <td colSpan="11">{error}</td>
+                      <td colSpan="10">{error}</td>
                     </tr>
                   ) : loading ? (
                     <tr>
-                      <td colSpan="11">Loading...</td>
+                      <td colSpan="10">Loading...</td>
                     </tr>
                   ) : (
                     currentUsers.map((user, index) => (
@@ -183,12 +175,14 @@ function AdminManageUser() {
                             src={user.avatar || avatar}
                             alt="User"
                             className="userImage"
+                            onError={(e) => {
+                              e.target.src = avatar; // Change src if the image fails to load
+                            }}
                           />
                         </td>
                         <td>{user.fullname}</td>
                         <td>{user.identifier}</td>
                         <td>{user.email}</td>
-                        {/* <td>{user.address}</td> */}
                         <td>{user.totalViews}</td>
                         <td>{user.documentCount}</td>
                         <td>
@@ -202,22 +196,29 @@ function AdminManageUser() {
                             Xem
                           </button>
                         </td>
-                        <td>
+                        {/* <td>
                           <div className="dis">
-                            <button
-                              className="btnUnlock"
-                              onClick={() => handleUnlockUser(user.userId)}
-                            >
-                              Mở khóa
-                            </button>
-                            <button
-                              className="btnLock"
-                              onClick={() => handleLockUser(user.userId)}
-                            >
-                              Khóa
-                            </button>
+                            {user.status === "locked" ? (
+                              <button
+                                className="btnUnlock"
+                                onClick={() =>
+                                  updateUserStatus(user.userId, true)
+                                } // Unlock when status is locked
+                              >
+                                Mở khóa
+                              </button>
+                            ) : (
+                              <button
+                                className="btnLock"
+                                onClick={() =>
+                                  updateUserStatus(user.userId, false)
+                                } // Lock when status is enabled
+                              >
+                                Khóa
+                              </button>
+                            )}
                           </div>
-                        </td>
+                        </td> */}
                       </tr>
                     ))
                   )}
