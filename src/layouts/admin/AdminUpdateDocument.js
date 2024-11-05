@@ -15,10 +15,10 @@ function AdminUpdateDocument() {
   const [publishingYear, setPublishingYear] = useState("");
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState("");
-  const [pdfFiles, setPdfFiles] = useState([]);
-  const [pdfFileNames, setPdfFileNames] = useState([]);
+  const [pdfFile, setPdfFile] = useState(null);
+  const [pdfFileName, setPdfFileName] = useState("");
   const [categories, setCategories] = useState([]);
-  const [categoryId, setCategoryId] = useState(null); // Store selected category ID
+  const [categoryId, setCategoryId] = useState(null);
   const [existingPdfs, setExistingPdfs] = useState([]);
   const [error, setError] = useState(null);
   const pdfInputRef = useRef(null);
@@ -42,14 +42,14 @@ function AdminUpdateDocument() {
     if (documentId) {
       const fetchDocumentDetails = async () => {
         try {
-          const token = localStorage.getItem("authToken"); // Retrieve the auth token
-          if (!token) throw new Error("No token found"); // Check if token exists
+          const token = localStorage.getItem("authToken");
+          if (!token) throw new Error("No token found");
 
           const response = await fetch(
-            `http://localhost:8080/api/admin/documents/${documentId}`, // Updated endpoint
+            `http://localhost:8080/api/admin/documents/${documentId}`,
             {
               headers: {
-                Authorization: `${token}`, // Add Authorization header
+                Authorization: `${token}`,
               },
             }
           );
@@ -64,9 +64,7 @@ function AdminUpdateDocument() {
           setPublisher(data.publisher);
           setPublishingYear(data.publishingYear);
           setImagePreview(data.image);
-
-          // Set selected category ID
-          setCategoryId(data.categoryId); // Assuming your backend returns categoryId
+          setCategoryId(data.categoryId);
 
           if (data.pdfFiles) {
             setExistingPdfs(data.pdfFiles);
@@ -79,10 +77,15 @@ function AdminUpdateDocument() {
     }
   }, [documentId]);
 
-  const handlePdfUpload = (files) => {
-    const fileArray = Array.from(files);
-    setPdfFiles((prevFiles) => [...prevFiles, ...fileArray]);
-    setPdfFileNames(fileArray.map((file) => file.name));
+  const handlePdfUpload = (file) => {
+    // Set the single PDF file and its name
+    setPdfFile(file);
+    setPdfFileName(file.name);
+
+    // Clear the input so the user can re-select the file if needed
+    if (pdfInputRef.current) {
+      pdfInputRef.current.value = null;
+    }
   };
 
   const handleImageChange = (e) => {
@@ -97,13 +100,9 @@ function AdminUpdateDocument() {
     }
   };
 
-  const handleRemovePdf = (fileName) => {
-    setPdfFileNames((prevFileNames) =>
-      prevFileNames.filter((name) => name !== fileName)
-    );
-    setPdfFiles((prevFiles) =>
-      prevFiles.filter((file) => file.name !== fileName)
-    );
+  const handleRemovePdf = () => {
+    setPdfFile(null);
+    setPdfFileName("");
   };
 
   const handleSubmit = async (e) => {
@@ -124,12 +123,12 @@ function AdminUpdateDocument() {
       formData.append("author", author);
       formData.append("publisher", publisher);
       formData.append("publishingYear", publishingYear);
-      formData.append("categoryId", categoryId); // Append the selected category ID
+      formData.append("categoryId", categoryId);
       if (image) formData.append("image", image);
-      pdfFiles.forEach((file) => formData.append("pdfFiles", file));
+      if (pdfFile) formData.append("pdfFile", pdfFile);
 
       const response = await fetch(
-        `http://localhost:8080/api/admin/documents/${documentId}`, // Updated endpoint
+        `http://localhost:8080/api/admin/documents/${documentId}`,
         {
           method: "PUT",
           headers: {
@@ -141,9 +140,7 @@ function AdminUpdateDocument() {
 
       if (!response.ok) {
         const errorText = await response.text();
-        throw new Error(
-          `Failed to update document: ${response.statusText} - ${errorText}`
-        );
+        throw new Error(`Failed to update document: ${errorText}`);
       }
 
       toast.success("Chỉnh sửa tài liệu thành công!");
@@ -241,40 +238,53 @@ function AdminUpdateDocument() {
                       ))}
                     </select>
                   </div>
-
                   <div className="itemFormUpload">
                     <label className="titleLabel" htmlFor="pdfInput">
                       Tải tệp PDF mới<span className="requiredStar">*</span>
                     </label>
                     <div className="pdfUploadContainer">
-                      <div className="pdfFileList">
-                        {pdfFileNames.length === 0 ? (
-                          <div className="noFilesText">Hãy chọn file</div>
-                        ) : (
-                          pdfFileNames.map((fileName, index) => (
+                      <label className="titleLabel">Tệp PDF hiện tại:</label>
+                      <div className="existingPdfFiles">
+                        {existingPdfs.length > 0 ? (
+                          existingPdfs.map((pdfUrl, index) => (
                             <div key={index} className="pdfFileItem">
-                              <span>{fileName}</span>
-                              <button
-                                className="removeButton"
-                                onClick={() => handleRemovePdf(fileName)}
+                              <a
+                                href={pdfUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
                               >
-                                Xóa
-                              </button>
+                                PDF {index + 1}
+                              </a>
                             </div>
                           ))
+                        ) : (
+                          <div>Không có tệp PDF hiện tại</div>
+                        )}
+                      </div>
+                      <div className="pdfFileList">
+                        {pdfFileName ? (
+                          <div className="pdfFileItem">
+                            <span>{pdfFileName}</span>
+                            <button
+                              className="removeButton"
+                              onClick={handleRemovePdf}
+                            >
+                              Xóa
+                            </button>
+                          </div>
+                        ) : (
+                          <div className="noFilesText">Hãy chọn file</div>
                         )}
                       </div>
                       <input
                         type="file"
                         accept="application/pdf"
-                        onChange={(e) => handlePdfUpload(e.target.files)}
+                        onChange={(e) => handlePdfUpload(e.target.files[0])}
                         ref={pdfInputRef}
-                        multiple
                         className="fileInputAdmin"
                       />
                     </div>
                   </div>
-
                   <div className="itemFormUpload">
                     <label className="titleLabel" htmlFor="author">
                       Tác giả<span className="requiredStar">*</span>
@@ -289,7 +299,6 @@ function AdminUpdateDocument() {
                       required
                     />
                   </div>
-
                   <div className="itemFormUpload">
                     <label className="titleLabel" htmlFor="publisher">
                       Nhà xuất bản<span className="requiredStar">*</span>
@@ -320,6 +329,7 @@ function AdminUpdateDocument() {
                   </div>
                 </div>
               </div>
+
               <div className="btnAcp">
                 <Button type="submit">
                   <span className="titleAcp">Xác nhận</span>
@@ -330,7 +340,7 @@ function AdminUpdateDocument() {
           </div>
         </div>
       </div>
-      {/* <ToastContainer /> */}
+      <ToastContainer position="top-center" autoClose={2000} />
     </div>
   );
 }

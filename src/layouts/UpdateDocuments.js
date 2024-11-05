@@ -13,10 +13,10 @@ function UpdateDocuments() {
   const [publishingYear, setPublishingYear] = useState("");
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState("");
-  const [pdfFiles, setPdfFiles] = useState([]);
-  const [pdfFileNames, setPdfFileNames] = useState([]);
+  const [pdfFile, setPdfFile] = useState(null); // Store a single PDF file
+  const [pdfFileName, setPdfFileName] = useState(""); // Store the name of the PDF file
   const [categories, setCategories] = useState([]);
-  const [categoryId, setCategoryId] = useState(null); // Store selected category ID
+  const [categoryId, setCategoryId] = useState(null);
   const [existingPdfs, setExistingPdfs] = useState([]);
   const [error, setError] = useState(null);
   const pdfInputRef = useRef(null);
@@ -31,6 +31,7 @@ function UpdateDocuments() {
         setCategories(data);
       } catch (err) {
         setError("Failed to fetch categories");
+        toast.error("Failed to fetch categories");
       }
     };
     fetchCategories();
@@ -52,15 +53,14 @@ function UpdateDocuments() {
           setPublisher(data.publisher);
           setPublishingYear(data.publishingYear);
           setImagePreview(data.image);
-
-          // Set selected category ID
-          setCategoryId(data.categoryId); // Assuming your backend returns categoryId
+          setCategoryId(data.categoryId);
 
           if (data.pdfFiles) {
             setExistingPdfs(data.pdfFiles);
           }
         } catch (err) {
           setError("Failed to fetch document details");
+          toast.error("Failed to fetch document details");
         }
       };
       fetchDocumentDetails();
@@ -68,9 +68,11 @@ function UpdateDocuments() {
   }, [documentId]);
 
   const handlePdfUpload = (files) => {
-    const fileArray = Array.from(files);
-    setPdfFiles((prevFiles) => [...prevFiles, ...fileArray]);
-    setPdfFileNames(fileArray.map((file) => file.name));
+    const file = files[0]; // Get the first file only
+    if (file) {
+      setPdfFile(file);
+      setPdfFileName(file.name);
+    }
   };
 
   const handleImageChange = (e) => {
@@ -85,13 +87,10 @@ function UpdateDocuments() {
     }
   };
 
-  const handleRemovePdf = (fileName) => {
-    setPdfFileNames((prevFileNames) =>
-      prevFileNames.filter((name) => name !== fileName)
-    );
-    setPdfFiles((prevFiles) =>
-      prevFiles.filter((file) => file.name !== fileName)
-    );
+  const handleRemovePdf = () => {
+    setPdfFile(null); // Reset the PDF file state
+    setPdfFileName(""); // Reset the PDF file name
+    pdfInputRef.current.value = ""; // Clear the file input
   };
 
   const handleSubmit = async (e) => {
@@ -112,16 +111,16 @@ function UpdateDocuments() {
       formData.append("author", author);
       formData.append("publisher", publisher);
       formData.append("publishingYear", publishingYear);
-      formData.append("categoryId", categoryId); // Append the selected category ID
+      formData.append("categoryId", categoryId);
       if (image) formData.append("image", image);
-      pdfFiles.forEach((file) => formData.append("pdfFiles", file));
+      if (pdfFile) formData.append("pdfFiles", pdfFile); // Append the single PDF file
 
       const response = await fetch(
         `http://localhost:8080/api/documents/${documentId}`,
         {
           method: "PUT",
           headers: {
-            Authorization: `${token}`,
+            Authorization: `Bearer ${token}`,
           },
           body: formData,
         }
@@ -140,6 +139,7 @@ function UpdateDocuments() {
       }, 1000);
     } catch (err) {
       setError(`Failed to update document: ${err.message}`);
+      toast.error(`Failed to update document: ${err.message}`);
     }
   };
 
@@ -229,21 +229,37 @@ function UpdateDocuments() {
                   Tải tệp PDF mới<span className="requiredStar">*</span>
                 </label>
                 <div className="pdfUploadContainer">
-                  <div className="pdfFileList">
-                    {pdfFileNames.length === 0 ? (
-                      <div className="noFilesText">Hãy chọn file</div>
-                    ) : (
-                      pdfFileNames.map((fileName, index) => (
+                  <label className="titleLabel">Tệp PDF hiện tại:</label>
+                  <div className="existingPdfFiles">
+                    {existingPdfs.length > 0 ? (
+                      existingPdfs.map((pdfUrl, index) => (
                         <div key={index} className="pdfFileItem">
-                          <span>{fileName}</span>
-                          <button
-                            className="removeButton"
-                            onClick={() => handleRemovePdf(fileName)}
+                          <a
+                            href={pdfUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
                           >
-                            Xóa
-                          </button>
+                            PDF {index + 1}
+                          </a>
                         </div>
                       ))
+                    ) : (
+                      <div>Không có tệp PDF hiện tại</div>
+                    )}
+                  </div>
+                  <div className="pdfFileList">
+                    {pdfFileName ? (
+                      <div className="pdfFileItem">
+                        <span>{pdfFileName}</span>
+                        <button
+                          className="removeButton"
+                          onClick={handleRemovePdf}
+                        >
+                          Xóa
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="noFilesText">Hãy chọn file</div>
                     )}
                   </div>
                   <input
@@ -251,8 +267,8 @@ function UpdateDocuments() {
                     accept="application/pdf"
                     onChange={(e) => handlePdfUpload(e.target.files)}
                     ref={pdfInputRef}
-                    multiple
-                    className="fileInputUpdate"
+                    // multiple
+                    className="fileInputAdmin"
                   />
                 </div>
               </div>
@@ -295,7 +311,6 @@ function UpdateDocuments() {
                   onChange={(e) => setDescription(e.target.value)}
                 />
               </div>
-              {/* <ToastContainer /> */}
             </div>
           </div>
           <div className="btnAcp">
@@ -304,6 +319,7 @@ function UpdateDocuments() {
             </Button>
           </div>
         </form>
+        <ToastContainer />
       </div>
     </div>
   );
