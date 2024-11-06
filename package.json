@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@ant-design/charts": "^2.2.1",
     "@react-pdf-viewer/core": "^3.12.0",
     "@react-pdf-viewer/default-layout": "^3.12.0",
     "@react-pdf-viewer/root": "github:react-pdf-viewer/react-pdf-viewer",
@@ -14,6 +15,7 @@
     "antd": "^5.20.1",
     "axios": "^1.7.4",
     "browser-image-compression": "^2.0.2",
+    "chart.js": "^4.4.6",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
@@ -21,6 +23,7 @@
     "pdfjs-dist": "^4.5.136",
     "rc-util": "^5.43.0",
     "react": "^18.3.1",
+    "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.3.1",
     "react-icons": "^5.2.1",
     "react-is": "^18.3.1",

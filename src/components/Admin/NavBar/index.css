@@ -2,44 +2,42 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  transition: width 0.3s ease; 
+  transition: width 0.3s ease;
   background-color: #101933;
 }
 
 .containerNavBar.expanded {
-  width: 300px; 
-  height: 1093px;
+  width: 300px;
+  height: 1700px;
 }
 
 .containerNavBar.collapsed {
-  width: 55px; 
-  height: 1093px;
+  width: 55px;
+  height: 1700px;
 }
 
 .navbar {
-  display: flex; 
-  align-items: center; 
-  overflow: hidden; 
-  transition: height 0.3s ease; 
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  transition: height 0.3s ease;
   justify-content: center;
 }
 
 .navbar-content {
-  display: flex; 
-  flex-direction: column; 
+  display: flex;
+  flex-direction: column;
   align-items: center;
   margin: 5px 5px;
   font-size: 20px;
 }
 
-
-
 .navbar span {
-  margin-left: 8px; 
+  margin-left: 8px;
 }
 
 button {
-  cursor: pointer; 
+  cursor: pointer;
 }
 
 .itemAdmin.expanded {
@@ -88,8 +86,7 @@ button {
   color: white;
 }
 
-
-.btnLeftRight.expanded{
+.btnLeftRight.expanded {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -101,7 +98,7 @@ button {
   height: 30px;
 }
 
-.btnLeftRight.collapsed{
+.btnLeftRight.collapsed {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -133,13 +130,11 @@ button {
   background-color: rgb(21, 61, 243);
 }
 
-
-.titleAdminManege{
+.titleAdminManege {
   display: flex;
 }
 
-.iconDownUp{
+.iconDownUp {
   margin-left: 55px;
   margin-top: 3px;
 }
-

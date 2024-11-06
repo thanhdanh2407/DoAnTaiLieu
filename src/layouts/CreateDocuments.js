@@ -39,8 +39,81 @@ const CreateDocument = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!image) {
+      toast.error("Bạn chưa tải hình lên.", {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      return;
+    }
+
+    if (!title) {
+      toast.error("Bạn chưa nhập tên tài liệu.", {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      return;
+    }
+
+    if (!publishingYear) {
+      toast.error("Bạn chưa nhập năm xuất bản.", {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      return;
+    }
+
     if (!categoryId) {
-      toast.error("Vui lòng chọn thể loại.");
+      toast.error("Bạn chưa chọn thể loại.", {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      return;
+    }
+
+    if (pdfFiles.length === 0) {
+      toast.error("Bạn chưa tải tệp PDF.", {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      return;
+    }
+
+    if (!description) {
+      toast.error("Bạn chưa nhập mô tả chi tiết.", {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
       return;
     }
 
@@ -157,7 +230,7 @@ const CreateDocument = () => {
                     placeholder="Nhập tên tài liệu"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
-                    required
+                    // required
                   />
                 </div>
               </div>
@@ -172,7 +245,7 @@ const CreateDocument = () => {
                   className="inputItem"
                   value={publishingYear}
                   onChange={(e) => setPublishingYear(e.target.value)}
-                  required
+                  // required
                 />
               </div>
               <div className="itemFormUpload">
@@ -184,7 +257,7 @@ const CreateDocument = () => {
                   className="inputItem"
                   value={categoryId || ""}
                   onChange={(e) => setCategoryId(e.target.value)}
-                  required
+                  // required
                 >
                   <option value="">Chọn thể loại</option>
                   {categories.map((category) => (
@@ -246,7 +319,7 @@ const CreateDocument = () => {
                   className="inputItem"
                   value={publisher}
                   onChange={(e) => setPublisher(e.target.value)}
-                  required
+                  // required
                 />
               </div>
               <div className="itemFormUpload">
@@ -260,7 +333,7 @@ const CreateDocument = () => {
                   className="inputItem"
                   value={author}
                   onChange={(e) => setAuthor(e.target.value)}
-                  required
+                  // required
                 />
               </div>
               <div className="itemFormUpload">

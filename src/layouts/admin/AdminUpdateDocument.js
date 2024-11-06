@@ -108,8 +108,55 @@ function AdminUpdateDocument() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!title) {
+      toast.error("Bạn chưa nhập tên tài liệu.", {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      return;
+    }
+
+    if (!publishingYear) {
+      toast.error("Bạn chưa nhập năm xuất bản.", {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      return;
+    }
+
     if (!categoryId) {
-      toast.error("Vui lòng chọn thể loại.");
+      toast.error("Bạn chưa chọn thể loại.", {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      return;
+    }
+
+    if (!description) {
+      toast.error("Bạn chưa nhập mô tả chi tiết.", {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
       return;
     }
 
@@ -143,7 +190,15 @@ function AdminUpdateDocument() {
         throw new Error(`Failed to update document: ${errorText}`);
       }
 
-      toast.success("Chỉnh sửa tài liệu thành công!");
+      toast.success("Chỉnh sửa tài liệu thành công!", {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
       setTimeout(() => {
         navigate("/admin/adminAllDocument");
       }, 1000);
@@ -157,6 +212,7 @@ function AdminUpdateDocument() {
       <div className="leftAdminUpdateDocument">
         <NavBar />
       </div>
+      <ToastContainer />
       <div className="rightAdminUpdateDocument">
         <HeaderAdmin />
         <div className="containerFormAdminUpdate">
@@ -201,7 +257,7 @@ function AdminUpdateDocument() {
                         placeholder="Nhập tên tài liệu"
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
-                        required
+                        // required
                       />
                     </div>
                   </div>
@@ -216,7 +272,7 @@ function AdminUpdateDocument() {
                       className="inputItem"
                       value={publishingYear}
                       onChange={(e) => setPublishingYear(e.target.value)}
-                      required
+                      // required
                     />
                   </div>
                   <div className="itemFormUpload">
@@ -228,7 +284,7 @@ function AdminUpdateDocument() {
                       className="inputItem"
                       value={categoryId || ""}
                       onChange={(e) => setCategoryId(e.target.value)}
-                      required
+                      // required
                     >
                       <option value="">Chọn thể loại</option>
                       {categories.map((category) => (
@@ -258,7 +314,7 @@ function AdminUpdateDocument() {
                             </div>
                           ))
                         ) : (
-                          <div>Không có tệp PDF hiện tại</div>
+                          <div>Loading....</div>
                         )}
                       </div>
                       <div className="pdfFileList">
@@ -296,7 +352,7 @@ function AdminUpdateDocument() {
                       className="inputItem"
                       value={author}
                       onChange={(e) => setAuthor(e.target.value)}
-                      required
+                      // required
                     />
                   </div>
                   <div className="itemFormUpload">
@@ -310,7 +366,7 @@ function AdminUpdateDocument() {
                       className="inputItem"
                       value={publisher}
                       onChange={(e) => setPublisher(e.target.value)}
-                      required
+                      // required
                     />
                   </div>
 
@@ -324,7 +380,7 @@ function AdminUpdateDocument() {
                       className="inputItem"
                       value={description}
                       onChange={(e) => setDescription(e.target.value)}
-                      required
+                      // required
                     />
                   </div>
                 </div>

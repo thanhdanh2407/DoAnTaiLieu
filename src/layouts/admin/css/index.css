@@ -6,7 +6,27 @@
 
 .rightHomeAdmin {
   width: 100%;
+  height: 1700px;
   background-color: #e6e6e6;
+}
+
+.containerChartAdminTop,
+.containerChartAdminBottom {
+  display: flex;
+  justify-content: center;
+}
+
+.chartContainer {
+  width: 35%;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+}
+
+.titleChartAdmin {
+  display: flex;
+  justify-content: center;
 }
 
 /* AdminManageUser */
