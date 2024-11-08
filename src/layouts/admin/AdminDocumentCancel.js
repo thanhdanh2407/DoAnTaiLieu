@@ -140,7 +140,7 @@ function AdminDocumentCancel() {
                         />
                       </td>
                       <td>{document.title}</td>
-                      <td>{document.author}</td>
+                      <td>{document.userName}</td>
                       <td>{document.view}</td>
                       <td>{document.categoryName}</td>
                       <td>

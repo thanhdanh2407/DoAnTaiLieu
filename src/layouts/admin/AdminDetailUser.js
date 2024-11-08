@@ -8,7 +8,6 @@ import { useParams } from "react-router-dom";
 
 function AdminListUser() {
   const { id } = useParams();
-  console.log("userId from useParams:", id); // Debugging line
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);

@@ -49,7 +49,6 @@ function ListDocument() {
         return response.json();
       })
       .then((data) => {
-        console.log(data);
         setDocuments(data);
       })
       .catch((error) => console.error("Error fetching documents:", error));

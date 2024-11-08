@@ -9,6 +9,7 @@ import { FiCheckCircle } from "react-icons/fi";
 import { FaEye } from "react-icons/fa";
 import { toast } from "react-toastify";
 import avatar from "../../assets/itemDocument.png";
+import Button from "../../components/Button";
 
 function AdminDetailDocument() {
   const { id } = useParams();
@@ -61,6 +62,12 @@ function AdminDetailDocument() {
     fetchUserInfo();
   }, [id, authToken]);
 
+  const handleDownload = () => {
+    if (document && document.pdfFiles) {
+      window.open(document.pdfFiles, "_blank");
+    }
+  };
+
   return (
     <div className="containerAdminDetailDocument">
       <div className="leftAdminDetailDocument">
@@ -106,6 +113,14 @@ function AdminDetailDocument() {
                         <FaEye className="iconDetail" />
                         Lượt xem: {document.view}
                       </div>
+                      <div className="itemListDetail">
+                        <Button
+                          className="btnDownload"
+                          onClick={handleDownload}
+                        >
+                          Tải về
+                        </Button>
+                      </div>
                     </div>
                   </div>
                   <div className="listPDF">
@@ -115,6 +130,9 @@ function AdminDetailDocument() {
                       height="1000px"
                       title="PDF Document"
                     />
+                  </div>
+                  <div className="containerDescription">
+                    <div className="description">{document.description}</div>
                   </div>
                 </>
               )}

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./css/index.css";
-import { toast } from "react-toastify"; // Import ToastContainer and toast
-import "react-toastify/dist/ReactToastify.css"; // Import the toast styles
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Button from "../components/Button";
 import logo from "../assets/logo2.png";
 
@@ -48,13 +48,20 @@ const Footer = () => {
         setEmail("");
       } else {
         const errorMessage = await response.text();
-        if (errorMessage.includes("already subscribed")) {
-          toast.info("Email đã đăng ký rồi!", {
+
+        // Kiểm tra các thông điệp lỗi cụ thể từ API
+        if (errorMessage.includes("Email does not match the token's email")) {
+          toast.error("Email không hợp lệ.", {
+            autoClose: 2000,
+            position: "top-center",
+          });
+        } else if (errorMessage.includes("Email is already being followed")) {
+          toast.info("Email đã được đăng ký trước đó!", {
             autoClose: 2000,
             position: "top-center",
           });
         } else {
-          toast.info("Email đã đăng ký rồi", {
+          toast.error("Có lỗi xảy ra. Vui lòng thử lại.", {
             autoClose: 2000,
             position: "top-center",
           });
@@ -77,16 +84,21 @@ const Footer = () => {
           <img src={logo} alt="logo" className="logoSub" />
         </div>
         <div className="subscribeContainer">
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Nhập email...."
-            className="subscribeInput"
-          />
-          <Button onClick={handleSubscribe} className="subscribeButton">
-            Đăng ký
-          </Button>
+          <div className="titleRegisterDocumentNew">
+            Đăng ký nhận tài liệu mới
+          </div>
+          <div className="containerEmailRegister">
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Nhập email...."
+              className="subscribeInput"
+            />
+            <Button onClick={handleSubscribe} className="subscribeButton">
+              Đăng ký
+            </Button>
+          </div>
         </div>
       </div>
 

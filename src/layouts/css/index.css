@@ -449,6 +449,69 @@
   font-weight: bold;
 }
 
+.submit-btn {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 7px;
+  cursor: pointer;
+  width: 16%;
+  height: 50px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.submit-btn:hover {
+  background-color: #0056b3; /* Màu khi hover */
+  transform: scale(1.05); /* Tăng kích thước nhẹ khi hover */
+}
+
+/* Button khi đang loading */
+.submit-btn.loading {
+  width: 250px;
+  height: 55px;
+  background-color: #007bff; /* Giữ màu nền khi loading */
+  color: #b0d4ff; /* Thay đổi màu chữ thành màu sáng hơn khi đang tải */
+  opacity: 0.6; /* Giảm độ trong suốt để trông như đang loading */
+  pointer-events: none; /* Vô hiệu hóa toàn bộ sự kiện chuột */
+  cursor: not-allowed; /* Con trỏ chuột thành "cấm" khi không thể nhấn */
+  transition: none; /* Tắt hiệu ứng chuyển màu và kích thước */
+}
+
+.submit-btn.loading:hover {
+  background-color: #007bff; /* Giữ nguyên màu nền khi hover trong trạng thái loading */
+  transform: none; /* Tắt hiệu ứng scale khi hover trong trạng thái loading */
+}
+
+/* Button khi đang loading (tạo hiệu ứng chờ cho chữ) */
+.submit-btn.loading span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.submit-btn.loading span:after {
+  content: "";
+  border: 3px solid #fff;
+  border-top: 3px solid transparent;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  margin-left: 10px;
+  animation: spin 1s linear infinite;
+}
+
+/* Quay vòng hiệu ứng loading */
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 .selectItem {
   width: 100%;
   padding: 8px;
@@ -1111,6 +1174,7 @@
 
 .subscribeContainer {
   display: flex;
+  flex-direction: column;
   margin-left: 530px;
 }
 
@@ -1154,6 +1218,16 @@
 
 .logoSub {
   width: 200px;
+}
+
+.titleRegisterDocumentNew {
+  font-size: 20px;
+  font-weight: bold;
+  color: white;
+}
+
+.containerEmailRegister {
+  display: flex;
 }
 
 /* About.js */
@@ -1311,6 +1385,7 @@
   height: 50px;
   width: 50px;
   border-radius: 50%;
+  object-fit: cover;
 }
 .comment {
   background-color: white;
@@ -1361,7 +1436,8 @@
 }
 
 .itemFix,
-.itemDel {
+.itemDel,
+.itemClose {
   margin-left: 10px;
   cursor: pointer;
 }
@@ -1405,9 +1481,6 @@
 .itemReply {
   display: flex;
   flex-direction: row;
-}
-
-.userReply {
 }
 
 .itemFixRep {
@@ -1477,6 +1550,18 @@
 .btnDownload:hover {
   background-color: #0056b3;
   transform: scale(1.05);
+}
+
+.containerDescription {
+  margin-top: 1%;
+  background-color: #f1efef;
+  padding: 10px;
+  border-radius: 10px;
+}
+.description {
+  background-color: white;
+  padding: 10px;
+  border-radius: 10px;
 }
 
 /* DetailSearch.js */

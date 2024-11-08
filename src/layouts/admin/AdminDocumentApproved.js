@@ -127,17 +127,6 @@ function AdminDocumentApproved() {
               <FaUser className="iconUser" />
               <span className="titleInfo">Tài liệu đã duyệt</span>
             </span>
-            {/* <div className="containerBtnAdd">
-              <Button className="btnAdd">Tạo tài liệu</Button>
-            </div> */}
-            {/* <div className="searchDocumentAdmin">
-              <input
-                type="text"
-                placeholder="Tìm kiếm tài liệu"
-                className="inputSearchAdmin"
-              />
-              <FiSearch className="searchIcon" />
-            </div> */}
           </div>
           <div className="infoDocumentAdmin">
             <table className="documentTable">
@@ -170,7 +159,7 @@ function AdminDocumentApproved() {
                       />
                     </td>
                     <td>{document.title}</td>
-                    <td>{document.author}</td>
+                    <td>{document.userName}</td>
                     <td>{document.view}</td>
                     <td>{document.categoryName}</td>
                     <td>

@@ -8,6 +8,7 @@ import { WiTime5 } from "react-icons/wi";
 import { LuUser2 } from "react-icons/lu";
 import { FaEye, FaStar } from "react-icons/fa";
 import { FiCheckCircle } from "react-icons/fi";
+import defaultAvatar from "../assets/itemDocument.png";
 
 function CategorySearch() {
   const { categoryName } = useParams(); // Lấy tên danh mục từ URL
@@ -56,7 +57,7 @@ function CategorySearch() {
   return (
     <div className="containerCategory">
       <Submenu />
-      <div className="titleCategory">Danh sách {categoryName}</div>
+      <div className="titleCategory">Tài liệu {categoryName}</div>
       <div className="itemCategoryListDocument">
         {loading ? (
           <div className="loadingCategory">Loading . . .</div>
@@ -73,6 +74,9 @@ function CategorySearch() {
                     src={item.image}
                     alt={item.title}
                     className="avatarCategory"
+                    onError={(e) => {
+                      e.target.src = defaultAvatar;
+                    }}
                   />
                 </div>
                 <div className="itemCategorySearch">
@@ -112,7 +116,9 @@ function CategorySearch() {
             ))}
           </div>
         ) : (
-          <div className="noMess">Không có item nào trong danh mục này.</div>
+          <div className="noMess">
+            Không có tài liệu nào trong danh mục này.
+          </div>
         )}
       </div>
       <ReactPaginate

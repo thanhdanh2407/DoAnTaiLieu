@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Button from "../../components/Button/index";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -7,7 +7,6 @@ import NavBar from "../../components/Admin/NavBar/NavBar";
 import HeaderAdmin from "../../components/Admin/HeaderAdmin/HeaderAdmin";
 
 function AdminCreateDocument() {
-  const { documentId } = useParams();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [author, setAuthor] = useState("");
@@ -15,14 +14,14 @@ function AdminCreateDocument() {
   const [publishingYear, setPublishingYear] = useState("");
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState("");
-  const [pdfFiles, setPdfFiles] = useState([]);
-  const [pdfFileNames, setPdfFileNames] = useState([]);
+  const [pdfFile, setPdfFile] = useState([]);
+  const [pdfFileName, setPdfFileName] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [categoryId, setCategoryId] = useState(null); // Store selected category ID
-  const [existingPdfs, setExistingPdfs] = useState([]);
+  const [categoryId, setCategoryId] = useState(null);
   const [error, setError] = useState(null);
   const pdfInputRef = useRef(null);
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -93,7 +92,7 @@ function AdminCreateDocument() {
       return;
     }
 
-    if (pdfFiles.length === 0) {
+    if (pdfFile.length === 0) {
       toast.error("Bạn chưa tải tệp PDF.", {
         position: "top-center",
         autoClose: 5000,
@@ -119,6 +118,8 @@ function AdminCreateDocument() {
       return;
     }
 
+    setIsLoading(true);
+
     const formData = new FormData();
     formData.append("title", title);
     formData.append("description", description);
@@ -127,9 +128,7 @@ function AdminCreateDocument() {
     formData.append("publishingYear", publishingYear);
     if (categoryId) formData.append("categoryId", categoryId); // Append the selected category ID
     if (image) formData.append("image", image);
-    pdfFiles.forEach((file) => formData.append("pdfFiles", file)); // Adjust this if your backend expects a different key
-
-    console.log("Form Data before submission:", Array.from(formData.entries())); // Debugging line
+    pdfFile.forEach((file) => formData.append("pdfFiles", file)); // Adjust this if your backend expects a different key
 
     try {
       const token = localStorage.getItem("authToken");
@@ -166,7 +165,7 @@ function AdminCreateDocument() {
         progress: undefined,
       });
 
-      console.log(result); // Log the result for verification
+      console.log(result);
       setTimeout(() => {
         navigate("/admin/adminAllDocument");
       }, 1000);
@@ -174,13 +173,10 @@ function AdminCreateDocument() {
       setError(`Failed to create document: ${err.message}`);
       console.error(err);
       toast.error(`Failed to create document: ${err.message}`);
+    } finally {
+      // Stop loading
+      setIsLoading(false);
     }
-  };
-
-  const handlePdfUpload = (files) => {
-    const fileArray = Array.from(files);
-    setPdfFiles((prevFiles) => [...prevFiles, ...fileArray]);
-    setPdfFileNames(fileArray.map((file) => file.name));
   };
 
   const handleImageChange = (e) => {
@@ -196,12 +192,19 @@ function AdminCreateDocument() {
   };
 
   const handleRemovePdf = (fileName) => {
-    setPdfFileNames((prevFileNames) =>
+    setPdfFileName((prevFileNames) =>
       prevFileNames.filter((name) => name !== fileName)
     );
-    setPdfFiles((prevFiles) =>
+    setPdfFile((prevFiles) =>
       prevFiles.filter((file) => file.name !== fileName)
     );
+    pdfInputRef.current.value = null;
+  };
+
+  const handlePdfUpload = (files) => {
+    const fileArray = Array.from(files);
+    setPdfFile((prevFiles) => [...prevFiles, ...fileArray]);
+    setPdfFileName(fileArray.map((file) => file.name));
   };
 
   return (
@@ -294,10 +297,10 @@ function AdminCreateDocument() {
                     </label>
                     <div className="pdfUploadContainer">
                       <div className="pdfFileList">
-                        {pdfFileNames.length === 0 ? (
+                        {pdfFileName.length === 0 ? (
                           <div className="noFilesText">Hãy chọn file</div>
                         ) : (
-                          pdfFileNames.map((fileName, index) => (
+                          pdfFileName.map((fileName, index) => (
                             <div key={index} className="pdfFileItem">
                               <span>{fileName}</span>
                               <button
@@ -370,12 +373,17 @@ function AdminCreateDocument() {
                       onChange={(e) => setDescription(e.target.value)}
                     />
                   </div>
-                  {/* <ToastContainer /> */}
                 </div>
               </div>
               <div className="btnAcp">
-                <Button type="submit">
-                  <span className="titleAcp">Xác nhận</span>
+                <Button
+                  type="submit"
+                  disabled={isLoading}
+                  className={`submit-btn ${isLoading ? "loading" : ""}`}
+                >
+                  <span className="titleAcp">
+                    {isLoading ? "Đang tạo..." : "Xác nhận"}
+                  </span>
                 </Button>
               </div>
             </form>

@@ -23,6 +23,8 @@ function AdminUpdateDocument() {
   const [error, setError] = useState(null);
   const pdfInputRef = useRef(null);
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
+  const [categoryName, setCategoryName] = useState("");
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -65,6 +67,7 @@ function AdminUpdateDocument() {
           setPublishingYear(data.publishingYear);
           setImagePreview(data.image);
           setCategoryId(data.categoryId);
+          setCategoryName(data.categoryName);
 
           if (data.pdfFiles) {
             setExistingPdfs(data.pdfFiles);
@@ -160,6 +163,8 @@ function AdminUpdateDocument() {
       return;
     }
 
+    setIsLoading(true);
+
     try {
       const token = localStorage.getItem("authToken");
       if (!token) throw new Error("No token found");
@@ -170,7 +175,11 @@ function AdminUpdateDocument() {
       formData.append("author", author);
       formData.append("publisher", publisher);
       formData.append("publishingYear", publishingYear);
-      formData.append("categoryId", categoryId);
+      if (categoryId) {
+        formData.append("categoryId", categoryId);
+      } else if (categoryName) {
+        formData.append("categoryName", categoryName);
+      }
       if (image) formData.append("image", image);
       if (pdfFile) formData.append("pdfFile", pdfFile);
 
@@ -204,6 +213,9 @@ function AdminUpdateDocument() {
       }, 1000);
     } catch (err) {
       setError(`Failed to update document: ${err.message}`);
+    } finally {
+      // Stop loading
+      setIsLoading(false);
     }
   };
 
@@ -212,7 +224,7 @@ function AdminUpdateDocument() {
       <div className="leftAdminUpdateDocument">
         <NavBar />
       </div>
-      <ToastContainer />
+
       <div className="rightAdminUpdateDocument">
         <HeaderAdmin />
         <div className="containerFormAdminUpdate">
@@ -293,6 +305,19 @@ function AdminUpdateDocument() {
                         </option>
                       ))}
                     </select>
+                    <div className="itemFormUpload">
+                      <label className="titleLabel" htmlFor="categoryName">
+                        Thể loại mới (nếu có)
+                      </label>
+                      <input
+                        type="text"
+                        id="categoryName"
+                        className="inputItem"
+                        placeholder="Nhập tên thể loại mới"
+                        value={categoryName}
+                        onChange={(e) => setCategoryName(e.target.value)}
+                      />
+                    </div>
                   </div>
                   <div className="itemFormUpload">
                     <label className="titleLabel" htmlFor="pdfInput">
@@ -387,8 +412,14 @@ function AdminUpdateDocument() {
               </div>
 
               <div className="btnAcp">
-                <Button type="submit">
-                  <span className="titleAcp">Xác nhận</span>
+                <Button
+                  type="submit"
+                  disabled={isLoading}
+                  className={`submit-btn ${isLoading ? "loading" : ""}`}
+                >
+                  <span className="titleAcp">
+                    {isLoading ? "Đang cập nhật..." : "Xác nhận"}
+                  </span>
                 </Button>
               </div>
             </form>
@@ -396,7 +427,7 @@ function AdminUpdateDocument() {
           </div>
         </div>
       </div>
-      <ToastContainer position="top-center" autoClose={2000} />
+      <ToastContainer />
     </div>
   );
 }

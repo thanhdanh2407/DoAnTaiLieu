@@ -31,7 +31,6 @@ function Submenu() {
   }, []);
 
   const handleCategoryClick = (categoryName) => {
-    console.log(`Navigating to category: ${categoryName}`); // Log tên danh mục
     const encodedCategoryName = encodeURIComponent(categoryName);
     navigate(`/documents/category/${encodedCategoryName}`);
   };

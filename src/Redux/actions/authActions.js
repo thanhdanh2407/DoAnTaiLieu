@@ -16,65 +16,6 @@ export const loginFailure = (error) => ({
   payload: error,
 });
 
-// export const login = (email, password) => async (dispatch) => {
-//   dispatch({ type: "LOGIN_REQUEST" });
-
-//   try {
-//     const response = await fetch("http://localhost:8080/api/auth/login", {
-//       method: "POST",
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//       body: JSON.stringify({ email, password }),
-//     });
-
-//     if (!response.ok) {
-//       const errorData = await response.json();
-
-//       // Kiểm tra nếu tài khoản bị khóa
-//       if (errorData.message.includes("Tài khoản của bạn đã bị khóa")) {
-//         throw new Error(
-//           "Tài khoản của bạn đã bị khóa. Vui lòng liên hệ với quản trị viên."
-//         );
-//       }
-
-//       // Nếu thông tin đăng nhập không hợp lệ
-//       throw new Error("Email hoặc mật khẩu không đúng.");
-//     }
-
-//     const token = await response.text();
-//     localStorage.setItem("authToken", token);
-
-//     const userInfoResponse = await fetch("http://localhost:8080/api/user/me", {
-//       headers: {
-//         Authorization: `${token}`,
-//       },
-//     });
-
-//     if (!userInfoResponse.ok) {
-//       throw new Error("Không thể lấy thông tin người dùng.");
-//     }
-
-//     const userInfo = await userInfoResponse.json();
-//     localStorage.setItem("user", JSON.stringify(userInfo));
-
-//     // Kiểm tra nếu tài khoản đã được kích hoạt
-//     if (!userInfo.enabled) {
-//       localStorage.removeItem("authToken");
-//       localStorage.removeItem("user");
-//       throw new Error(
-//         "Tài khoản của bạn chưa được kích hoạt. Vui lòng kiểm tra email."
-//       );
-//     }
-
-//     // Dispatch thông tin đăng nhập thành công
-//     dispatch({ type: "LOGIN_SUCCESS", payload: userInfo });
-//   } catch (error) {
-//     // Dispatch lỗi đăng nhập với thông điệp cụ thể
-//     dispatch({ type: "LOGIN_FAILURE", payload: error.message });
-//   }
-// };
-
 export const login = (email, password) => async (dispatch) => {
   dispatch({ type: "LOGIN_REQUEST" });
   try {
@@ -139,7 +80,6 @@ export const fetchUserInfo = () => async (dispatch) => {
     }
 
     const userData = await response.json();
-    console.log("Fetched User Data:", userData); // Debug the API response
     dispatch({
       type: "LOGIN_SUCCESS",
       payload: userData,
@@ -159,27 +99,6 @@ export const logout = () => (dispatch) => {
   dispatch({ type: "LOGOUT" });
 };
 
-// export const register = (formData) => async (dispatch) => {
-//   dispatch({ type: "REGISTER_REQUEST" });
-//   try {
-//     const response = await fetch("http://localhost:8080/api/auth/register", {
-//       method: "POST",
-//       body: formData,
-//     });
-
-//     if (!response.ok) {
-//       const errorText = await response.text();
-//       throw new Error(errorText || "Registration failed");
-//     }
-
-//     dispatch({
-//       type: "REGISTER_SUCCESS",
-//     });
-//   } catch (error) {
-//     console.error("Catch Error:", error);
-//     dispatch({ type: "REGISTER_FAILURE", payload: error.message });
-//   }
-// };
 export const register = (formData) => async (dispatch) => {
   dispatch({ type: "REGISTER_REQUEST" });
   try {

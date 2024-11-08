@@ -51,7 +51,6 @@ function AdminAllDocument() {
         return response.json();
       })
       .then((data) => {
-        console.log(data);
         setDocuments(data);
       })
       .catch((error) => {
@@ -262,7 +261,7 @@ function AdminAllDocument() {
                       />
                     </td>
                     <td>{document.title}</td>
-                    <td>{document.author}</td>
+                    <td>{document.userName}</td>
                     <td>{document.view}</td>
                     <td>{document.categoryName}</td>
                     <td>

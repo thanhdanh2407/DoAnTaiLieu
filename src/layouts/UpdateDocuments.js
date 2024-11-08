@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Button from "../components/Button";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 function UpdateDocuments() {
@@ -13,14 +13,17 @@ function UpdateDocuments() {
   const [publishingYear, setPublishingYear] = useState("");
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState("");
-  const [pdfFile, setPdfFile] = useState(null); // Store a single PDF file
-  const [pdfFileName, setPdfFileName] = useState(""); // Store the name of the PDF file
+  const [pdfFile, setPdfFile] = useState(null);
+  const [pdfFileName, setPdfFileName] = useState("");
   const [categories, setCategories] = useState([]);
   const [categoryId, setCategoryId] = useState(null);
   const [existingPdfs, setExistingPdfs] = useState([]);
   const [error, setError] = useState(null);
   const pdfInputRef = useRef(null);
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const [categoryName, setCategoryName] = useState("");
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -54,6 +57,7 @@ function UpdateDocuments() {
           setPublishingYear(data.publishingYear);
           setImagePreview(data.image);
           setCategoryId(data.categoryId);
+          setCategoryName(data.categoryName);
 
           if (data.pdfFiles) {
             setExistingPdfs(data.pdfFiles);
@@ -148,6 +152,8 @@ function UpdateDocuments() {
       return;
     }
 
+    setIsLoading(true);
+
     try {
       const token = localStorage.getItem("authToken");
       if (!token) throw new Error("No token found");
@@ -158,16 +164,22 @@ function UpdateDocuments() {
       formData.append("author", author);
       formData.append("publisher", publisher);
       formData.append("publishingYear", publishingYear);
-      formData.append("categoryId", categoryId);
+
+      if (categoryId) {
+        formData.append("categoryId", categoryId);
+      } else if (categoryName) {
+        formData.append("categoryName", categoryName);
+      }
+
       if (image) formData.append("image", image);
-      if (pdfFile) formData.append("pdfFiles", pdfFile); // Append the single PDF file
+      if (pdfFile) formData.append("pdfFiles", pdfFile);
 
       const response = await fetch(
         `http://localhost:8080/api/documents/${documentId}`,
         {
           method: "PUT",
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `${token}`,
           },
           body: formData,
         }
@@ -180,13 +192,23 @@ function UpdateDocuments() {
         );
       }
 
-      toast.success("Chỉnh sửa tài liệu thành công!");
+      toast.success("Chỉnh sửa tài liệu thành công!", {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
       setTimeout(() => {
         navigate("/user");
       }, 1000);
     } catch (err) {
-      setError(`Failed to update document: ${err.message}`);
       toast.error(`Failed to update document: ${err.message}`);
+    } finally {
+      // Stop loading
+      setIsLoading(false);
     }
   };
 
@@ -251,6 +273,7 @@ function UpdateDocuments() {
                   // required
                 />
               </div>
+
               <div className="itemFormUpload">
                 <label className="titleLabel" htmlFor="categoryId">
                   Hãy Chọn Thể loại<span className="requiredStar">*</span>
@@ -258,9 +281,8 @@ function UpdateDocuments() {
                 <select
                   id="categoryId"
                   className="inputItem"
-                  value={categoryId || ""}
+                  value={categoryId}
                   onChange={(e) => setCategoryId(e.target.value)}
-                  // required
                 >
                   <option value="">Chọn thể loại</option>
                   {categories.map((category) => (
@@ -269,6 +291,19 @@ function UpdateDocuments() {
                     </option>
                   ))}
                 </select>
+                <div className="itemFormUpload">
+                  <label className="titleLabel" htmlFor="categoryName">
+                    Thể loại mới (nếu có)
+                  </label>
+                  <input
+                    type="text"
+                    id="categoryName"
+                    className="inputItem"
+                    placeholder="Nhập tên thể loại mới"
+                    value={categoryName}
+                    onChange={(e) => setCategoryName(e.target.value)}
+                  />
+                </div>
               </div>
 
               <div className="itemFormUpload">
@@ -291,7 +326,7 @@ function UpdateDocuments() {
                         </div>
                       ))
                     ) : (
-                      <div>Không có tệp PDF hiện tại</div>
+                      <div>Loading. . .</div>
                     )}
                   </div>
                   <div className="pdfFileList">
@@ -361,12 +396,18 @@ function UpdateDocuments() {
             </div>
           </div>
           <div className="btnAcp">
-            <Button type="submit">
-              <span className="titleAcp">Xác nhận</span>
+            <Button
+              type="submit"
+              disabled={isLoading}
+              className={`submit-btn ${isLoading ? "loading" : ""}`}
+            >
+              <span className="titleAcp">
+                {isLoading ? "Đang cập nhật..." : "Xác nhận"}
+              </span>
             </Button>
           </div>
         </form>
-        <ToastContainer />
+        {/* <ToastContainer /> */}
       </div>
     </div>
   );

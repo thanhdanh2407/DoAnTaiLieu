@@ -12,6 +12,7 @@ import { FiCheckCircle } from "react-icons/fi";
 import ReactPaginate from "react-paginate";
 import { FaStar, FaEye, FaEdit, FaTrash, FaDownload } from "react-icons/fa";
 import imgDocument from "../assets/itemDocument.png";
+import { toast } from "react-toastify";
 
 function User() {
   const dispatch = useDispatch();
@@ -120,12 +121,26 @@ function User() {
         .then((response) => {
           if (response.ok) {
             setDocuments(documents.filter((doc) => doc.id !== docId));
+            toast.success("Tài liệu đã được xóa thành công!", {
+              position: "top-center",
+              autoClose: 1000,
+              closeOnClick: true,
+              className: "custom-toast",
+              progressClassName: "custom-progress",
+            });
           } else {
             throw new Error("Error deleting document");
           }
         })
         .catch((error) => {
           console.error("Error deleting document:", error);
+          toast.error("Có lỗi xảy ra khi xóa tài liệu.", {
+            position: "top-center",
+            autoClose: 1000,
+            closeOnClick: true,
+            className: "custom-toast",
+            progressClassName: "custom-progress",
+          });
         });
     }
   };
@@ -143,6 +158,26 @@ function User() {
   const handleRejectedDocuments = () => {
     setFilter("rejected");
     setCurrentPage(0);
+  };
+
+  const handleDownloadClick = (docId, title, fileUrl) => {
+    // Nếu fileUrl không có, không làm gì cả
+    if (!fileUrl) {
+      toast.error("Không tìm thấy file để tải về.", {
+        position: "top-center",
+        autoClose: 1000,
+        closeOnClick: true,
+        className: "custom-toast",
+        progressClassName: "custom-progress",
+      });
+      return;
+    }
+
+    // Tạo một thẻ <a> để tải file
+    const link = document.createElement("a");
+    link.href = fileUrl; // URL của tài liệu
+    link.download = title; // Đặt tên file là tiêu đề tài liệu
+    link.click(); // Tự động click để tải file
   };
 
   return (
@@ -280,7 +315,7 @@ function User() {
                       title="Xóa"
                       onClick={() => handleDeleteClick(item.id)}
                     />
-                    <FaDownload className="iconDown" title="Tải xuống" />
+                    {/* <FaDownload className="iconDown" title="Tải xuống" /> */}
                   </div>
                 </div>
               ))}

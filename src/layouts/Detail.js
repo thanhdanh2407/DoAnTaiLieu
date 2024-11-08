@@ -10,6 +10,7 @@ import avatarComment from "../assets/iconAva.png";
 import { VscSend } from "react-icons/vsc";
 import imgDocument from "../assets/itemDocument.png";
 import Button from "../components/Button/index";
+import { toast } from "react-toastify";
 
 function Detail() {
   const { id } = useParams();
@@ -85,6 +86,17 @@ function Detail() {
     fetchComments();
   }, [id, authToken]);
 
+  const handleKeyPress = (e, isEditing, commentId) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      if (isEditing) {
+        handleEditComment(commentId);
+      } else {
+        handleCommentSubmit();
+      }
+    }
+  };
+
   const handleCommentSubmit = async () => {
     if (!comment.trim()) return;
     try {
@@ -123,21 +135,39 @@ function Detail() {
           },
         }
       );
-
       if (!response.ok) {
         throw new Error("Failed to delete comment");
       }
-
       setComments((prevComments) =>
         prevComments.filter((comment) => comment.id !== commentId)
       );
+      toast.success("Xoá bình luận thành công", {
+        position: "top-center",
+        autoClose: 1000,
+        closeOnClick: true,
+        className: "custom-toast",
+        progressClassName: "custom-progress",
+      });
     } catch (error) {
       console.error("Error deleting comment:", error);
+      toast.error("Bạn không thể xoá được bình luận người khác", {
+        position: "top-center",
+        autoClose: 1000,
+        closeOnClick: true,
+        className: "custom-toast",
+        progressClassName: "custom-progress",
+      });
     }
   };
 
   const handleEditComment = async (commentId) => {
-    if (!editedComment.trim()) return;
+    if (!editedComment.trim()) {
+      toast.error("Nội dung bình luận không được trống");
+      setEditedComment("");
+      setEditingCommentId(null);
+      return;
+    }
+
     try {
       const response = await fetch(
         `http://localhost:8080/api/comments/${commentId}`,
@@ -147,14 +177,13 @@ function Detail() {
             "Content-Type": "application/json",
             Authorization: `${authToken}`,
           },
-          body: JSON.stringify({ content: editedComment }),
+          body: editedComment,
         }
       );
 
       if (!response.ok) {
         throw new Error("Failed to edit comment");
       }
-
       setComments((prevComments) =>
         prevComments.map((comment) =>
           comment.id === commentId
@@ -162,17 +191,26 @@ function Detail() {
             : comment
         )
       );
+      toast.success("Cập nhật bình luận thành công", {
+        position: "top-center",
+        autoClose: 1000,
+        closeOnClick: true,
+        className: "custom-toast",
+        progressClassName: "custom-progress",
+      });
       setEditedComment("");
       setEditingCommentId(null);
     } catch (error) {
       console.error("Error editing comment:", error);
-    }
-  };
-
-  const handleKeyPress = (e) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleCommentSubmit();
+      toast.error("Bạn không thể chỉnh sửa bình luận người khác", {
+        position: "top-center",
+        autoClose: 1000,
+        closeOnClick: true,
+        className: "custom-toast",
+        progressClassName: "custom-progress",
+      });
+      setEditedComment("");
+      setEditingCommentId(null);
     }
   };
 
@@ -236,7 +274,9 @@ function Detail() {
               title="PDF Document"
             />
           </div>
-
+          <div className="containerDescription">
+            <div className="description">{document.description}</div>
+          </div>
           <div className="containerComment">
             <div className="titleComment">Bình luận</div>
             <div className="listComment">
@@ -259,7 +299,9 @@ function Detail() {
                               value={editedComment}
                               onChange={(e) => setEditedComment(e.target.value)}
                               className="inputComment"
-                              onKeyDown={handleKeyPress}
+                              onKeyDown={(e) =>
+                                handleKeyPress(e, true, comment.id)
+                              }
                             />
                             <div
                               className="btnSend"
@@ -288,6 +330,14 @@ function Detail() {
                         >
                           Xoá
                         </span>
+                        {editingCommentId === comment.id && (
+                          <span
+                            className="itemClose"
+                            onClick={() => setEditingCommentId(null)}
+                          >
+                            Đóng
+                          </span>
+                        )}
                       </div>
                     </div>
                   </div>
