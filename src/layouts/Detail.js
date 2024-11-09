@@ -11,6 +11,7 @@ import { VscSend } from "react-icons/vsc";
 import imgDocument from "../assets/itemDocument.png";
 import Button from "../components/Button/index";
 import { toast } from "react-toastify";
+import { FaRegCommentDots } from "react-icons/fa6";
 
 function Detail() {
   const { id } = useParams();
@@ -278,7 +279,10 @@ function Detail() {
             <div className="description">{document.description}</div>
           </div>
           <div className="containerComment">
-            <div className="titleComment">Bình luận</div>
+            <div className="titleComment">
+              <FaRegCommentDots />
+              <span className="titleCommentDetail">Bình luận:</span>
+            </div>
             <div className="listComment">
               {comments.length > 0 ? (
                 comments.map((comment) => (

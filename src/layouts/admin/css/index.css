@@ -187,10 +187,20 @@
 }
 
 .tableContainer {
-  max-height: 100%; /* Hoặc giá trị bạn muốn */
+  max-height: 100%;
   overflow-y: auto;
-  border: 1px solid #ddd; /* Tùy chỉnh border nếu cần */
-  border-radius: 4px; /* Tùy chỉnh border-radius nếu cần */
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.loadingAdminManageUser {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 20px;
+  font-weight: bold;
+  font-size: 20px;
+  height: 40px;
 }
 
 /* AdminManageCategory */
@@ -273,41 +283,35 @@
 }
 
 .containerBtnAdd {
-  margin-left: 55%;
-  /* margin-right: 1%; */
+  margin-left: 35%;
+  display: flex;
 }
 
 .btnAdd {
+  margin-right: 2%;
   background-color: greenyellow;
   height: 40px;
-  width: 100px;
+  width: 120px;
   border-radius: 10px;
   border: 1px solid #ccc;
 }
 
 .btnAdd:hover {
   background-color: greenyellow;
-  height: 40px;
-  width: 100px;
-  border-radius: 10px;
-  border: 1px solid #ccc;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 }
 
 .btnSortAdminDocument {
-  /* background-color: rgb(155, 216, 241); */
+  margin-right: 2%;
   height: 40px;
-  width: 100px;
+  width: 120px;
   border-radius: 10px;
   border: 1px solid #ccc;
 }
 
 .btnSortAdminDocument:hover {
   background-color: rgb(155, 216, 241);
-  height: 40px;
-  width: 100px;
-  border-radius: 10px;
-  border: 1px solid #ccc;
+
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 }
 

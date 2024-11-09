@@ -1370,9 +1370,17 @@
   border-radius: 10px;
 }
 .titleComment {
-  font-size: 20px;
+  display: flex;
+  align-items: center;
+  margin-top: 2%;
+  margin-bottom: 1%;
+  font-size: 25px;
   font-weight: bold;
   margin-left: 1%;
+}
+
+.titleCommentDetail {
+  margin-left: 4px;
 }
 
 .itemComment {

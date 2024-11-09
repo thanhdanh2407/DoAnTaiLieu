@@ -149,8 +149,7 @@ function AdminAllDocument() {
 
   return (
     <div className="containerAdminAllDocument">
-      <ToastContainer position="top-center" autoClose={5000} />{" "}
-      {/* Add ToastContainer here */}
+      <ToastContainer position="top-center" autoClose={5000} />
       <div className="leftAdminAllDocument">
         <NavBar />
       </div>
@@ -162,30 +161,38 @@ function AdminAllDocument() {
               <FaUser className="iconUser" />
               <span className="titleInfo">Tất cả tài liệu</span>
             </span>
-            <div
-              className="containerBtnAdd"
-              onClick={handleAdminCreateDocumentClick}
-            >
-              <Button className="btnAdd">Tạo tài liệu</Button>
+            <div className="containerBtnAdd">
+              <Button
+                onClick={handleAdminCreateDocumentClick}
+                className="btnAdd"
+              >
+                Tạo tài liệu
+              </Button>
+              <Button
+                className="btnSortAdminDocument"
+                onClick={() => handleSortChange("view_desc")}
+              >
+                Xem nhiều nhất
+              </Button>
+              <Button
+                className="btnSortAdminDocument"
+                onClick={() => handleSortChange("view")}
+              >
+                Xem ít nhất
+              </Button>
+              <Button
+                className="btnSortAdminDocument"
+                onClick={() => handleShowAllDocuments()}
+              >
+                Tất cả
+              </Button>
+              <Button
+                className="btnSortAdminDocument"
+                onClick={() => setIsModalOpen(true)}
+              >
+                Xem thêm sắp xếp
+              </Button>
             </div>
-            <Button
-              className="btnSortAdminDocument"
-              onClick={() => handleSortChange("view_desc")}
-            >
-              Xem nhiều nhất
-            </Button>
-            <Button
-              className="btnSortAdminDocument"
-              onClick={() => handleSortChange("view")}
-            >
-              Xem ít nhất
-            </Button>
-            <Button
-              className="btnSortAdminDocument"
-              onClick={() => setIsModalOpen(true)}
-            >
-              Xem thêm sắp xếp
-            </Button>
           </div>
           {isModalOpen && (
             <div className="modalOverlay">
@@ -215,12 +222,7 @@ function AdminAllDocument() {
                 >
                   Từ Z - A
                 </Button>
-                <Button
-                  className="buttonSortToast"
-                  onClick={() => handleShowAllDocuments()}
-                >
-                  Tất cả
-                </Button>
+
                 <Button
                   className="buttonClose"
                   onClick={() => setIsModalOpen(false)}
