@@ -10,10 +10,13 @@ import NavBar from "../../components/Admin/NavBar/NavBar";
 import HeaderAdmin from "../../components/Admin/HeaderAdmin/HeaderAdmin";
 import { FiSearch } from "react-icons/fi";
 import Button from "../../components/Button";
+import imageDoc from "../../assets/itemDocument.png";
+import defaultAvatar from "../../assets/iconAva.png";
 
 function AdminListAllDocument() {
   const { userId } = useParams(); // Dynamic userId from URL
   const [documents, setDocuments] = useState([]); // Approved documents
+  const [user, setUser] = useState(null);
   const [rejectedDocuments, setRejectedDocuments] = useState([]); // Rejected documents
   const [pendingDocuments, setPendingDocuments] = useState([]); // Pending documents
   const [error, setError] = useState(null);
@@ -28,6 +31,28 @@ function AdminListAllDocument() {
 
   // Get authToken from localStorage
   const authToken = localStorage.getItem("authToken");
+
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:8080/api/admin/users/${userId}`,
+          {
+            headers: {
+              Authorization: `${authToken}`, // Include authToken in the Authorization header
+            },
+          }
+        );
+        if (!response.ok) throw new Error("Failed to fetch user information");
+        const data = await response.json();
+        setUser(data);
+      } catch (err) {
+        setError(err.message);
+      }
+    };
+
+    fetchUserInfo();
+  }, [authToken, userId]);
 
   useEffect(() => {
     const fetchDocuments = async () => {
@@ -119,6 +144,8 @@ function AdminListAllDocument() {
     ? pendingDocuments.slice(indexOfFirstDocument, indexOfLastDocument)
     : documents.slice(indexOfFirstDocument, indexOfLastDocument);
 
+  const avatarUrl = user.avatar;
+
   return (
     <div className="containerAdminListAllDocument">
       <div className="leftAdminListAllDocument">
@@ -135,6 +162,30 @@ function AdminListAllDocument() {
           </div>
           <div className="bl">
             <div className="containerListDocumentCreate">
+              {user ? (
+                <div className="formUser">
+                  <div className="avatarContainer">
+                    <img
+                      src={avatarUrl}
+                      alt="avatar"
+                      className="avatar"
+                      onError={(e) => {
+                        e.target.src = defaultAvatar;
+                      }}
+                    />
+                  </div>
+                  <div className="titleNameUser">{user.fullname || "Name"}</div>
+
+                  <div className="titleEmailUser">
+                    Email: {user.email || "Email"}
+                  </div>
+                  <div className="titleAddreesUser">
+                    Địa chỉ: {user.address || "Address"}
+                  </div>
+                </div>
+              ) : (
+                <p>Loading...</p>
+              )}
               <div className="titleListUserAdmin">Danh sách tài liệu</div>
               <div className="containerBtnSearch">
                 <div className="containerBtnSearchCancel">
@@ -182,6 +233,9 @@ function AdminListAllDocument() {
                         src={document.image}
                         alt={document.title}
                         className="imgDocument"
+                        onError={(e) => {
+                          e.target.src = imageDoc;
+                        }}
                       />
                       <div className="listInfo">
                         <div className="titleInfo">{document.title}</div>

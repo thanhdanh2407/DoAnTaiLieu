@@ -1350,6 +1350,12 @@
   background-color: white;
 }
 
+
+.cp:hover{
+  cursor: pointer;
+  color: #2652d8;
+}
+
 .iconDetail {
   margin-right: 8px;
   font-size: 24px;
@@ -1571,6 +1577,9 @@
   padding: 10px;
   border-radius: 10px;
 }
+
+
+
 
 /* DetailSearch.js */
 /* ====================================== */

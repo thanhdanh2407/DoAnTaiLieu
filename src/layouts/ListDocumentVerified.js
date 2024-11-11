@@ -7,9 +7,12 @@ import ReactPaginate from "react-paginate";
 import { useNavigate, useParams } from "react-router-dom";
 import { FaStar, FaEye } from "react-icons/fa";
 import imgDocument from "../assets/itemDocument.png";
+import defaultAvatar from "../assets/iconAva.png";
+import Button from "../components/Button";
 
 function ListDocumentVerified() {
   const { userId } = useParams();
+  const [user, setUser] = useState(null); // State to store user information
   const [documents, setDocuments] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -18,6 +21,19 @@ function ListDocumentVerified() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:8080/api/user/${userId}`
+        );
+        if (!response.ok) throw new Error("Failed to fetch user information");
+        const data = await response.json();
+        setUser(data);
+      } catch (err) {
+        setError(err.message);
+      }
+    };
+
     const fetchDocuments = async () => {
       setLoading(true);
       try {
@@ -34,6 +50,7 @@ function ListDocumentVerified() {
       }
     };
 
+    fetchUserInfo();
     fetchDocuments();
   }, [userId]);
 
@@ -53,9 +70,35 @@ function ListDocumentVerified() {
     navigate(`/documents/${id}`); // Navigate to document detail page
   };
 
+  const avatarUrl = user.avatar || defaultAvatar;
+
   return (
     <div className="containerListDocumentCreate">
+      {user ? (
+        <div className="formUser">
+          <div className="avatarContainer">
+            <img
+              src={avatarUrl}
+              alt="avatar"
+              className="avatar"
+              onError={(e) => {
+                e.target.src = defaultAvatar;
+              }}
+            />
+          </div>
+          <div className="titleNameUser">{user.fullname || "Tên"}</div>
+
+          <div className="titleEmailUser">Email: {user.email || "Email"}</div>
+          <div className="titleAddreesUser">
+            Địa chỉ: {user.address || "Không có"}
+          </div>
+        </div>
+      ) : (
+        <p>Loading user information...</p>
+      )}
+
       <div className="titleListUser">Danh sách tài liệu</div>
+
       {loading ? (
         <div className="loadingDocument">Loading...</div>
       ) : error ? (
@@ -76,7 +119,7 @@ function ListDocumentVerified() {
                   alt={document.title}
                   className="imgDocument"
                   onError={(e) => {
-                    e.target.src = imgDocument; // Thay đổi src nếu không tải được
+                    e.target.src = imgDocument; // Default image if loading fails
                   }}
                 />
                 <div className="listInfo">

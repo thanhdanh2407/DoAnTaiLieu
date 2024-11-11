@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import NavBar from "../../components/Admin/NavBar/NavBar";
 import HeaderAdmin from "../../components/Admin/HeaderAdmin/HeaderAdmin";
 import { TbClipboardList } from "react-icons/tb";
@@ -18,6 +18,7 @@ function AdminDetailDocument() {
     localStorage.getItem("authToken") || ""
   );
   const [user, setUser] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchDocument = async () => {
@@ -68,6 +69,12 @@ function AdminDetailDocument() {
     }
   };
 
+  const handleUserClick = (userId) => {
+    navigate(
+      `/admin/adminListAllDocument/admin/documents/user/${userId}/verified`
+    );
+  };
+
   return (
     <div className="containerAdminDetailDocument">
       <div className="leftAdminDetailDocument">
@@ -103,7 +110,12 @@ function AdminDetailDocument() {
                       </div>
                       <div className="itemListDetail">
                         <LuUser2 className="iconDetail" />
-                        {document.userName}
+                        <div
+                          className="cp"
+                          onClick={() => handleUserClick(document.userId)}
+                        >
+                          {document.userName}
+                        </div>
                       </div>
                       <div className="itemListAcpDetail">
                         <FiCheckCircle className="iconDetail" />

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import "./css/index.css";
 import { TbClipboardList } from "react-icons/tb";
 import { WiTime5 } from "react-icons/wi";
@@ -24,6 +24,7 @@ function Detail() {
   const [user, setUser] = useState(null);
   const [editingCommentId, setEditingCommentId] = useState(null);
   const [editedComment, setEditedComment] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchDocument = async () => {
@@ -221,6 +222,10 @@ function Detail() {
     }
   };
 
+  const handleUserClick = (userId) => {
+    navigate(`/documents/user/${userId}/verified`);
+  };
+
   return (
     <div className="containerDetail">
       {!document ? (
@@ -250,7 +255,12 @@ function Detail() {
               </div>
               <div className="itemListDetail">
                 <LuUser2 className="iconDetail" />
-                {document.userName}
+                <div
+                  className="cp"
+                  onClick={() => handleUserClick(document.userId)}
+                >
+                  {document.userName}
+                </div>
               </div>
               <div className="itemListAcpDetail">
                 <FiCheckCircle className="iconDetail" />
