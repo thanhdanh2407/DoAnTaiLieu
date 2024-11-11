@@ -70,7 +70,7 @@ function ListDocumentVerified() {
     navigate(`/documents/${id}`); // Navigate to document detail page
   };
 
-  const avatarUrl = user.avatar || defaultAvatar;
+  const avatarUrl = user?.avatar || defaultAvatar;
 
   const getStatusText = (status) => {
     switch (status) {

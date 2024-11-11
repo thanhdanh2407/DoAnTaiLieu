@@ -144,7 +144,7 @@ function AdminListAllDocument() {
     ? pendingDocuments.slice(indexOfFirstDocument, indexOfLastDocument)
     : documents.slice(indexOfFirstDocument, indexOfLastDocument);
 
-  const avatarUrl = user.avatar;
+  const avatarUrl = user?.avatar;
 
   const getStatusText = (status) => {
     switch (status) {
