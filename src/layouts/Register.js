@@ -68,7 +68,9 @@ function Register() {
       return;
     }
 
-    const emailPattern = /^(?=.{2,})[\w.-]+@[\w.-]+\.[a-zA-Z]{2,}$/;
+    // const emailPattern = /^(?=.{2,})[\w.-]+@[\w.-]+\.[a-zA-Z]{2,}$/;
+
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/;
 
     if (!emailPattern.test(email)) {
       toast.error("Email không hợp lệ", {
@@ -226,7 +228,7 @@ function Register() {
                 Email<span className="requiredStar">*</span>
               </label>
               <input
-                type="email"
+                // type="email"
                 id="email"
                 placeholder="Nhập email"
                 className="inputItem"

@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { login } from "../Redux/actions/authActions";
 import Button from "../components/Button";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 function Login() {
@@ -29,8 +29,6 @@ function Login() {
       if (isAuthenticated) {
         const user = JSON.parse(localStorage.getItem("user"));
         const role = user?.role;
-
-        // Thêm một thông báo chào mừng dựa trên vai trò
         if (role === "ADMIN") {
           toast.success("Chào mừng quay lại trang quản lý !", {
             position: "top-center",
@@ -43,7 +41,6 @@ function Login() {
             navigate("/admin");
           }, 1000);
         } else {
-          // Bạn có thể thêm một thông báo chào mừng khác cho người dùng thông thường
           toast.success("Đăng nhập thành công!", {
             position: "top-center",
             autoClose: 1000,
@@ -68,7 +65,6 @@ function Login() {
   }, [isAuthenticated, error, loginAttempted, navigate]);
 
   const getErrorMessage = (error) => {
-    // Check for the specific error patterns and return the corresponding messages
     if (error.includes("Unexpected token 'T'") && error.includes("Tài khoản")) {
       return "Tài khoản đã bị khoá. Vui lòng liên hệ quản trị viên!";
     } else if (
@@ -84,13 +80,26 @@ function Login() {
 
   const handleLogin = (e) => {
     e.preventDefault();
+
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/;
+
+    if (!emailPattern.test(email)) {
+      toast.error("Email không hợp lệ", {
+        position: "top-center",
+        autoClose: 3000,
+        closeOnClick: true,
+        className: "custom-toast",
+        progressClassName: "custom-progress",
+      });
+      return;
+    }
+
     setLoginAttempted(true);
     dispatch(login(email, password));
   };
 
   return (
     <div className="container">
-      {/* <ToastContainer /> */}
       <form className="form" onSubmit={handleLogin}>
         <div className="titleLogin">Đăng Nhập</div>
         <div className="itemFormLogin">
@@ -98,7 +107,7 @@ function Login() {
             Email<span className="requiredStar">*</span>
           </label>
           <input
-            type="email"
+            // type="email"
             id="email"
             placeholder="Nhập email"
             className="inputItem"
