@@ -99,13 +99,11 @@ function ForgotPassword() {
               Email<span className="requiredStar">*</span>
             </label>
             <input
-              // type="email"
               id="email"
               placeholder="Nhập email"
               className="inputItem"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              required
             />
           </div>
           <div className="btnSubmit">
@@ -129,13 +127,6 @@ function ForgotPassword() {
           </div>
         </div>
       </div>
-      {/* <ToastContainer
-        position="top-center"
-        autoClose={3000}
-        closeOnClick
-        className="custom-toast-container"
-        progressClassName="custom-progress"
-      /> */}
     </div>
   );
 }
