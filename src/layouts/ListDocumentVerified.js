@@ -76,7 +76,7 @@ function ListDocumentVerified() {
     switch (status) {
       case "VERIFIED":
         return "Đã duyệt";
-      case "CREATE":
+      case "CREATED":
         return "Chưa duyệt";
       case "REJECTED":
         return "Từ chối";
