@@ -89,16 +89,16 @@ function AdminAllDocument() {
     navigate(`/admin/adminDetailDocument/documents/${id}`); // Pass ID for detail
   };
 
-  const getStatusClass = (status) => {
+  const getStatusInfo = (status) => {
     switch (status) {
-      case "CREATED":
-        return "status-created"; // Blue color class
       case "VERIFIED":
-        return "status-verified"; // Green color class
+        return { text: "Đã duyệt", className: "status-verified" }; // Green
+      case "CREATED":
+        return { text: "Chưa duyệt", className: "status-created" }; // Blue
       case "REJECTED":
-        return "status-rejected"; // Red color class
+        return { text: "Từ chối", className: "status-rejected" }; // Red
       default:
-        return "";
+        return { text: status, className: "" };
     }
   };
 
@@ -268,9 +268,11 @@ function AdminAllDocument() {
                     <td>{document.categoryName}</td>
                     <td>
                       <div
-                        className={`status ${getStatusClass(document.status)}`}
+                        className={`status ${
+                          getStatusInfo(document.status).className
+                        }`}
                       >
-                        {document.status}
+                        {getStatusInfo(document.status).text}
                       </div>
                     </td>
                     <td>

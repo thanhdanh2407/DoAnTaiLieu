@@ -52,6 +52,19 @@ const Slider = () => {
     navigate(`/documents/${id}`);
   };
 
+  const getStatusText = (status) => {
+    switch (status) {
+      case "VERIFIED":
+        return "Đã duyệt";
+      case "CREATED":
+        return "Chưa duyệt";
+      case "REJECTED":
+        return "Từ chối";
+      default:
+        return status;
+    }
+  };
+
   return (
     <div className="banner-container">
       <Carousel
@@ -98,7 +111,7 @@ const Slider = () => {
               </div>
               <div className="listItemInfoAcp">
                 <FiCheckCircle />
-                {item.status}
+                {getStatusText(item.status)}
               </div>
               <div className="star-rating">
                 {[1, 2, 3, 4, 5].map((star) => (

@@ -75,15 +75,18 @@ function AdminDocumentCancel() {
     fetchRejectedDocuments();
   }, []);
 
-  const getStatusClass = (status) => {
+  const getStatusInfo = (status) => {
     switch (status) {
+      case "VERIFIED":
+        return { text: "Đã duyệt", className: "status-verified" }; // Green
+      case "CREATED":
+        return { text: "Chưa duyệt", className: "status-created" }; // Blue
       case "REJECTED":
-        return "status-rejected"; // Red color class
+        return { text: "Từ chối", className: "status-rejected" }; // Red
       default:
-        return "";
+        return { text: status, className: "" };
     }
   };
-
   const handleAdminDetailDocumentClick = (id) => {
     navigate(`/admin/adminDetailDocument/documents/${id}`);
   };
@@ -145,11 +148,11 @@ function AdminDocumentCancel() {
                       <td>{document.categoryName}</td>
                       <td>
                         <div
-                          className={`status ${getStatusClass(
-                            document.status
-                          )}`}
+                          className={`status ${
+                            getStatusInfo(document.status).className
+                          }`}
                         >
-                          {document.status}
+                          {getStatusInfo(document.status).text}
                         </div>
                       </td>
                       <td>

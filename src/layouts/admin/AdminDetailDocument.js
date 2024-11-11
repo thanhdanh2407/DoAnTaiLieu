@@ -75,6 +75,19 @@ function AdminDetailDocument() {
     );
   };
 
+  const getStatusText = (status) => {
+    switch (status) {
+      case "VERIFIED":
+        return "Đã duyệt";
+      case "CREATED":
+        return "Chưa duyệt";
+      case "REJECTED":
+        return "Từ chối";
+      default:
+        return status;
+    }
+  };
+
   return (
     <div className="containerAdminDetailDocument">
       <div className="leftAdminDetailDocument">
@@ -119,7 +132,7 @@ function AdminDetailDocument() {
                       </div>
                       <div className="itemListAcpDetail">
                         <FiCheckCircle className="iconDetail" />
-                        {document.status}
+                        {getStatusText(document.status)}
                       </div>
                       <div className="itemListDetail">
                         <FaEye className="iconDetail" />

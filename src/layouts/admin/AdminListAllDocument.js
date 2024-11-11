@@ -146,6 +146,19 @@ function AdminListAllDocument() {
 
   const avatarUrl = user.avatar;
 
+  const getStatusText = (status) => {
+    switch (status) {
+      case "VERIFIED":
+        return "Đã duyệt";
+      case "CREATED":
+        return "Chưa duyệt";
+      case "REJECTED":
+        return "Từ chối";
+      default:
+        return status;
+    }
+  };
+
   return (
     <div className="containerAdminListAllDocument">
       <div className="leftAdminListAllDocument">
@@ -260,7 +273,7 @@ function AdminListAllDocument() {
                         <div className="listItemInfoAcpHome">
                           <FiCheckCircle />
                           <span className="titleApproved">
-                            {document.status}
+                            {getStatusText(document.status)}
                           </span>
                         </div>
                         <div className="star-rating">

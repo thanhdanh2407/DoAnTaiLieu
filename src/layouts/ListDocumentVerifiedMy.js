@@ -64,6 +64,19 @@ function ListDocumentVerifiedMy() {
     (currentPage + 1) * documentsPerPage
   );
 
+  const getStatusText = (status) => {
+    switch (status) {
+      case "VERIFIED":
+        return "Đã duyệt";
+      case "CREATE":
+        return "Chưa duyệt";
+      case "REJECTED":
+        return "Từ chối";
+      default:
+        return status;
+    }
+  };
+
   return (
     <div className="containerListDocumentCreate">
       <div className="titleListUser">Danh sách tài liệu chờ duyệt </div>
@@ -110,7 +123,7 @@ function ListDocumentVerifiedMy() {
                   </div>
                   <div className="listItemInfoAcp">
                     <FiCheckCircle />
-                    {document.status}
+                    {getStatusText(document.status)}
                   </div>
                   <div className="star-rating">
                     {[1, 2, 3, 4, 5].map((star) => (

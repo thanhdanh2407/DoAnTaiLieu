@@ -226,6 +226,19 @@ function Detail() {
     navigate(`/documents/user/${userId}/verified`);
   };
 
+  const getStatusText = (status) => {
+    switch (status) {
+      case "VERIFIED":
+        return "Đã duyệt";
+      case "CREATE":
+        return "Chưa duyệt";
+      case "REJECTED":
+        return "Từ chối";
+      default:
+        return status;
+    }
+  };
+
   return (
     <div className="containerDetail">
       {!document ? (
@@ -264,7 +277,7 @@ function Detail() {
               </div>
               <div className="itemListAcpDetail">
                 <FiCheckCircle className="iconDetail" />
-                {document.status}
+                {getStatusText(document.status)}
               </div>
               <div className="itemListDetail">
                 <FaEye className="iconDetail" />

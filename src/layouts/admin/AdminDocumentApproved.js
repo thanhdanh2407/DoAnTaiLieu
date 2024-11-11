@@ -97,12 +97,16 @@ function AdminDocumentApproved() {
     setCurrentPage(selectedPage);
   };
 
-  const getStatusClass = (status) => {
+  const getStatusInfo = (status) => {
     switch (status) {
       case "VERIFIED":
-        return "status-verified"; // Green color class
+        return { text: "Đã duyệt", className: "status-verified" }; // Green
+      case "CREATED":
+        return { text: "Chưa duyệt", className: "status-created" }; // Blue
+      case "REJECTED":
+        return { text: "Từ chối", className: "status-rejected" }; // Red
       default:
-        return "";
+        return { text: status, className: "" };
     }
   };
 
@@ -164,9 +168,11 @@ function AdminDocumentApproved() {
                     <td>{document.categoryName}</td>
                     <td>
                       <div
-                        className={`status ${getStatusClass(document.status)}`}
+                        className={`status ${
+                          getStatusInfo(document.status).className
+                        }`}
                       >
-                        {document.status}
+                        {getStatusInfo(document.status).text}
                       </div>
                     </td>
                     <td>
