@@ -81,6 +81,28 @@ function Login() {
   const handleLogin = (e) => {
     e.preventDefault();
 
+    if (!email) {
+      toast.error("Vui lòng nhập email", {
+        position: "top-center",
+        autoClose: 3000,
+        closeOnClick: true,
+        className: "custom-toast",
+        progressClassName: "custom-progress",
+      });
+      return;
+    }
+
+    if (!password) {
+      toast.error("Vui lòng nhập mật khẩu", {
+        position: "top-center",
+        autoClose: 3000,
+        closeOnClick: true,
+        className: "custom-toast",
+        progressClassName: "custom-progress",
+      });
+      return;
+    }
+
     const emailPattern = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/;
 
     if (!emailPattern.test(email)) {
@@ -113,7 +135,7 @@ function Login() {
             className="inputItem"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            required
+            // required
           />
         </div>
         <div className="itemFormLogin">
@@ -128,7 +150,7 @@ function Login() {
               className="inputItem"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              required
+              // required
             />
             <span className="togglePassword" onClick={togglePasswordVisibility}>
               {showPassword ? <FaEye /> : <FaEyeSlash />}
