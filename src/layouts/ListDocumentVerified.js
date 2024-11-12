@@ -8,17 +8,17 @@ import { useNavigate, useParams } from "react-router-dom";
 import { FaStar, FaEye } from "react-icons/fa";
 import imgDocument from "../assets/itemDocument.png";
 import defaultAvatar from "../assets/iconAva.png";
-import Button from "../components/Button";
 
 function ListDocumentVerified() {
   const { userId } = useParams();
-  const [user, setUser] = useState(null); // State to store user information
+  const [user, setUser] = useState(null);
   const [documents, setDocuments] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [currentPage, setCurrentPage] = useState(0); // Track current page
-  const [documentsPerPage] = useState(12); // Set documents per page
+  const [currentPage, setCurrentPage] = useState(0);
+  const [documentsPerPage] = useState(12);
   const navigate = useNavigate();
+  const [role, setRole] = useState("");
 
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -54,20 +54,34 @@ function ListDocumentVerified() {
     fetchDocuments();
   }, [userId]);
 
-  // Calculate pagination
+  useEffect(() => {
+    if (user) {
+      setRole(() => {
+        if (user.role === "ADMIN") {
+          return "ADMIN";
+        } else if (user.identifier?.startsWith("SV")) {
+          return "Sinh Viên";
+        } else if (user.identifier?.startsWith("GV")) {
+          return "Giảng Viên";
+        } else {
+          return "Người Dùng";
+        }
+      });
+    }
+  }, [user]);
+
   const pageCount = Math.ceil(documents.length / documentsPerPage);
   const displayedDocuments = documents.slice(
     currentPage * documentsPerPage,
     (currentPage + 1) * documentsPerPage
   );
 
-  // Handle page click
   const handlePageClick = ({ selected }) => {
     setCurrentPage(selected);
   };
 
   const handleItemClick = (id) => {
-    navigate(`/documents/${id}`); // Navigate to document detail page
+    navigate(`/documents/${id}`);
   };
 
   const avatarUrl = user?.avatar || defaultAvatar;
@@ -98,6 +112,7 @@ function ListDocumentVerified() {
                 e.target.src = defaultAvatar;
               }}
             />
+            <div className="titleRole">{role || "Người Dùng"}</div>
           </div>
           <div className="titleNameUser">{user.fullname || "Tên"}</div>
 
@@ -132,7 +147,7 @@ function ListDocumentVerified() {
                   alt={document.title}
                   className="imgDocument"
                   onError={(e) => {
-                    e.target.src = imgDocument; // Default image if loading fails
+                    e.target.src = imgDocument;
                   }}
                 />
                 <div className="listInfo">

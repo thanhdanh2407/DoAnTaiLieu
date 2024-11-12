@@ -28,6 +28,7 @@ function AdminListAllDocument() {
   const [showRejected, setShowRejected] = useState(false); // New state for showing rejected documents
   const [showPending, setShowPending] = useState(false); // New state for showing pending documents
   const navigate = useNavigate();
+  const [role, setRole] = useState("");
 
   // Get authToken from localStorage
   const authToken = localStorage.getItem("authToken");
@@ -78,6 +79,22 @@ function AdminListAllDocument() {
 
     fetchDocuments();
   }, [authToken, userId]); // Re-run the effect if authToken or userId changes
+
+  useEffect(() => {
+    if (user) {
+      setRole(() => {
+        if (user.role === "ADMIN") {
+          return "ADMIN";
+        } else if (user.identifier?.startsWith("SV")) {
+          return "Sinh Viên";
+        } else if (user.identifier?.startsWith("GV")) {
+          return "Giảng Viên";
+        } else {
+          return "Người Dùng";
+        }
+      });
+    }
+  }, [user]);
 
   const fetchRejectedDocuments = async () => {
     setLoadingRejected(true);
@@ -186,6 +203,7 @@ function AdminListAllDocument() {
                         e.target.src = defaultAvatar;
                       }}
                     />
+                    <div className="titleRole">{role || "Người Dùng"}</div>
                   </div>
                   <div className="titleNameUser">{user.fullname || "Name"}</div>
 
