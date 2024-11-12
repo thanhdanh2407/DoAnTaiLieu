@@ -101,13 +101,18 @@ function HomeAdmin() {
   };
 
   const usersByRoleChartData = {
-    labels: ["ADMIN", "Giảng viên", "Sinh viên"],
+    labels: ["ADMIN", "Giảng viên", "Sinh viên", "Người dùng"],
     datasets: [
       {
         label: "Vai trò",
-        data: [data.totalAdmins, data.totalTeachers, data.totalStudents],
-        backgroundColor: ["#36A2EB", "#FFCE56", "#4BC0C0"],
-        borderColor: ["#36A2EB", "#FFCE56", "#4BC0C0"],
+        data: [
+          data.totalAdmins,
+          data.totalTeachers,
+          data.totalStudents,
+          data.totalUsersRole,
+        ],
+        backgroundColor: ["#36A2EB", "#FFCE56", "#4BC0C0", "greenyellow"],
+        borderColor: ["#36A2EB", "#FFCE56", "#4BC0C0", "greenyellow"],
         borderWidth: 1,
       },
     ],
