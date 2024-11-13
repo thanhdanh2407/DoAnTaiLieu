@@ -26,7 +26,7 @@ function Navigation() {
   const handleSearch = () => {
     if (searchTerm.trim()) {
       navigate(
-        `/detailsearch?searchText=${encodeURIComponent(searchTerm.trim())}`
+        `/detailsearch?searchText=${encodeURIComponent(searchTerm.trim())}&type=title,category`
       );
     }
   };
