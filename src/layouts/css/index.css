@@ -1556,7 +1556,7 @@
   font-size: 16px;
   border-radius: 7px;
   cursor: pointer;
-  width: 16%;
+  width: 30%;
   height: 50px;
   transition: background-color 0.3s ease, transform 0.2s ease;
 }
