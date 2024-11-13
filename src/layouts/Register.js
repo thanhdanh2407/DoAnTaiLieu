@@ -31,6 +31,7 @@ function Register() {
   };
 
   const { loading } = useSelector((state) => state.auth);
+  
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -126,30 +127,54 @@ function Register() {
     }
 
     const identifierPattern = /^(SV|GV)\d{6}$/;
-    if (role === "STUDENT" && !identifier.startsWith("SV")) {
-      toast.error(
-        "Mã số sinh viên phải bắt đầu bằng 'SV' và theo sau là 6 chữ số",
-        {
+    // if (role === "STUDENT" && !identifier.startsWith("SV")) {
+    //   toast.error(
+    //     "Mã số sinh viên phải bắt đầu bằng 'SV' và theo sau là 6 chữ số",
+    //     {
+    //       position: "top-center",
+    //       autoClose: 3000,
+    //       closeOnClick: true,
+    //       className: "custom-toast",
+    //       progressClassName: "custom-progress",
+    //     }
+    //   );
+    //   return;
+    // } else if (role === "TEACHER" && !identifier.startsWith("GV")) {
+    //   toast.error(
+    //     "Mã số giáo viên phải bắt đầu bằng 'GV' và theo sau là 6 chữ số",
+    //     {
+    //       position: "top-center",
+    //       autoClose: 3000,
+    //       closeOnClick: true,
+    //       className: "custom-toast",
+    //       progressClassName: "custom-progress",
+    //     }
+    //   );
+    //   return;
+    // }
+
+    if (role === "STUDENT") {
+      if (!identifier.startsWith("SV") || !identifierPattern.test(identifier.slice(2))) {
+        toast.error("Bạn phải nhập đúng 6 số cho mã số SV (ví dụ: SV123456)", {
           position: "top-center",
           autoClose: 3000,
           closeOnClick: true,
           className: "custom-toast",
           progressClassName: "custom-progress",
-        }
-      );
-      return;
-    } else if (role === "TEACHER" && !identifier.startsWith("GV")) {
-      toast.error(
-        "Mã số giáo viên phải bắt đầu bằng 'GV' và theo sau là 6 chữ số",
-        {
+        });
+        return;
+      }
+    } else if (role === "TEACHER") {
+      if (!identifier.startsWith("GV") || !identifierPattern.test(identifier.slice(2))) {
+        toast.error("Bạn phải nhập đúng 6 số cho mã số GV (ví dụ: GV123456)", {
           position: "top-center",
           autoClose: 3000,
           closeOnClick: true,
           className: "custom-toast",
           progressClassName: "custom-progress",
-        }
-      );
-      return;
+        });
+        return;
+      }
     }
 
     const formData = new FormData();
