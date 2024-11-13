@@ -312,12 +312,14 @@ function User() {
                     </div>
                   </div>
                   <div className="listItemFeature">
-                    <FaEye
+                    <div className="grView">
+                      <FaEye
                       className="iconEye"
                       title="Xem"
                       onClick={() => handleViewClick(item.id)}
-                    />
-                    <label className="view">{item.view}</label>
+                      />
+                      <label className="view">{item.view}</label>
+                    </div>
                     <FaEdit
                       className="iconEdit"
                       title="Chỉnh sửa"
