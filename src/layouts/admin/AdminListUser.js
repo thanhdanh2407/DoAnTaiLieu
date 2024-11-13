@@ -214,7 +214,7 @@ function AdminListUser() {
             <div className="searchDocumentAdmin">
               <input
                 type="text"
-                placeholder="Tìm kiếm tài liệu"
+                placeholder="Tìm kiếm người dùng"
                 className="inputSearchAdmin"
                 value={searchTerm}
                 onChange={handleSearchChange}

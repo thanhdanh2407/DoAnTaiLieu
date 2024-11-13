@@ -18,6 +18,8 @@ function AdminAllDocument() {
   const [sortOrder, setSortOrder] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const authToken = localStorage.getItem("authToken");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredDocuments, setFilteredDocuments] = useState([]);
 
   // Function to fetch documents from the API
   const fetchDocuments = () => {
@@ -74,7 +76,7 @@ function AdminAllDocument() {
 
   // Slice the documents to only show items for the current page
   const offset = currentPage * itemsPerPage;
-  const currentDocuments = documents.slice(offset, offset + itemsPerPage);
+  const currentDocuments = filteredDocuments.slice(offset, offset + itemsPerPage);
 
   const handleAdminCreateDocumentClick = () => {
     navigate("/admin/adminCreateDocument");
@@ -147,6 +149,35 @@ function AdminAllDocument() {
     setCurrentPage(0);
   };
 
+  useEffect(() => {
+    // Filter documents based on the search term (title, userName, categoryName)
+    const filtered = documents.filter((document) => {
+      const titleMatch = document.title
+        ? document.title.toLowerCase().includes(searchTerm.toLowerCase())
+        : false;
+      const userNameMatch = document.userName
+        ? document.userName.toLowerCase().includes(searchTerm.toLowerCase())
+        : false;
+      const categoryMatch = document.categoryName
+        ? document.categoryName.toLowerCase().includes(searchTerm.toLowerCase())
+        : false;
+
+      return titleMatch || userNameMatch || categoryMatch;
+    });
+    setFilteredDocuments(filtered);
+  }, [searchTerm, documents]);
+
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const handleSearchKeyPress = (e) => {
+    if (e.key === "Enter") {
+      // Trigger search when Enter key is pressed
+      setSearchTerm(e.target.value);
+    }
+  };
+
   return (
     <div className="containerAdminAllDocument">
       <ToastContainer position="top-center" autoClose={5000} />
@@ -161,6 +192,17 @@ function AdminAllDocument() {
               <FaUser className="iconUser" />
               <span className="titleInfo">Tất cả tài liệu</span>
             </span>
+            <div className="searchDocumentAdmin">
+              <input
+                type="text"
+                placeholder="Tìm kiếm tài liệu"
+                className="inputSearchAdmin"
+                value={searchTerm}
+                onChange={handleSearchChange}
+                onKeyPress={handleSearchKeyPress}
+              />
+              <FiSearch className="searchIcon" />
+            </div>
             <div className="containerBtnAdd">
               <Button
                 onClick={handleAdminCreateDocumentClick}
@@ -249,7 +291,8 @@ function AdminAllDocument() {
                 </tr>
               </thead>
               <tbody>
-                {currentDocuments.map((document, index) => (
+              {currentDocuments.length > 0 ? (
+              currentDocuments.map((document, index) => (
                   <tr key={document.id}>
                     <td>{offset + index + 1}</td>
                     <td>
@@ -304,7 +347,10 @@ function AdminAllDocument() {
                       </button>
                     </td>
                   </tr>
-                ))}
+                  )) 
+                ) : (
+                  <div className="noDocuments">Không có tài liệu nào</div>
+                )}
               </tbody>
             </table>
           </div>
