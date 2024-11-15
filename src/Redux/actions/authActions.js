@@ -99,6 +99,28 @@ export const logout = () => (dispatch) => {
   dispatch({ type: "LOGOUT" });
 };
 
+// export const register = (formData) => async (dispatch) => {
+//   dispatch({ type: "REGISTER_REQUEST" });
+//   try {
+//     const response = await fetch("http://localhost:8080/api/auth/register", {
+//       method: "POST",
+//       body: formData,
+//     });
+
+//     if (!response.ok) {
+//       const errorText = await response.text();
+//       throw new Error(errorText || "Registration failed");
+//     }
+
+//     dispatch({
+//       type: "REGISTER_SUCCESS",
+//     });
+//   } catch (error) {
+//     console.error("Catch Error:", error);
+//     dispatch({ type: "REGISTER_FAILURE", payload: error.message });
+//     throw error; // Rethrow to catch in component
+//   }
+// };
 export const register = (formData) => async (dispatch) => {
   dispatch({ type: "REGISTER_REQUEST" });
   try {
@@ -109,7 +131,10 @@ export const register = (formData) => async (dispatch) => {
 
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(errorText || "Registration failed");
+      if (errorText.includes("Identifier đã được sử dụng")) {
+        throw new Error("Mã đã tồn tại");
+      }
+      throw new Error(errorText || "Đăng ký thất bại");
     }
 
     dispatch({
@@ -121,6 +146,7 @@ export const register = (formData) => async (dispatch) => {
     throw error; // Rethrow to catch in component
   }
 };
+
 
 export const forgotPassword = (email) => async (dispatch) => {
   try {

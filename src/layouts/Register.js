@@ -195,8 +195,7 @@ function Register() {
       }, 3000);
     } catch (err) {
       if (err.response && err.response.status === 409) {
-        // Assuming a 409 Conflict status for duplicate identifiers
-        toast.error("Mã số đã tồn tại. Vui lòng nhập mã khác.", {
+        toast.error("Mã đã tồn tại", {
           position: "top-center",
           autoClose: 3000,
           closeOnClick: true,
@@ -212,7 +211,8 @@ function Register() {
           progressClassName: "custom-progress",
         });
       }
-    } finally {
+    }
+     finally {
       setRegistering(false);
     }
   };
