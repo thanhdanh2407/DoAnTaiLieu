@@ -40,6 +40,37 @@ function UpdateDocuments() {
     fetchCategories();
   }, []);
 
+  // useEffect(() => {
+  //   if (documentId) {
+  //     const fetchDocumentDetails = async () => {
+  //       try {
+  //         const response = await fetch(
+  //           `http://localhost:8080/api/documents/${documentId}`
+  //         );
+  //         if (!response.ok) throw new Error("Failed to fetch document details");
+  //         const data = await response.json();
+
+  //         setTitle(data.title);
+  //         setDescription(data.description);
+  //         setAuthor(data.author);
+  //         setPublisher(data.publisher);
+  //         setPublishingYear(data.publishingYear);
+  //         setImagePreview(data.image);
+  //         setCategoryId(data.categoryId);
+  //         setCategoryName(data.categoryName);
+
+  //         if (data.pdfFiles) {
+  //           setExistingPdfs(data.pdfFiles);
+  //         }
+  //       } catch (err) {
+  //         setError("Failed to fetch document details");
+  //         toast.error("Failed to fetch document details");
+  //       }
+  //     };
+  //     fetchDocumentDetails();
+  //   }
+  // }, [documentId]);
+
   useEffect(() => {
     if (documentId) {
       const fetchDocumentDetails = async () => {
@@ -59,8 +90,11 @@ function UpdateDocuments() {
           setCategoryId(data.categoryId);
           setCategoryName(data.categoryName);
 
-          if (data.pdfFiles) {
+          // Ensure existingPdfs is an array
+          if (Array.isArray(data.pdfFiles)) {
             setExistingPdfs(data.pdfFiles);
+          } else {
+            setExistingPdfs([]); // Set as empty array if it's not an array
           }
         } catch (err) {
           setError("Failed to fetch document details");
@@ -321,14 +355,15 @@ function UpdateDocuments() {
                             target="_blank"
                             rel="noopener noreferrer"
                           >
-                            PDF {index + 1}
+                            {pdfUrl.pdfFiles}
                           </a>
                         </div>
                       ))
                     ) : (
-                      <div>Loading. . .</div>
+                      <div>Loading...</div>
                     )}
                   </div>
+
                   <div className="pdfFileList">
                     {pdfFileName ? (
                       <div className="pdfFileItem">
