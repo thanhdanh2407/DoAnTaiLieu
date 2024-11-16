@@ -69,10 +69,14 @@ function AdminUpdateDocument() {
           setCategoryId(data.categoryId);
           setCategoryName(data.categoryName);
 
-          // Ensure `pdfFiles` is always an array, even if it's not present
-          setExistingPdfs(Array.isArray(data.pdfFiles) ? data.pdfFiles : []);
+          if (Array.isArray(data.pdfFiles)) {
+            setExistingPdfs(data.pdfFiles);
+          } else {
+            setExistingPdfs([]); // Set as empty array if it's not an array
+          }
         } catch (err) {
           setError("Failed to fetch document details");
+          toast.error("Failed to fetch document details");
         }
       };
       fetchDocumentDetails();
@@ -180,7 +184,7 @@ function AdminUpdateDocument() {
         formData.append("categoryName", categoryName);
       }
       if (image) formData.append("image", image);
-      if (pdfFile) formData.append("pdfFile", pdfFile);
+      if (pdfFile) formData.append("pdfFiles", pdfFile);
 
       const response = await fetch(
         `http://localhost:8080/api/admin/documents/${documentId}`,
@@ -325,8 +329,7 @@ function AdminUpdateDocument() {
                     <div className="pdfUploadContainer">
                       <label className="titleLabel">Tệp PDF hiện tại:</label>
                       <div className="existingPdfFiles">
-                        {Array.isArray(existingPdfs) &&
-                        existingPdfs.length > 0 ? (
+                        {existingPdfs.length > 0 ? (
                           existingPdfs.map((pdfUrl, index) => (
                             <div key={index} className="pdfFileItem">
                               <a
@@ -342,7 +345,6 @@ function AdminUpdateDocument() {
                           <div>Loading....</div>
                         )}
                       </div>
-
                       <div className="pdfFileList">
                         {pdfFileName ? (
                           <div className="pdfFileItem">

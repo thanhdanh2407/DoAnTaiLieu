@@ -40,37 +40,6 @@ function UpdateDocuments() {
     fetchCategories();
   }, []);
 
-  // useEffect(() => {
-  //   if (documentId) {
-  //     const fetchDocumentDetails = async () => {
-  //       try {
-  //         const response = await fetch(
-  //           `http://localhost:8080/api/documents/${documentId}`
-  //         );
-  //         if (!response.ok) throw new Error("Failed to fetch document details");
-  //         const data = await response.json();
-
-  //         setTitle(data.title);
-  //         setDescription(data.description);
-  //         setAuthor(data.author);
-  //         setPublisher(data.publisher);
-  //         setPublishingYear(data.publishingYear);
-  //         setImagePreview(data.image);
-  //         setCategoryId(data.categoryId);
-  //         setCategoryName(data.categoryName);
-
-  //         if (data.pdfFiles) {
-  //           setExistingPdfs(data.pdfFiles);
-  //         }
-  //       } catch (err) {
-  //         setError("Failed to fetch document details");
-  //         toast.error("Failed to fetch document details");
-  //       }
-  //     };
-  //     fetchDocumentDetails();
-  //   }
-  // }, [documentId]);
-
   useEffect(() => {
     if (documentId) {
       const fetchDocumentDetails = async () => {
@@ -105,11 +74,14 @@ function UpdateDocuments() {
     }
   }, [documentId]);
 
-  const handlePdfUpload = (files) => {
-    const file = files[0]; // Get the first file only
-    if (file) {
-      setPdfFile(file);
-      setPdfFileName(file.name);
+  const handlePdfUpload = (file) => {
+    // Set the single PDF file and its name
+    setPdfFile(file);
+    setPdfFileName(file.name);
+
+    // Clear the input so the user can re-select the file if needed
+    if (pdfInputRef.current) {
+      pdfInputRef.current.value = null;
     }
   };
 
