@@ -70,9 +70,14 @@ function AdminUpdateDocument() {
           setCategoryName(data.categoryName);
 
           if (Array.isArray(data.pdfFiles)) {
-            setExistingPdfs(data.pdfFiles);
+            setExistingPdfs(data.pdfFiles); // Handle an array of PDFs
+          } else if (data.pdfFiles && typeof data.pdfFiles === "string") {
+            setPdfFile(data.pdfFiles); // Handle a single PDF file as a string
+            setPdfFileName(data.pdfFiles.split("/").pop()); // Extract file name from URL
           } else {
-            setExistingPdfs([]); // Set as empty array if it's not an array
+            setExistingPdfs([]); // No PDFs available, set as empty array
+            setPdfFile(null); // No PDF available
+            setPdfFileName(""); // Clear the file name
           }
         } catch (err) {
           setError("Failed to fetch document details");
@@ -327,24 +332,6 @@ function AdminUpdateDocument() {
                       Tải tệp PDF mới<span className="requiredStar">*</span>
                     </label>
                     <div className="pdfUploadContainer">
-                      <label className="titleLabel">Tệp PDF hiện tại:</label>
-                      <div className="existingPdfFiles">
-                        {existingPdfs.length > 0 ? (
-                          existingPdfs.map((pdfUrl, index) => (
-                            <div key={index} className="pdfFileItem">
-                              <a
-                                href={pdfUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                              >
-                                PDF {index + 1}
-                              </a>
-                            </div>
-                          ))
-                        ) : (
-                          <div>Loading....</div>
-                        )}
-                      </div>
                       <div className="pdfFileList">
                         {pdfFileName ? (
                           <div className="pdfFileItem">

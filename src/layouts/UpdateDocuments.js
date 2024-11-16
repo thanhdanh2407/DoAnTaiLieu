@@ -40,6 +40,39 @@ function UpdateDocuments() {
     fetchCategories();
   }, []);
 
+  // useEffect(() => {
+  //   if (documentId) {
+  //     const fetchDocumentDetails = async () => {
+  //       try {
+  //         const response = await fetch(
+  //           `http://localhost:8080/api/documents/${documentId}`
+  //         );
+  //         if (!response.ok) throw new Error("Failed to fetch document details");
+  //         const data = await response.json();
+
+  //         setTitle(data.title);
+  //         setDescription(data.description);
+  //         setAuthor(data.author);
+  //         setPublisher(data.publisher);
+  //         setPublishingYear(data.publishingYear);
+  //         setImagePreview(data.image);
+  //         setCategoryId(data.categoryId);
+  //         setCategoryName(data.categoryName);
+
+  //         if (Array.isArray(data.pdfFiles)) {
+  //           setExistingPdfs(data.pdfFiles);
+  //         } else {
+  //           setExistingPdfs([]); // Set as empty array if it's not an array
+  //         }
+  //       } catch (err) {
+  //         setError("Failed to fetch document details");
+  //         toast.error("Failed to fetch document details");
+  //       }
+  //     };
+  //     fetchDocumentDetails();
+  //   }
+  // }, [documentId]);
+
   useEffect(() => {
     if (documentId) {
       const fetchDocumentDetails = async () => {
@@ -59,11 +92,16 @@ function UpdateDocuments() {
           setCategoryId(data.categoryId);
           setCategoryName(data.categoryName);
 
-          // Ensure existingPdfs is an array
+          // Update for handling single PDF
           if (Array.isArray(data.pdfFiles)) {
-            setExistingPdfs(data.pdfFiles);
+            setExistingPdfs(data.pdfFiles); // Handle an array of PDFs
+          } else if (data.pdfFiles && typeof data.pdfFiles === "string") {
+            setPdfFile(data.pdfFiles); // Handle a single PDF file as a string
+            setPdfFileName(data.pdfFiles.split("/").pop()); // Extract file name from URL
           } else {
-            setExistingPdfs([]); // Set as empty array if it's not an array
+            setExistingPdfs([]); // No PDFs available, set as empty array
+            setPdfFile(null); // No PDF available
+            setPdfFileName(""); // Clear the file name
           }
         } catch (err) {
           setError("Failed to fetch document details");
@@ -98,9 +136,8 @@ function UpdateDocuments() {
   };
 
   const handleRemovePdf = () => {
-    setPdfFile(null); // Reset the PDF file state
-    setPdfFileName(""); // Reset the PDF file name
-    pdfInputRef.current.value = ""; // Clear the file input
+    setPdfFile(null);
+    setPdfFileName("");
   };
 
   const handleSubmit = async (e) => {
@@ -317,25 +354,6 @@ function UpdateDocuments() {
                   Tải tệp PDF mới<span className="requiredStar">*</span>
                 </label>
                 <div className="pdfUploadContainer">
-                  <label className="titleLabel">Tệp PDF hiện tại:</label>
-                  <div className="existingPdfFiles">
-                    {existingPdfs.length > 0 ? (
-                      existingPdfs.map((pdfUrl, index) => (
-                        <div key={index} className="pdfFileItem">
-                          <a
-                            href={pdfUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            {pdfUrl.pdfFiles}
-                          </a>
-                        </div>
-                      ))
-                    ) : (
-                      <div>Loading...</div>
-                    )}
-                  </div>
-
                   <div className="pdfFileList">
                     {pdfFileName ? (
                       <div className="pdfFileItem">
@@ -354,13 +372,13 @@ function UpdateDocuments() {
                   <input
                     type="file"
                     accept="application/pdf"
-                    onChange={(e) => handlePdfUpload(e.target.files)}
+                    onChange={(e) => handlePdfUpload(e.target.files[0])}
                     ref={pdfInputRef}
-                    // multiple
                     className="fileInputAdmin"
                   />
                 </div>
               </div>
+
               <div className="itemFormUpload">
                 <label className="titleLabel" htmlFor="publisher">
                   Nhà xuất bản
@@ -414,7 +432,6 @@ function UpdateDocuments() {
             </Button>
           </div>
         </form>
-        {/* <ToastContainer /> */}
       </div>
     </div>
   );
