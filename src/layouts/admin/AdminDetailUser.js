@@ -5,6 +5,7 @@ import { FaUser } from "react-icons/fa6";
 import "./css/index.css";
 import HeaderAdmin from "../../components/Admin/HeaderAdmin/HeaderAdmin";
 import { useParams } from "react-router-dom";
+import avatarUser from "../../assets/iconAva.png";
 
 function AdminListUser() {
   const { id } = useParams();
@@ -76,7 +77,7 @@ function AdminListUser() {
             {user && (
               <div className="infoDetailUser">
                 <img
-                  src={user.avatar} // Hiển thị ảnh mặc định nếu không có avatar
+                  src={user.avatar || avatarUser} // Hiển thị ảnh mặc định nếu không có avatar
                   alt="User"
                   className="imgDetailUser"
                   onError={(e) => {
