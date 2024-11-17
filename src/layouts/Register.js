@@ -31,7 +31,6 @@ function Register() {
   };
 
   const { loading } = useSelector((state) => state.auth);
-  
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -153,18 +152,28 @@ function Register() {
       return;
     }
 
-    if (!identifierPattern.test(identifier)) {
-      toast.error(
-        "Mã số SV/GV phải có đúng 6 chữ số sau 'SV' hoặc 'GV'",
-        {
+    if (role === "STUDENT") {
+      if (!identifierPattern.test(identifier)) {
+        toast.error("Mã số SV phải có đúng 6 chữ số sau 'SV' ", {
           position: "top-center",
           autoClose: 3000,
           closeOnClick: true,
           className: "custom-toast",
           progressClassName: "custom-progress",
-        }
-      );
-      return;
+        });
+        return;
+      }
+    } else if (role === "TEACHER") {
+      if (!identifierPattern.test(identifier)) {
+        toast.error("Mã số GV phải có đúng 6 chữ số sau 'GV'", {
+          position: "top-center",
+          autoClose: 3000,
+          closeOnClick: true,
+          className: "custom-toast",
+          progressClassName: "custom-progress",
+        });
+        return;
+      }
     }
 
     const formData = new FormData();
@@ -211,8 +220,7 @@ function Register() {
           progressClassName: "custom-progress",
         });
       }
-    }
-     finally {
+    } finally {
       setRegistering(false);
     }
   };
