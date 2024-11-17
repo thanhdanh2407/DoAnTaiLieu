@@ -35,49 +35,9 @@ const CreateDocument = () => {
     fetchCategories();
   }, []);
 
-  const handlePdfUpload = (files) => {
-    const fileArray = Array.from(files);
-
-    // Kiểm tra xem tất cả các tệp có phải là PDF không
-    const validPdfFiles = fileArray.filter((file) =>
-      file.name.endsWith(".pdf")
-    );
-
-    if (validPdfFiles.length === 0) {
-      toast.error("Tệp tải lên phải có định dạng PDF.", {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-      return;
-    }
-
-    setPdfFile((prevFiles) => [...prevFiles, ...validPdfFiles]);
-    setPdfFileName(validPdfFiles.map((file) => file.name));
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Kiểm tra xem người dùng có tải tệp PDF không
-    if (pdfFile.length === 0) {
-      toast.error("Bạn chưa tải tệp PDF.", {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-      return;
-    }
-
-    // Kiểm tra các trường khác
     if (!image) {
       toast.error("Bạn chưa tải hình lên.", {
         position: "top-center",
@@ -91,23 +51,82 @@ const CreateDocument = () => {
       return;
     }
 
-    // Tiến hành tạo FormData
+    if (!title) {
+      toast.error("Bạn chưa nhập tên tài liệu.", {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      return;
+    }
+
+    if (!publishingYear) {
+      toast.error("Bạn chưa nhập năm xuất bản.", {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      return;
+    }
+
+    if (!categoryId) {
+      toast.error("Bạn chưa chọn thể loại.", {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      return;
+    }
+
+    if (pdfFile.length === 0) {
+      toast.error("Bạn chưa tải tệp PDF.", {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      return;
+    }
+
+    if (!description) {
+      toast.error("Bạn chưa nhập mô tả chi tiết.", {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      return;
+    }
+
+    setIsLoading(true);
+
     const formData = new FormData();
     formData.append("title", title);
     formData.append("description", description);
     formData.append("author", author);
     formData.append("publisher", publisher);
     formData.append("publishingYear", publishingYear);
-    if (categoryId) formData.append("categoryId", categoryId); // Append category ID
-
+    if (categoryId) formData.append("categoryId", categoryId); // Append the selected category ID
     if (image) formData.append("image", image);
-
-    // Gửi từng tệp PDF dưới key đúng mà backend yêu cầu
-    pdfFile.forEach((file) => {
-      formData.append("pdfFile", file); // Đảm bảo key "pdfFile" nếu backend yêu cầu
-    });
-
-    setIsLoading(true);
+    pdfFile.forEach((file) => formData.append("pdfFiles", file)); // Adjust this if your backend expects a different key
 
     try {
       const token = localStorage.getItem("authToken");
@@ -141,139 +160,10 @@ const CreateDocument = () => {
       console.error(err);
       toast.error(`Failed to create document: ${err.message}`);
     } finally {
+      // Stop loading
       setIsLoading(false);
     }
   };
-
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-
-  //   if (!image) {
-  //     toast.error("Bạn chưa tải hình lên.", {
-  //       position: "top-center",
-  //       autoClose: 5000,
-  //       hideProgressBar: false,
-  //       closeOnClick: true,
-  //       pauseOnHover: true,
-  //       draggable: true,
-  //       progress: undefined,
-  //     });
-  //     return;
-  //   }
-
-  //   if (!title) {
-  //     toast.error("Bạn chưa nhập tên tài liệu.", {
-  //       position: "top-center",
-  //       autoClose: 5000,
-  //       hideProgressBar: false,
-  //       closeOnClick: true,
-  //       pauseOnHover: true,
-  //       draggable: true,
-  //       progress: undefined,
-  //     });
-  //     return;
-  //   }
-
-  //   if (!publishingYear) {
-  //     toast.error("Bạn chưa nhập năm xuất bản.", {
-  //       position: "top-center",
-  //       autoClose: 5000,
-  //       hideProgressBar: false,
-  //       closeOnClick: true,
-  //       pauseOnHover: true,
-  //       draggable: true,
-  //       progress: undefined,
-  //     });
-  //     return;
-  //   }
-
-  //   if (!categoryId) {
-  //     toast.error("Bạn chưa chọn thể loại.", {
-  //       position: "top-center",
-  //       autoClose: 5000,
-  //       hideProgressBar: false,
-  //       closeOnClick: true,
-  //       pauseOnHover: true,
-  //       draggable: true,
-  //       progress: undefined,
-  //     });
-  //     return;
-  //   }
-
-  //   if (pdfFile.length === 0) {
-  //     toast.error("Bạn chưa tải tệp PDF.", {
-  //       position: "top-center",
-  //       autoClose: 5000,
-  //       hideProgressBar: false,
-  //       closeOnClick: true,
-  //       pauseOnHover: true,
-  //       draggable: true,
-  //       progress: undefined,
-  //     });
-  //     return;
-  //   }
-
-  //   if (!description) {
-  //     toast.error("Bạn chưa nhập mô tả chi tiết.", {
-  //       position: "top-center",
-  //       autoClose: 5000,
-  //       hideProgressBar: false,
-  //       closeOnClick: true,
-  //       pauseOnHover: true,
-  //       draggable: true,
-  //       progress: undefined,
-  //     });
-  //     return;
-  //   }
-
-  //   setIsLoading(true);
-
-  //   const formData = new FormData();
-  //   formData.append("title", title);
-  //   formData.append("description", description);
-  //   formData.append("author", author);
-  //   formData.append("publisher", publisher);
-  //   formData.append("publishingYear", publishingYear);
-  //   if (categoryId) formData.append("categoryId", categoryId); // Append the selected category ID
-  //   if (image) formData.append("image", image);
-  //   pdfFile.forEach((file) => formData.append("pdfFiles", file)); // Adjust this if your backend expects a different key
-
-  //   try {
-  //     const token = localStorage.getItem("authToken");
-  //     if (!token) {
-  //       throw new Error("No token found");
-  //     }
-
-  //     const response = await fetch("http://localhost:8080/api/documents", {
-  //       method: "POST",
-  //       headers: {
-  //         Authorization: ` ${token}`,
-  //       },
-  //       body: formData,
-  //     });
-
-  //     if (!response.ok) {
-  //       const errorText = await response.text();
-  //       throw new Error(
-  //         `Failed to create document: ${response.statusText} - ${errorText}`
-  //       );
-  //     }
-
-  //     const result = await response.json();
-  //     toast.success("Tạo tài liệu thành công!");
-  //     console.log(result); // Log the result for verification
-  //     setTimeout(() => {
-  //       navigate("/user");
-  //     }, 1000);
-  //   } catch (err) {
-  //     setError(`Failed to create document: ${err.message}`);
-  //     console.error(err);
-  //     toast.error(`Failed to create document: ${err.message}`);
-  //   } finally {
-  //     // Stop loading
-  //     setIsLoading(false);
-  //   }
-  // };
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -295,6 +185,12 @@ const CreateDocument = () => {
       prevFiles.filter((file) => file.name !== fileName)
     );
     pdfInputRef.current.value = null;
+  };
+
+  const handlePdfUpload = (files) => {
+    const fileArray = Array.from(files);
+    setPdfFile((prevFiles) => [...prevFiles, ...fileArray]);
+    setPdfFileName(fileArray.map((file) => file.name));
   };
 
   return (
