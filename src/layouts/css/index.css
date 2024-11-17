@@ -580,6 +580,30 @@
   transition: border-color 0.3s ease;
 }
 
+.containerUpdateDocument{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.titleChangeDocument{
+  color: black;
+}
+
+.changeUpdate{
+  background-color: greenyellow;
+  padding: 10px;
+  margin-top: 2%;
+  border-radius: 10px;
+  width: 30%;
+
+}
+
+.changeUpdate:hover {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+}
+
 /* UpdateUser */
 .formUpdateUser {
   width: 100%;

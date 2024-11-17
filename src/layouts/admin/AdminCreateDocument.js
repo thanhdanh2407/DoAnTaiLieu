@@ -39,27 +39,8 @@ function AdminCreateDocument() {
 
   const handlePdfUpload = (files) => {
     const fileArray = Array.from(files);
-
-    // Kiểm tra xem tất cả các tệp có phải là PDF không
-    const validPdfFiles = fileArray.filter((file) =>
-      file.name.endsWith(".pdf")
-    );
-
-    if (validPdfFiles.length === 0) {
-      toast.error("Tệp tải lên phải có định dạng PDF.", {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-      return;
-    }
-
-    setPdfFile((prevFiles) => [...prevFiles, ...validPdfFiles]);
-    setPdfFileName(validPdfFiles.map((file) => file.name));
+    setPdfFile((prevFiles) => [...prevFiles, ...fileArray]);
+    setPdfFileName(fileArray.map((file) => file.name));
   };
 
   const handleSubmit = async (e) => {
@@ -153,9 +134,8 @@ function AdminCreateDocument() {
     formData.append("publishingYear", publishingYear);
     if (categoryId) formData.append("categoryId", categoryId); // Append the selected category ID
     if (image) formData.append("image", image);
-    pdfFile.forEach((file) => {
-      formData.append("pdfFile", file); // Đảm bảo key "pdfFile" nếu backend yêu cầu
-    });
+    pdfFile.forEach((file) => formData.append("pdfFiles", file)); // Adjust this if your backend expects a different key
+
     try {
       const token = localStorage.getItem("authToken");
       if (!token) {

@@ -35,6 +35,12 @@ const CreateDocument = () => {
     fetchCategories();
   }, []);
 
+  const handlePdfUpload = (files) => {
+    const fileArray = Array.from(files);
+    setPdfFile((prevFiles) => [...prevFiles, ...fileArray]);
+    setPdfFileName(fileArray.map((file) => file.name));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -185,12 +191,6 @@ const CreateDocument = () => {
       prevFiles.filter((file) => file.name !== fileName)
     );
     pdfInputRef.current.value = null;
-  };
-
-  const handlePdfUpload = (files) => {
-    const fileArray = Array.from(files);
-    setPdfFile((prevFiles) => [...prevFiles, ...fileArray]);
-    setPdfFileName(fileArray.map((file) => file.name));
   };
 
   return (

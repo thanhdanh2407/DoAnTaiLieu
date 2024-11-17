@@ -16,15 +16,14 @@ function AdminUpdateDocument() {
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState("");
   const [pdfFile, setPdfFile] = useState(null);
-  const [pdfFileName, setPdfFileName] = useState("");
+  const [pdfFileName, setPdfFileName] = useState("PDF");
   const [categories, setCategories] = useState([]);
   const [categoryId, setCategoryId] = useState(null);
-  const [existingPdfs, setExistingPdfs] = useState([]);
-  const [error, setError] = useState(null);
+  const [existingPdfUrl, setExistingPdfUrl] = useState(null);
+  const [categoryName, setCategoryName] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const pdfInputRef = useRef(null);
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(false);
-  const [categoryName, setCategoryName] = useState("");
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -34,9 +33,10 @@ function AdminUpdateDocument() {
         const data = await response.json();
         setCategories(data);
       } catch (err) {
-        setError("Failed to fetch categories");
+        toast.error("Failed to fetch categories");
       }
     };
+
     fetchCategories();
   }, []);
 
@@ -69,18 +69,10 @@ function AdminUpdateDocument() {
           setCategoryId(data.categoryId);
           setCategoryName(data.categoryName);
 
-          if (Array.isArray(data.pdfFiles)) {
-            setExistingPdfs(data.pdfFiles); // Handle an array of PDFs
-          } else if (data.pdfFiles && typeof data.pdfFiles === "string") {
-            setPdfFile(data.pdfFiles); // Handle a single PDF file as a string
-            setPdfFileName(data.pdfFiles.split("/").pop()); // Extract file name from URL
-          } else {
-            setExistingPdfs([]); // No PDFs available, set as empty array
-            setPdfFile(null); // No PDF available
-            setPdfFileName(""); // Clear the file name
+          if (data.pdfFiles) {
+            setExistingPdfUrl(data.pdfFiles);
           }
         } catch (err) {
-          setError("Failed to fetch document details");
           toast.error("Failed to fetch document details");
         }
       };
@@ -89,85 +81,149 @@ function AdminUpdateDocument() {
   }, [documentId]);
 
   const handlePdfUpload = (file) => {
-    // Set the single PDF file and its name
-    setPdfFile(file);
-    setPdfFileName(file.name);
+    // Ensure file is a File object
+    if (file instanceof File) {
+      setPdfFile(file);
+      setPdfFileName(file.name);
 
-    // Clear the input so the user can re-select the file if needed
-    if (pdfInputRef.current) {
-      pdfInputRef.current.value = null;
+      // Clear the input so the user can re-select the file if needed
+      if (pdfInputRef.current) {
+        pdfInputRef.current.value = null;
+      }
     }
   };
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    setImage(file);
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
 
-  const handleRemovePdf = () => {
-    setPdfFile(null);
-    setPdfFileName("");
-  };
+  //   if (!title) {
+  //     toast.error("Bạn chưa nhập tên tài liệu.", {
+  //       position: "top-center",
+  //       autoClose: 5000,
+  //       hideProgressBar: false,
+  //       closeOnClick: true,
+  //       pauseOnHover: true,
+  //       draggable: true,
+  //       progress: undefined,
+  //     });
+  //     return;
+  //   }
+
+  //   if (!publishingYear) {
+  //     toast.error("Bạn chưa nhập năm xuất bản.", {
+  //       position: "top-center",
+  //       autoClose: 5000,
+  //       hideProgressBar: false,
+  //       closeOnClick: true,
+  //       pauseOnHover: true,
+  //       draggable: true,
+  //       progress: undefined,
+  //     });
+  //     return;
+  //   }
+
+  //   if (!categoryId) {
+  //     toast.error("Bạn chưa chọn thể loại.", {
+  //       position: "top-center",
+  //       autoClose: 5000,
+  //       hideProgressBar: false,
+  //       closeOnClick: true,
+  //       pauseOnHover: true,
+  //       draggable: true,
+  //       progress: undefined,
+  //     });
+  //     return;
+  //   }
+
+  //   if (!description) {
+  //     toast.error("Bạn chưa nhập mô tả chi tiết.", {
+  //       position: "top-center",
+  //       autoClose: 5000,
+  //       hideProgressBar: false,
+  //       closeOnClick: true,
+  //       pauseOnHover: true,
+  //       draggable: true,
+  //       progress: undefined,
+  //     });
+  //     return;
+  //   }
+
+  //   setIsLoading(true);
+
+  //   try {
+  //     const token = localStorage.getItem("authToken");
+  //     if (!token) throw new Error("No token found");
+
+  //     const formData = new FormData();
+  //     formData.append("title", title);
+  //     formData.append("description", description);
+  //     formData.append("author", author);
+  //     formData.append("publisher", publisher);
+  //     formData.append("publishingYear", publishingYear);
+  //     if (categoryId) {
+  //       formData.append("categoryId", categoryId);
+  //     } else if (categoryName) {
+  //       formData.append("categoryName", categoryName);
+  //     }
+  //     if (image) formData.append("image", image);
+  //     if (pdfFile) formData.append("pdfFiles", pdfFile);
+
+  //     const response = await fetch(
+  //       `http://localhost:8080/api/admin/documents/${documentId}`,
+  //       {
+  //         method: "PUT",
+  //         headers: {
+  //           Authorization: `${token}`,
+  //         },
+  //         body: formData,
+  //       }
+  //     );
+
+  //     if (!response.ok) {
+  //       const errorText = await response.text();
+  //       throw new Error(`Failed to update document: ${errorText}`);
+  //     }
+
+  //     toast.success("Chỉnh sửa tài liệu thành công!", {
+  //       position: "top-center",
+  //       autoClose: 5000,
+  //       hideProgressBar: false,
+  //       closeOnClick: true,
+  //       pauseOnHover: true,
+  //       draggable: true,
+  //       progress: undefined,
+  //     });
+  //     setTimeout(() => {
+  //       navigate("/admin/adminAllDocument");
+  //     }, 1000);
+  //   } catch (err) {
+  //     setError(`Failed to update document: ${err.message}`);
+  //   } finally {
+  //     // Stop loading
+  //     setIsLoading(false);
+  //   }
+  // };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!title) {
-      toast.error("Bạn chưa nhập tên tài liệu.", {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      toast.error("Bạn chưa nhập tên tài liệu.");
       return;
     }
 
     if (!publishingYear) {
-      toast.error("Bạn chưa nhập năm xuất bản.", {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      toast.error("Bạn chưa nhập năm xuất bản.");
       return;
     }
 
     if (!categoryId) {
-      toast.error("Bạn chưa chọn thể loại.", {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      toast.error("Bạn chưa chọn thể loại.");
       return;
     }
 
     if (!description) {
-      toast.error("Bạn chưa nhập mô tả chi tiết.", {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      toast.error("Bạn chưa nhập mô tả chi tiết.");
       return;
     }
 
@@ -183,13 +239,16 @@ function AdminUpdateDocument() {
       formData.append("author", author);
       formData.append("publisher", publisher);
       formData.append("publishingYear", publishingYear);
+
       if (categoryId) {
         formData.append("categoryId", categoryId);
       } else if (categoryName) {
         formData.append("categoryName", categoryName);
       }
+
       if (image) formData.append("image", image);
-      if (pdfFile) formData.append("pdfFiles", pdfFile);
+      if (pdfFile && pdfFile instanceof File)
+        formData.append("pdfFiles", pdfFile);
 
       const response = await fetch(
         `http://localhost:8080/api/admin/documents/${documentId}`,
@@ -204,7 +263,9 @@ function AdminUpdateDocument() {
 
       if (!response.ok) {
         const errorText = await response.text();
-        throw new Error(`Failed to update document: ${errorText}`);
+        throw new Error(
+          `Failed to update document: ${response.statusText} - ${errorText}`
+        );
       }
 
       toast.success("Chỉnh sửa tài liệu thành công!", {
@@ -220,10 +281,21 @@ function AdminUpdateDocument() {
         navigate("/admin/adminAllDocument");
       }, 1000);
     } catch (err) {
-      setError(`Failed to update document: ${err.message}`);
     } finally {
       // Stop loading
       setIsLoading(false);
+    }
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    setImage(file);
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
     }
   };
 
@@ -327,7 +399,8 @@ function AdminUpdateDocument() {
                       />
                     </div>
                   </div>
-                  <div className="itemFormUpload">
+
+                  {/* <div className="itemFormUpload">
                     <label className="titleLabel" htmlFor="pdfInput">
                       Tải tệp PDF mới<span className="requiredStar">*</span>
                     </label>
@@ -355,7 +428,49 @@ function AdminUpdateDocument() {
                         className="fileInputAdmin"
                       />
                     </div>
+                  </div> */}
+                  <div className="itemFormUpload">
+                    <label className="titleLabel" htmlFor="pdfInput">
+                      Tải tệp PDF<span className="requiredStar">*</span>
+                    </label>
+                    <div className="pdfUploadContainer">
+                      <div className="pdfFileList">
+                        {existingPdfUrl ? (
+                          <div className="pdfFileItem">
+                            <a
+                              href={existingPdfUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="pdfFileLink"
+                            >
+                              {pdfFileName}
+                            </a>
+                          </div>
+                        ) : (
+                          <div className="noFilesText">Hãy chọn file</div>
+                        )}
+                      </div>
+                      <div className="containerUpdateDocument">
+                        <div
+                          className="changeUpdate"
+                          onClick={() => pdfInputRef.current.click()}
+                        >
+                          <span className="titleChangeDocument">
+                            Đổi tài liệu
+                          </span>
+                        </div>
+                      </div>
+                      <input
+                        type="file"
+                        accept="application/pdf"
+                        onChange={(e) => handlePdfUpload(e.target.files[0])}
+                        ref={pdfInputRef}
+                        className="fileInputAdmin"
+                        style={{ display: "none" }}
+                      />
+                    </div>
                   </div>
+
                   <div className="itemFormUpload">
                     <label className="titleLabel" htmlFor="author">
                       Tác giả<span className="requiredStar">*</span>
@@ -413,7 +528,6 @@ function AdminUpdateDocument() {
                 </Button>
               </div>
             </form>
-            {error && <div className="errorText">{error}</div>}
           </div>
         </div>
       </div>
