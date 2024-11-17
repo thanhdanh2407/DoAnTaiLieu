@@ -40,39 +40,6 @@ function UpdateDocuments() {
     fetchCategories();
   }, []);
 
-  // useEffect(() => {
-  //   if (documentId) {
-  //     const fetchDocumentDetails = async () => {
-  //       try {
-  //         const response = await fetch(
-  //           `http://localhost:8080/api/documents/${documentId}`
-  //         );
-  //         if (!response.ok) throw new Error("Failed to fetch document details");
-  //         const data = await response.json();
-
-  //         setTitle(data.title);
-  //         setDescription(data.description);
-  //         setAuthor(data.author);
-  //         setPublisher(data.publisher);
-  //         setPublishingYear(data.publishingYear);
-  //         setImagePreview(data.image);
-  //         setCategoryId(data.categoryId);
-  //         setCategoryName(data.categoryName);
-
-  //         if (Array.isArray(data.pdfFiles)) {
-  //           setExistingPdfs(data.pdfFiles);
-  //         } else {
-  //           setExistingPdfs([]); // Set as empty array if it's not an array
-  //         }
-  //       } catch (err) {
-  //         setError("Failed to fetch document details");
-  //         toast.error("Failed to fetch document details");
-  //       }
-  //     };
-  //     fetchDocumentDetails();
-  //   }
-  // }, [documentId]);
-
   useEffect(() => {
     if (documentId) {
       const fetchDocumentDetails = async () => {
@@ -112,86 +79,165 @@ function UpdateDocuments() {
     }
   }, [documentId]);
 
+  // const handlePdfUpload = (file) => {
+  //   // Set the single PDF file and its name
+  //   setPdfFile(file);
+  //   setPdfFileName(file.name);
+
+  //   // Clear the input so the user can re-select the file if needed
+  //   if (pdfInputRef.current) {
+  //     pdfInputRef.current.value = null;
+  //   }
+  // };
+
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+
+  //   if (!title) {
+  //     toast.error("Bạn chưa nhập tên tài liệu.", {
+  //       position: "top-center",
+  //       autoClose: 5000,
+  //       hideProgressBar: false,
+  //       closeOnClick: true,
+  //       pauseOnHover: true,
+  //       draggable: true,
+  //       progress: undefined,
+  //     });
+  //     return;
+  //   }
+
+  //   if (!publishingYear) {
+  //     toast.error("Bạn chưa nhập năm xuất bản.", {
+  //       position: "top-center",
+  //       autoClose: 5000,
+  //       hideProgressBar: false,
+  //       closeOnClick: true,
+  //       pauseOnHover: true,
+  //       draggable: true,
+  //       progress: undefined,
+  //     });
+  //     return;
+  //   }
+
+  //   if (!categoryId) {
+  //     toast.error("Bạn chưa chọn thể loại.", {
+  //       position: "top-center",
+  //       autoClose: 5000,
+  //       hideProgressBar: false,
+  //       closeOnClick: true,
+  //       pauseOnHover: true,
+  //       draggable: true,
+  //       progress: undefined,
+  //     });
+  //     return;
+  //   }
+
+  //   if (!description) {
+  //     toast.error("Bạn chưa nhập mô tả chi tiết.", {
+  //       position: "top-center",
+  //       autoClose: 5000,
+  //       hideProgressBar: false,
+  //       closeOnClick: true,
+  //       pauseOnHover: true,
+  //       draggable: true,
+  //       progress: undefined,
+  //     });
+  //     return;
+  //   }
+
+  //   setIsLoading(true);
+
+  //   try {
+  //     const token = localStorage.getItem("authToken");
+  //     if (!token) throw new Error("No token found");
+
+  //     const formData = new FormData();
+  //     formData.append("title", title);
+  //     formData.append("description", description);
+  //     formData.append("author", author);
+  //     formData.append("publisher", publisher);
+  //     formData.append("publishingYear", publishingYear);
+
+  //     if (categoryId) {
+  //       formData.append("categoryId", categoryId);
+  //     } else if (categoryName) {
+  //       formData.append("categoryName", categoryName);
+  //     }
+
+  //     if (image) formData.append("image", image);
+  //     if (pdfFile) formData.append("pdfFiles", pdfFile);
+
+  //     const response = await fetch(
+  //       `http://localhost:8080/api/documents/${documentId}`,
+  //       {
+  //         method: "PUT",
+  //         headers: {
+  //           Authorization: `${token}`,
+  //         },
+  //         body: formData,
+  //       }
+  //     );
+
+  //     if (!response.ok) {
+  //       const errorText = await response.text();
+  //       throw new Error(
+  //         `Failed to update document: ${response.statusText} - ${errorText}`
+  //       );
+  //     }
+
+  //     toast.success("Chỉnh sửa tài liệu thành công!", {
+  //       position: "top-center",
+  //       autoClose: 5000,
+  //       hideProgressBar: false,
+  //       closeOnClick: true,
+  //       pauseOnHover: true,
+  //       draggable: true,
+  //       progress: undefined,
+  //     });
+  //     setTimeout(() => {
+  //       navigate("/user");
+  //     }, 1000);
+  //   } catch (err) {
+  //     toast.error(`Failed to update document: ${err.message}`);
+  //   } finally {
+  //     // Stop loading
+  //     setIsLoading(false);
+  //   }
+  // };
+
   const handlePdfUpload = (file) => {
-    // Set the single PDF file and its name
-    setPdfFile(file);
-    setPdfFileName(file.name);
+    // Ensure file is a File object
+    if (file instanceof File) {
+      setPdfFile(file);
+      setPdfFileName(file.name);
 
-    // Clear the input so the user can re-select the file if needed
-    if (pdfInputRef.current) {
-      pdfInputRef.current.value = null;
+      // Clear the input so the user can re-select the file if needed
+      if (pdfInputRef.current) {
+        pdfInputRef.current.value = null;
+      }
     }
-  };
-
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    setImage(file);
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const handleRemovePdf = () => {
-    setPdfFile(null);
-    setPdfFileName("");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!title) {
-      toast.error("Bạn chưa nhập tên tài liệu.", {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      toast.error("Bạn chưa nhập tên tài liệu.");
       return;
     }
 
     if (!publishingYear) {
-      toast.error("Bạn chưa nhập năm xuất bản.", {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      toast.error("Bạn chưa nhập năm xuất bản.");
       return;
     }
 
     if (!categoryId) {
-      toast.error("Bạn chưa chọn thể loại.", {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      toast.error("Bạn chưa chọn thể loại.");
       return;
     }
 
     if (!description) {
-      toast.error("Bạn chưa nhập mô tả chi tiết.", {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      toast.error("Bạn chưa nhập mô tả chi tiết.");
       return;
     }
 
@@ -215,14 +261,15 @@ function UpdateDocuments() {
       }
 
       if (image) formData.append("image", image);
-      if (pdfFile) formData.append("pdfFiles", pdfFile);
+      if (pdfFile && pdfFile instanceof File)
+        formData.append("pdfFiles", pdfFile);
 
       const response = await fetch(
         `http://localhost:8080/api/documents/${documentId}`,
         {
           method: "PUT",
           headers: {
-            Authorization: `${token}`,
+            Authorization: `Bearer ${token}`,
           },
           body: formData,
         }
@@ -235,24 +282,32 @@ function UpdateDocuments() {
         );
       }
 
-      toast.success("Chỉnh sửa tài liệu thành công!", {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      toast.success("Chỉnh sửa tài liệu thành công!");
       setTimeout(() => {
         navigate("/user");
       }, 1000);
     } catch (err) {
       toast.error(`Failed to update document: ${err.message}`);
     } finally {
-      // Stop loading
       setIsLoading(false);
     }
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    setImage(file);
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleRemovePdf = () => {
+    setPdfFile(null);
+    setPdfFileName("");
   };
 
   return (
