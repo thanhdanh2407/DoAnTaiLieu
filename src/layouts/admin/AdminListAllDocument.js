@@ -161,7 +161,7 @@ function AdminListAllDocument() {
     ? pendingDocuments.slice(indexOfFirstDocument, indexOfLastDocument)
     : documents.slice(indexOfFirstDocument, indexOfLastDocument);
 
-  const avatarUrl = user?.avatar;
+  // const avatarUrl = user?.avatar;
 
   const getStatusText = (status) => {
     switch (status) {
@@ -196,7 +196,7 @@ function AdminListAllDocument() {
                 <div className="formUser">
                   <div className="avatarContainer">
                     <img
-                      src={avatarUrl}
+                      src={user.avatar || defaultAvatar}
                       alt="avatar"
                       className="avatar"
                       onError={(e) => {
