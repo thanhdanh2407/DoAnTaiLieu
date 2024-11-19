@@ -79,7 +79,7 @@ function ListDocumentVerifiedMy() {
 
   return (
     <div className="containerListDocumentCreate">
-      <div className="titleListUser">Danh sách tài liệu chờ duyệt </div>
+      <div className="titleListUser">Danh sách tài liệu đã duyệt </div>
       {loading ? (
         <div className="loadingDocument">Loading...</div>
       ) : error ? (

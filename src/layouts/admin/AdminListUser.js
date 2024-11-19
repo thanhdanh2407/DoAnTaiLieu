@@ -18,6 +18,43 @@ function AdminListUser() {
   const usersPerPage = 10;
   const navigate = useNavigate();
 
+  // useEffect(() => {
+  //   const fetchUsers = async () => {
+  //     try {
+  //       const response = await fetch("http://localhost:8080/api/admin/users", {
+  //         method: "GET",
+  //         headers: {
+  //           Authorization: `${localStorage.getItem("authToken")}`,
+  //           "Content-Type": "application/json",
+  //         },
+  //       });
+
+  //       if (!response.ok) {
+  //         throw new Error("Failed to fetch users");
+  //       }
+
+  //       const data = await response.json();
+
+  //       // Đọc trạng thái người dùng từ localStorage và cập nhật lại
+  //       const savedUsers = JSON.parse(localStorage.getItem("users")) || [];
+
+  //       const updatedUsers = data.map((user) => {
+  //         const savedUser = savedUsers.find((saved) => saved.id === user.id);
+  //         return savedUser ? { ...user, status: savedUser.status } : user;
+  //       });
+
+  //       setUsers(updatedUsers);
+  //       setFilteredUsers(updatedUsers);
+  //     } catch (err) {
+  //       setError(err.message);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+
+  //   fetchUsers();
+  // }, []);
+
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -43,8 +80,13 @@ function AdminListUser() {
           return savedUser ? { ...user, status: savedUser.status } : user;
         });
 
-        setUsers(updatedUsers);
-        setFilteredUsers(updatedUsers);
+        // Sắp xếp người dùng theo thời gian tạo (createdAt mới nhất trước)
+        const sortedUsers = updatedUsers.sort((a, b) => {
+          return new Date(b.createdAt) - new Date(a.createdAt);
+        });
+
+        setUsers(sortedUsers);
+        setFilteredUsers(sortedUsers);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -181,22 +223,19 @@ function AdminListUser() {
   };
 
   const getRoleName = (role) => {
-    switch(role) {
+    switch (role) {
       case "ADMIN":
         return { label: "ADMIN", color: "red" }; // Màu đỏ cho ADMIN
       case "STUDENT":
         return { label: "Sinh viên", color: "blue" }; // Màu xanh cho STUDENT
       case "TEACHER":
         return { label: "Giảng viên", color: "green" }; // Màu xanh lá cho TEACHER
-      case 'USER':
+      case "USER":
         return { label: "Người Dùng", color: "gray" }; // Màu xám cho Người Dùng
       default:
         return;
     }
   };
-  
-  
-
 
   return (
     <div className="containerAdminManageUser">
@@ -277,9 +316,12 @@ function AdminListUser() {
                         <td>{user.email}</td>
                         <td>{user.address}</td>
                         <td>
-                          <div className="userRoleName" style={{ color: getRoleName(user.role).color }}>
+                          <div
+                            className="userRoleName"
+                            style={{ color: getRoleName(user.role).color }}
+                          >
                             {getRoleName(user.role).label}
-                            </div>
+                          </div>
                         </td>
                         <td>
                           <button
